@@ -13,7 +13,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 use App\Models\User;
-use Hash;
+
+use Illuminate\Support\Facades\Hash;
+
 
 class FortifyServiceProvider extends ServiceProvider
 {

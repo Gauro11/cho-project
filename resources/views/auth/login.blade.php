@@ -20,8 +20,8 @@
             @csrf
 
             <div class="mb-4">
-                <x-label for="email" value="{{ __('ID') }}" />
-                <x-input id="loginname" class="block mt-1 w-full rounded-md border-gray-300" type="text" name="loginname" :value="old('loginname')" required/>
+                <x-label for="staff_id" value="{{ __('Staff ID') }}" />
+                <x-input id="staff_id" class="block mt-1 w-full rounded-md border-gray-300" type="text" name="staff_id" :value="old('staff_id')" required autofocus />
             </div>
 
             <div class="mb-4">
@@ -42,9 +42,7 @@
                 </x-button>
             </div>
 
-            
         </form>
 
-        
     </x-authentication-card>
 </x-guest-layout>

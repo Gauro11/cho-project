@@ -126,72 +126,73 @@
 
 <body>
 	<div class="wrapper">
-	@include('staff.sidebar')
+    @include('staff.sidebar')
 
-		
+    <div class="main">
+        @include('staff.header')
 
-			<div class="main">
-            @include('staff.header')
-            <main class="content">
-                <div class="container-fluid p-0">
+        <main class="content">
+            <div class="container-fluid p-0">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h1 style="color:#000957;" class="h3 mb-3">Population Records</h1>
+                    <div class="d-flex gap-2" style="width: 100%; max-width: 400px;"></div>
+                </div>
 
-                    <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <h1 style="color:#000957;" class="h3 mb-3">Population Records</h1>
-                        <div class="d-flex gap-2" style="width: 100%; max-width: 400px;">
+                <br><br>
 
-                            
-                        </div>
-                    </div>
+                <div class="col-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Add Record Button -->
+                                <button class="btn btn-success btn-sm" id="openModal">
+                                    Add New Record
+                                </button>
 
-                    <br><br>
+                                <!-- Vertical Bar Separator -->
+                                <span style="color: white; font-weight: bold;">|</span>
 
-                    <div class="col-12 col-lg-12">
-                        <div class="card">
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <!-- Settings Icon (White Color) -->
-                                    <button class="btn btn-success btn-sm" id="openModal">
-                                        Add New Record
+                                <!-- Search Input -->
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i data-feather="search"></i></span>
+                                    <input type="text" id="searchInput" name="search" class="form-control"
+                                           placeholder="Search..." style="background-color: white; color: black;">
+                                </div>
+
+                                <span style="color: white; font-weight: bold;">|</span>
+                            </div>
+
+                            <!-- Right Side Buttons -->
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Import Excel Dropdown -->
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i data-feather="upload" style="color: white;"></i> Import
                                     </button>
-                                    <!-- <i id="openModal" data-feather="plus" style="color: white; cursor: pointer;"></i> -->
-
-                                    <!-- Vertical Bar Separator -->
-                                    <span style="color: white; font-weight: bold;">|</span>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white"><i data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search" class="form-control"
-                                            placeholder="Search..." style="background-color: white; color: black;">
+                                    <div class="dropdown-menu p-3" style="min-width: 250px;">
+                                        <form action="{{ route('population.import') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="file" name="file" class="form-control form-control-sm mb-2" required>
+                                            <button type="submit" class="btn btn-sm btn-success w-100">Upload</button>
+                                        </form>
                                     </div>
-
-                                    <span style="color: white; font-weight: bold;">|</span>
-
-                                    <!-- Search Field with Icon (Next to the Separator) -->
-                                    
                                 </div>
 
-                                <!-- Pagination + Download Icon on the Right -->
-                                <div class="d-flex align-items-center gap-2">
-                                    <!-- Pagination (Smaller Size) -->
+                                <!-- Print Button -->
+                                <button id="printTable" class="btn btn-primary btn-sm">
+                                    <i data-feather="printer" style="color: white;"></i> Print
+                                </button>
 
-                                    
-                                    <button id="printTable" class="btn btn-primary btn-sm">
-                                        <i data-feather="printer" style="color: white;"></i> Print
-                                    </button>
-
-
-                                    <!-- Download Icon -->
-                                    <button id="downloadCSV" class="btn btn-primary btn-sm">
-    <i data-feather="download" style="color: white;"></i> Download
-</button>
-
-                                    <!-- <span style="color: white; font-weight: bold;">|</span>
-
-                                    <i data-feather="maximize-2" style="color: white;"></i> -->
-
-                                </div>
+                                  <!-- Download Icon -->
+                                    <a href="{{ route('immunization.export') }}" class="btn btn-success btn-sm">
+    <i data-feather="download" style="color: white;"></i> Download 
+</a>
                             </div>
                         </div>
                     </div>
+                </div>
+
 
 
                     @include('populationstatistics.population_table')

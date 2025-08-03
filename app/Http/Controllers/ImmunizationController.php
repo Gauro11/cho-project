@@ -4,6 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ImmunizationManagement;
+use Illuminate\Support\Facades\Auth;
+
+use App\Imports\ImmunizationImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Hash;
+
+
+
 
 
 class ImmunizationController extends Controller
@@ -72,4 +80,18 @@ public function show_immunization()
     //     $data = MorbidityMortalityManagement::where('category', 'mortality')->paginate(10);
     //     return view('morbiditymortality.mortality', compact('data'));
     // }
+
+   
+
+public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls,csv',
+    ]);
+
+    Excel::import(new ImmunizationImport, $request->file('file'));
+
+    return back()->with('success', 'Immunization records imported successfully.');
 }
+}
+

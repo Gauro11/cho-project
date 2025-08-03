@@ -172,6 +172,21 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <!-- Pagination (Smaller Size) -->
 
+                                    <!-- Import Excel Dropdown -->
+<div class="dropdown">
+    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i data-feather="upload" style="color: white;"></i> Import
+    </button>
+    <div class="dropdown-menu p-3" style="min-width: 250px;">
+        <form action="{{ route('immunization.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="file" class="form-control form-control-sm mb-2" required>
+            <button type="submit" class="btn btn-sm btn-success w-100">Upload</button>
+        </form>
+    </div>
+</div>
+
+
                                 <button id="printTable" class="btn btn-primary btn-sm">
                                     <i data-feather="printer" style="color: white;"></i> Print
                                 </button>

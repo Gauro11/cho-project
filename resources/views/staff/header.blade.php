@@ -1,3 +1,5 @@
+
+
 <nav class="navbar navbar-expand navbar-light navbar-bg">
 				<a class="sidebar-toggle js-sidebar-toggle">
           		<i class="hamburger align-self-center"></i>
@@ -66,8 +68,15 @@
               </a>
 
 							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                <span class="text-dark">        {{ Auth::user()->last_name }}, {{ Auth::user()->first_name }}
-				</span>
+                  @php
+                   $user = \Illuminate\Support\Facades\Auth::user();
+                  @endphp
+
+                  @if ($user)
+            <span class="text-dark">
+                {{ $user->last_name }}, {{ $user->first_name }}
+            </span>
+                   @endif
               </a>
 							<div class="dropdown-menu dropdown-menu-end">
 								<!-- <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="user"></i> Profile</a>

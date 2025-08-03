@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PopulationStatisticsManagement;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\PopulationImport;
+use Illuminate\Support\Facades\Auth;
+
+
 
 
 class PopulationController extends Controller
@@ -67,4 +72,18 @@ public function show_population()
     $data = PopulationStatisticsManagement::paginate(10); // Fetch population data with pagination
     return view('populationstatistics.population', compact('data'));
 }
+
+
+
+public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls',
+    ]);
+
+    Excel::import(new PopulationImport, $request->file('file'));
+
+    return back()->with('success', 'Population data imported successfully.');
+}
+
 }

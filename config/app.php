@@ -15,6 +15,11 @@ return [
 
     'name' => env('APP_NAME', 'CHO DASH'),
 
+   'aliases' => [
+    'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+],
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

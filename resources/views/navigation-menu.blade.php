@@ -1,3 +1,5 @@
+@php use Illuminate\Support\Facades\Auth; @endphp
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -112,13 +114,12 @@
 
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}" x-data>
-                                @csrf
+    @csrf
+    <x-dropdown-link href="#" @click.prevent="$root.submit();">
+        {{ __('Log Out') }}
+    </x-dropdown-link>
+</form>
 
-                                <x-dropdown-link href="{{ route('logout') }}"
-                                         @click.prevent="$root.submit();">
-                                    {{ __('Log Out') }}
-                                </x-dropdown-link>
-                            </form>
                         </x-slot>
                     </x-dropdown>
                 </div>
@@ -172,14 +173,12 @@
                 @endif
 
                 <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}" x-data>
-                    @csrf
-
-                    <x-responsive-nav-link href="{{ route('logout') }}"
-                                   @click.prevent="$root.submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
+               <form method="POST" action="{{ route('logout') }}" x-data>
+    @csrf
+    <x-dropdown-link href="#" @click.prevent="$root.submit();">
+        {{ __('Log Out') }}
+    </x-dropdown-link>
+</form>
 
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
