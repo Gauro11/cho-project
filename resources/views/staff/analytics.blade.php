@@ -1,4 +1,3 @@
-<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <style>
@@ -36,6 +35,41 @@
 </style>
 
 <div class="container-fluid p-0">
+
+    <!-- Top Static Dagupan Map Image -->
+ <!-- Glowing Rectangle Dagupan Map Card -->
+<div style="display: flex; justify-content: center; align-items: center; padding: 40px;">
+    <div style="
+        width: 500px;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #ffffff10;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 20px rgba(0, 71, 171, 0.6), 0 0 40px rgba(0, 71, 171, 0.4);
+        backdrop-filter: blur(10px);
+        ">
+        <img src="https://tools.paintmaps.com/og_image/map_cropping/4-1108697425-3.jpeg"
+             alt="Dagupan City Map"
+             style="width: 100%; height: auto; display: block; transition: transform 0.3s ease;"
+             onmouseover="this.style.transform='scale(1.02)'"
+             onmouseout="this.style.transform='scale(1)'">
+
+        <div style="padding: 16px; text-align: center; background-color: rgba(255, 255, 255, 0.05);">
+            <h4 style="
+                margin: 0;
+                color: #0047AB;
+                font-weight: bold;
+                font-size: 1.2rem;
+                text-shadow: 0 0 10px rgba(0, 71, 171, 0.6);
+            ">
+                🚩 Dagupan City Map
+            </h4>
+        </div>
+    </div>
+</div>
+
+
+    </div>
 
     <h1 style="color:#000957;" class="h3 mb-3"><strong>CITY HEALTH OFFICE STAFF</strong><br><strong>OVERVIEW</strong></h1>
     <div class="col-3 col-lg-3">
@@ -115,20 +149,7 @@
         </div>
     </div>
 
-    <!-- Title Box -->
-    <div class="map-title-box">Dagupan City (Ilocos Region)</div>
-
-    <!-- Leaflet Map -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div id="philippinesMap"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+  
 
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -258,57 +279,5 @@
 
         createChart("morbidityCasesChart", getChronologicalTopCases(morbidityData));
         createChart("mortalityCasesChart", getChronologicalTopCases(mortalityData));
-
-        // === MAP SECTION ===
-        var map = L.map('philippinesMap').setView([16.0431, 120.3331], 13);
-
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 18,
-            attribution: '&copy; <a href="https://carto.com/">CARTO</a> contributors'
-        }).addTo(map);
-
-        L.marker([16.0431, 120.3331]).addTo(map)
-            .bindPopup("Dagupan City<br>Population: 174,302")
-            .openPopup();
-
-        // Population label (red text on map)
-        L.marker([16.0415, 120.3350], {
-            icon: L.divIcon({
-                className: 'population-label',
-                html: 'Population: 174,302',
-                iconSize: [150, 40]
-            })
-        }).addTo(map);
-
-        const dagupanBoundary = {
-            "type": "Feature",
-            "properties": { "name": "Dagupan City" },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [[
-                    [120.3283, 16.0505],
-                    [120.3310, 16.0419],
-                    [120.3350, 16.0350],
-                    [120.3394, 16.0300],
-                    [120.3450, 16.0258],
-                    [120.3530, 16.0310],
-                    [120.3578, 16.0350],
-                    [120.3599, 16.0430],
-                    [120.3550, 16.0505],
-                    [120.3455, 16.0550],
-                    [120.3350, 16.0552],
-                    [120.3283, 16.0505]
-                ]]
-            }
-        };
-//////
-        L.geoJSON(dagupanBoundary, {
-            style: {
-                color: "#00BFFF",
-                weight: 2,
-                fillColor: "#00BFFF",
-                fillOpacity: 0.4
-            }
-        }).addTo(map);
     });
 </script>
