@@ -1,46 +1,20 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-<style>
-    .population-label {
-        font-size: 14px;
-        color: red;
-        font-weight: bold;
-        text-align: center;
-    }
 
-    .chart-container {
-        background-color: white !important;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    #philippinesMap {
-        height: 500px;
-        width: 100%;
-        border-radius: 10px;
-        border: 2px solid #0047AB;
-    }
-
-    .map-title-box {
-        background-color: #0047AB;
-        color: white;
-        padding: 12px 20px;
-        font-size: 20px;
-        font-weight: bold;
-        border-radius: 6px;
-        display: inline-block;
-        margin-top: 30px;
-        margin-bottom: 15px;
-    }
-</style>
 
 <div class="container-fluid p-0">
 
-    <!-- Top Static Dagupan Map Image -->
+<div class="container-fluid">
+    <h1 style="color:#000957;" class="h3 mb-3"><strong>CITY HEALTH OFFICE STAFF OVERVIEW</strong><br><strong></strong></h1>
+    <div class="col-3 col-lg-3">
+        <div class="card"></div>
+    </div>
+
+   
  <!-- Glowing Rectangle Dagupan Map Card -->
-<div style="display: flex; justify-content: center; align-items: center; padding: 40px;">
+<div style="display: flex; justify-content: center; align-items: center; padding: 10px;">
     <div style="
-        width: 500px;
+        width: 400px;
         border-radius: 12px;
         overflow: hidden;
         background-color: #ffffff10;
@@ -62,19 +36,48 @@
                 font-size: 1.2rem;
                 text-shadow: 0 0 10px rgba(0, 71, 171, 0.6);
             ">
-                🚩 Dagupan City Map
+                🚩 Dagupan City Map / Population 174,302
             </h4>
         </div>
     </div>
 </div>
 
 
-    </div>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Office Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        /* Minimize chart containers */
+        .chart-container {
+            height: 250px !important;
+            background-color: white !important;
+        }
+        
+        /* Ensure chart canvases have white backgrounds */
+        canvas {
+            background-color: white !important;
+        }
+        
+        /* Make cards more compact */
+        .card {
+            margin-bottom: 15px;
+        }
+        
+        .card-body {
+            padding: 10px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
 
-    <h1 style="color:#000957;" class="h3 mb-3"><strong>CITY HEALTH OFFICE STAFF</strong><br><strong>OVERVIEW</strong></h1>
-    <div class="col-3 col-lg-3">
-        <div class="card"></div>
-    </div>
+
 
     <h1 style="color:#000957;" class="h3 mb-3"><strong>VITAL STATISTICS OVERVIEW</strong></h1>
     <div class="col-3 col-lg-3">
@@ -89,7 +92,9 @@
                     <h6 class="card-subtitle text-muted">Yearly total population statistics.</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="populationChart"></canvas>
+                    <div class="chart-container">
+                        <canvas id="populationChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,7 +106,9 @@
                     <h6 class="card-subtitle text-muted">Live births vs. total deaths per year.</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="birthDeathChart"></canvas>
+                    <div class="chart-container">
+                        <canvas id="birthDeathChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,7 +123,9 @@
                     <h6 class="card-subtitle text-muted">Comparison of male and female vaccinations per vaccine type.</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="immunizationChart"></canvas>
+                    <div class="chart-container">
+                        <canvas id="immunizationChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -131,7 +140,9 @@
                     <h6 class="card-subtitle text-muted">Comparison of morbidity cases for male and female.</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="morbidityCasesChart"></canvas>
+                    <div class="chart-container">
+                        <canvas id="morbidityCasesChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,14 +154,16 @@
                     <h6 class="card-subtitle text-muted">Comparison of mortality cases for male and female.</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="mortalityCasesChart"></canvas>
+                    <div class="chart-container">
+                        <canvas id="mortalityCasesChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-  
-
+<!-- Scripts -->
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -281,3 +294,6 @@
         createChart("mortalityCasesChart", getChronologicalTopCases(mortalityData));
     });
 </script>
+
+</body>
+</html>
