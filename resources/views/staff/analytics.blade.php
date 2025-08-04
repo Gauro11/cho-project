@@ -14,7 +14,7 @@
  <!-- Glowing Rectangle Dagupan Map Card -->
 <div style="display: flex; justify-content: center; align-items: center; padding: 10px;">
     <div style="
-        width: 400px;
+        width: 550px;
         border-radius: 12px;
         overflow: hidden;
         background-color: #ffffff10;
