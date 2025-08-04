@@ -332,7 +332,7 @@
         <div class="floating-circle"></div>
     </div>
 
-    <div class="main-container">
+    <div class="">
         <div class="container-fluid py-4">
             <h1 class="section-title pulse-animation">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
             
