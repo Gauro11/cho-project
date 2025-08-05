@@ -1,97 +1,58 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-3">
+    <a class="sidebar-toggle js-sidebar-toggle me-3">
+        <i class="hamburger align-self-center"></i>
+    </a>
 
+    <div class="collapse navbar-collapse justify-content-end">
+        <ul class="navbar-nav align-items-center">
+            <!-- Optional: Notification dropdown (commented) -->
+            {{--
+            <li class="nav-item dropdown">
+                <a class="nav-link nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
+                    <div class="position-relative">
+                        <i class="align-middle" data-feather="bell"></i>
+                        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">4</span>
+                    </div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="alertsDropdown">
+                    <div class="dropdown-header fw-bold text-center py-2">Notifications</div>
+                    <div class="list-group list-group-flush">
+                        <!-- Notifications go here -->
+                    </div>
+                    <div class="dropdown-footer text-center py-2">
+                        <a href="#" class="text-muted">View all</a>
+                    </div>
+                </div>
+            </li>
+            --}}
 
-<nav class="navbar navbar-expand navbar-light navbar-bg">
-				<a class="sidebar-toggle js-sidebar-toggle">
-          		<i class="hamburger align-self-center"></i>
-        		</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    @php
+                        $user = \Illuminate\Support\Facades\Auth::user();
+                    @endphp
 
-				<div class="navbar-collapse collapse">
-					<ul class="navbar-nav navbar-align">
-						<!-- <li class="nav-item dropdown">
-							<a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
-								<div class="position-relative">
-									<i class="align-middle" data-feather="bell"></i>
-									<span class="indicator">4</span>
-								</div>
-							</a>
-							<div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
-								<div class="dropdown-menu-header">
-									4 New Notifications
-								</div>
-								<div class="list-group">
-									<a href="#" class="list-group-item">
-										<div class="row g-0 align-items-center">
-											<div class="col-2">
-												<i class="text-danger" data-feather="alert-circle"></i>
-											</div>
-											<div class="col-10">
-												<div class="text-dark">Update completed</div>
-												<div class="text-muted small mt-1">Restart server 12 to complete the update.</div>
-												<div class="text-muted small mt-1">30m ago</div>
-											</div>
-										</div>
-									</a>
-									<a href="#" class="list-group-item">
-										<div class="row g-0 align-items-center">
-											<div class="col-2">
-												<i class="text-warning" data-feather="bell"></i>
-											</div>
-											<div class="col-10">
-												<div class="text-dark">Lorem ipsum</div>
-												<div class="text-muted small mt-1">Aliquam ex eros, imperdiet vulputate hendrerit et.</div>
-												<div class="text-muted small mt-1">2h ago</div>
-											</div>
-										</div>
-									</a>
-									<a href="#" class="list-group-item">
-										<div class="row g-0 align-items-center">
-											<div class="col-2">
-												<i class="text-primary" data-feather="home"></i>
-											</div>
-											<div class="col-10">
-												<div class="text-dark">Login from 192.186.1.8</div>
-												<div class="text-muted small mt-1">5h ago</div>
-											</div>
-										</div>
-									</a>
-									
-								</div>
-								<div class="dropdown-menu-footer">
-									<a href="#" class="text-muted">Show all notifications</a>
-								</div>
-							</div>
-						</li> -->
+                    @if ($user)
+                        <span class="fw-semibold text-dark me-2">
+                            {{ $user->last_name }}, {{ $user->first_name }}
+                        </span>
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->first_name . ' ' . $user->last_name) }}&background=0D8ABC&color=fff" 
+                             class="rounded-circle" width="32" height="32" alt="User Avatar">
+                    @endif
+                </a>
 
-						<li class="nav-item dropdown">
-							<a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
-                <i class="align-middle" data-feather="settings"></i>
-              </a>
-
-							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                  @php
-                   $user = \Illuminate\Support\Facades\Auth::user();
-                  @endphp
-
-                  @if ($user)
-            <span class="text-dark">
-                {{ $user->last_name }}, {{ $user->first_name }}
-            </span>
-                   @endif
-              </a>
-							<div class="dropdown-menu dropdown-menu-end">
-								<!-- <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
-								<div class="dropdown-divider"></div> -->
-								<form method="POST" action="{{ route('logout') }}">
-                @csrf 
-                <button type="submit" class="dropdown-item"><span class="edu-icon edu-locked author-log-ic"></span>Log Out</button>
-            </form>
-
-							</div>
-						</li>
-					</ul>
-				</div>
-			</nav>
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                    <!-- <li><a class="dropdown-item" href="#"><i class="me-2" data-feather="user"></i>Profile</a></li> -->
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="me-2" data-feather="log-out"></i>Log Out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
