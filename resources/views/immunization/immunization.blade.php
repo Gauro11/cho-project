@@ -27,7 +27,7 @@
             color: var(--text-primary);
         }
 
-       
+      
 
         .content {
             padding: 2rem;
@@ -183,19 +183,9 @@
         }
 
         .modern-input-group .input-group-text {
-             background: var(--primary-gradient);
+            background: transparent;
             border: none;
             color: var(--text-primary);
-        }
-
-        /* Modern Dropdown */
-        .modern-dropdown .dropdown-menu {
-            background: var(--primary-gradient);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            box-shadow: var(--shadow-glow);
-            padding: 1rem;
         }
 
         /* Modern Modal */
@@ -415,6 +405,52 @@
             margin: 0 10px;
         }
 
+        /* File Upload Styling */
+        .file-upload-area {
+            border: 2px dashed var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #43e97b;
+            background: rgba(67, 233, 123, 0.1);
+            transform: scale(1.02);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .file-info {
+            background: rgba(67, 233, 123, 0.1);
+            border: 1px solid rgba(67, 233, 123, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
         /* Media Queries */
         @media (max-width: 768px) {
             .page-title {
@@ -477,18 +513,10 @@
                                 </div>
 
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <div class="dropdown modern-dropdown">
-                                        <button class="modern-btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i data-feather="upload"></i> Import
-                                        </button>
-                                        <div class="dropdown-menu p-3" style="min-width: 250px;">
-                                            <form action="{{ route('immunization.import') }}" method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <input type="file" name="file" class="modern-form-control form-control-sm mb-2" required>
-                                                <button type="submit" class="modern-btn btn-success w-100">📤 Upload</button>
-                                            </form>
-                                        </div>
-                                    </div>
+                                    <!-- Changed from dropdown to direct button -->
+                                    <button class="modern-btn btn-secondary btn-sm" id="openImportModal">
+                                        <i data-feather="upload"></i> Import
+                                    </button>
 
                                     <button id="printTable" class="modern-btn btn-primary btn-sm">
                                         <i data-feather="printer"></i> Print
@@ -509,7 +537,7 @@
                         feather.replace();
                     </script>
 
-                    <!-- Modern Modal Structure -->
+                    <!-- Add New Record Modal -->
                     <div id="customModal" class="modern-modal modal">
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close">&times;</span>
@@ -538,6 +566,46 @@
 
                                 <div class="modern-modal-footer modal-footer">
                                     <button type="submit" class="modern-btn btn-primary">✅ Add Record</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Import Modal -->
+                    <div id="importModal" class="modern-modal modal">
+                        <div class="modern-modal-content modal-content">
+                            <span class="modern-close close" id="closeImportModal">&times;</span>
+                            <h2>📤 Import Immunization Records</h2>
+                            <form action="{{ route('immunization.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
+                                @csrf
+                                <div class="file-upload-area" id="fileUploadArea">
+                                    <div class="file-upload-icon">📁</div>
+                                    <div class="file-upload-text">
+                                        <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
+                                    </div>
+                                    <input type="file" name="file" id="fileInput" class="modern-form-control form-control" 
+                                           accept=".xlsx,.xls,.csv" required style="display: none;">
+                                    <button type="button" class="modern-btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()">
+                                        📂 Choose File
+                                    </button>
+                                </div>
+
+                                <div class="file-info" id="fileInfo">
+                                    <strong>Selected File:</strong>
+                                    <div id="fileName"></div>
+                                    <div id="fileSize"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
+                                        <strong>Required columns:</strong> Date, Vaccine Name, Male Vaccinated, Female Vaccinated
+                                    </small>
+                                </div>
+
+                                <div class="modern-modal-footer modal-footer">
+                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌ Cancel</button>
+                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤 Upload File</button>
                                 </div>
                             </form>
                         </div>
@@ -580,6 +648,223 @@
                             </form>
                         </div>
                     </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // Add New Record Modal
+                            setTimeout(() => {
+                                var modal = document.getElementById("customModal");
+                                var openModalBtn = document.getElementById("openModal");
+                                var closeModalBtn = document.querySelector("#customModal .close");
+
+                                if (!modal || !openModalBtn) {
+                                    console.error("Modal or button not found!");
+                                    return;
+                                }
+
+                                openModalBtn.addEventListener("click", function () {
+                                    modal.style.display = "flex";
+                                });
+
+                                closeModalBtn.addEventListener("click", function () {
+                                    modal.style.display = "none";
+                                });
+
+                                window.addEventListener("click", function (event) {
+                                    if (event.target === modal) {
+                                        modal.style.display = "none";
+                                    }
+                                });
+                            }, 100);
+
+                            // Import Modal
+                            var importModal = document.getElementById("importModal");
+                            var openImportModalBtn = document.getElementById("openImportModal");
+                            var closeImportModalBtn = document.getElementById("closeImportModal");
+                            var cancelImportModalBtn = document.getElementById("cancelImportModal");
+                            var fileInput = document.getElementById("fileInput");
+                            var fileUploadArea = document.getElementById("fileUploadArea");
+                            var fileInfo = document.getElementById("fileInfo");
+                            var fileName = document.getElementById("fileName");
+                            var fileSize = document.getElementById("fileSize");
+                            var uploadBtn = document.getElementById("uploadBtn");
+
+                            // Open Import Modal
+                            openImportModalBtn.addEventListener("click", function () {
+                                importModal.style.display = "flex";
+                            });
+
+                            // Close Import Modal
+                            closeImportModalBtn.addEventListener("click", function () {
+                                importModal.style.display = "none";
+                                resetFileUpload();
+                            });
+
+                            cancelImportModalBtn.addEventListener("click", function () {
+                                importModal.style.display = "none";
+                                resetFileUpload();
+                            });
+
+                            // Close modal when clicking outside
+                            window.addEventListener("click", function (event) {
+                                if (event.target === importModal) {
+                                    importModal.style.display = "none";
+                                    resetFileUpload();
+                                }
+                            });
+
+                            // File upload functionality
+                            fileInput.addEventListener("change", function () {
+                                handleFileSelect(this.files[0]);
+                            });
+
+                            // Drag and drop functionality
+                            fileUploadArea.addEventListener("dragover", function (e) {
+                                e.preventDefault();
+                                this.classList.add("dragover");
+                            });
+
+                            fileUploadArea.addEventListener("dragleave", function (e) {
+                                this.classList.remove("dragover");
+                            });
+
+                            fileUploadArea.addEventListener("drop", function (e) {
+                                e.preventDefault();
+                                this.classList.remove("dragover");
+                                var files = e.dataTransfer.files;
+                                if (files.length > 0) {
+                                    fileInput.files = files;
+                                    handleFileSelect(files[0]);
+                                }
+                            });
+
+                            function handleFileSelect(file) {
+                                if (file) {
+                                    fileName.textContent = file.name;
+                                    fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                                    fileInfo.classList.add("show");
+                                    uploadBtn.disabled = false;
+                                } else {
+                                    resetFileUpload();
+                                }
+                            }
+
+                            function resetFileUpload() {
+                                fileInput.value = "";
+                                fileInfo.classList.remove("show");
+                                uploadBtn.disabled = true;
+                            }
+                        });
+                    </script>
+
+                    <script>
+                        // Prevent selection of past dates
+                        document.addEventListener("DOMContentLoaded", function () {
+                            let today = new Date().toISOString().split("T")[0];
+                            document.getElementById("date").setAttribute("min", today);
+                        });
+                    </script>
+
+                    <script>
+                        document.getElementById("printTable").addEventListener("click", function () {
+                            let printContent = document.getElementById("dataTable").outerHTML;
+                            let newWindow = window.open("", "", "width=800,height=600");
+
+                            newWindow.document.write(`
+                                <html>
+                                <head>
+                                    <title>Print</title>
+                                    <style>
+                                        @media print {
+                                            .no-print, .pagination { display: none !important; }
+                                        }
+                                    </style>
+                                </head>
+                                <body>${printContent}</body>
+                                </html>
+                            `);
+
+                            newWindow.document.close();
+                            newWindow.print();
+                        });
+                    </script>
+
+                    <!-- Initialize Feather Icons -->
+                    <script>
+                        feather.replace();
+                    </script>
+
+                    <!-- Modern Modal Structure -->
+                    <!-- <div id="customModal" class="modern-modal modal">
+                        <div class="modern-modal-content modal-content">
+                            <span class="modern-close close">&times;</span>
+                            <h2>🩹 Add Immunization Record</h2>
+                            <form action="{{ route('immunization.store') }}" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="date" class="modern-form-label form-label">📅 Date of Immunization</label>
+                                    <input type="date" class="modern-form-control form-control" id="date" name="date" required min="">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="vaccine_name" class="modern-form-label form-label">💊 Vaccine Name</label>
+                                    <input type="text" class="modern-form-control form-control text-uppercase" id="vaccine_name" name="vaccine_name" required oninput="this.value = this.value.toUpperCase()">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="male_vaccinated" class="modern-form-label form-label">👨 Male Vaccinated</label>
+                                    <input type="number" class="modern-form-control form-control" id="male_vaccinated" name="male_vaccinated" required min="0">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="female_vaccinated" class="modern-form-label form-label">👩 Female Vaccinated</label>
+                                    <input type="number" class="modern-form-control form-control" id="female_vaccinated" name="female_vaccinated" required min="0">
+                                </div>
+
+                                <div class="modern-modal-footer modal-footer">
+                                    <button type="submit" class="modern-btn btn-primary">✅ Add Record</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div> -->
+
+                    <!-- Modern Edit Modal -->
+                    <!-- <div id="editModal" class="modern-modal modal" style="display: none;">
+                        <div class="modern-modal-content modal-content">
+                            <span class="modern-close close">&times;</span>
+                            <h2>✏️ Edit Immunization Data</h2>
+                            <form id="updateForm" action="{{ route('immunization.update') }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" id="edit_id" name="id">
+
+                                <div class="mb-3">
+                                    <label for="edit_vaccine" class="modern-form-label form-label">💊 Vaccine Name</label>
+                                    <input type="text" class="modern-form-control form-control" id="edit_vaccine" name="vaccine_name" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="edit_date" class="modern-form-label form-label">📅 Date</label>
+                                    <input type="date" class="modern-form-control form-control" id="edit_date" name="date" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="edit_male" class="modern-form-label form-label">👨 Male Vaccinated</label>
+                                    <input type="number" class="modern-form-control form-control" id="edit_male" name="male_vaccinated" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="edit_female" class="modern-form-label form-label">👩 Female Vaccinated</label>
+                                    <input type="number" class="modern-form-control form-control" id="edit_female" name="female_vaccinated" required>
+                                </div>
+
+                                <div class="modern-modal-footer modal-footer">
+                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌ Cancel</button>
+                                    <button type="submit" class="modern-btn btn-primary">💾 Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div> -->
 
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {
