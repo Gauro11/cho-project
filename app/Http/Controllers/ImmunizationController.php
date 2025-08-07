@@ -93,5 +93,28 @@ public function import(Request $request)
 
     return back()->with('success', 'Immunization records imported successfully.');
 }
+
+// public function index(Request $request)
+// {
+//     $search = $request->search;
+//     $estimatedPopulation = 3000;
+
+//     $data = \App\Models\YourModel::when($search, function ($query) use ($search, $estimatedPopulation) {
+//         $query->where(function ($q) use ($search, $estimatedPopulation) {
+//             $q->where('vaccine_name', 'like', "%$search%")
+//               ->orWhere('male_vaccinated', 'like', "%$search%")
+//               ->orWhere('female_vaccinated', 'like', "%$search%")
+//               ->orWhereRaw("male_vaccinated + female_vaccinated like ?", ["%$search%"])
+//               ->orWhereRaw("DATE_FORMAT(date, '%Y') like ?", ["%$search%"])
+//               ->orWhereRaw("ROUND(((male_vaccinated + female_vaccinated)/?) * 100, 2) like ?", [$estimatedPopulation, "%$search%"]);
+//         });
+//     })
+//     ->orderBy('date', 'desc')
+//     ->paginate(10)
+//     ->withQueryString();
+
+//     return view('your-blade-file-name', compact('data'));
+// }
+
 }
 
