@@ -1,5 +1,86 @@
 <x-guest-layout>
-    <x-authentication-card>
+    <style>
+        /* Background */
+        body {
+            background: linear-gradient(135deg, #e0f2fe, #ffffff);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Card Styling */
+        .authentication-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        /* Logo */
+        .authentication-card img {
+            border: 3px solid #bfdbfe;
+            padding: 4px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Headings */
+        .authentication-card h2 {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Inputs */
+        input[type="text"], input[type="password"] {
+            border-radius: 10px !important;
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Checkbox */
+        input[type="checkbox"] {
+            accent-color: #3b82f6;
+        }
+
+        /* Button */
+        button {
+            background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+            border-radius: 8px;
+            padding: 10px 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Status Message */
+        .text-green-600 {
+            background: #dcfce7;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <x-authentication-card class="authentication-card">
         <x-slot name="logo">
             <img class="w-20 h-20 rounded-full mx-auto" src="image/dag_logo.png" alt="Logo">
         </x-slot>

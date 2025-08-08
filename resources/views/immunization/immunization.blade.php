@@ -962,29 +962,32 @@
 
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script>
-                        document.getElementById("searchInput").addEventListener("input", function () {
-                            let searchValue = this.value.toLowerCase();
-                            let rows = document.querySelectorAll("#dataTable tbody tr");
+                       document.getElementById("searchInput").addEventListener("input", function () {
+    let searchValue = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#dataTable tbody tr");
 
-                            rows.forEach(row => {
-                                let cell = row.querySelector("td");
-                                let text = cell.innerText;
-                                let lowerText = text.toLowerCase();
+    rows.forEach(row => {
+        let cells = row.querySelectorAll("td");
+        let rowText = "";
+        let found = false;
 
-                                if (searchValue === "" || lowerText.includes(searchValue)) {
-                                    row.style.display = "";
-                                    cell.innerHTML = text;
+        // Collect all cell text & check if search matches any
+        cells.forEach(cell => {
+            let text = cell.innerText.toLowerCase();
+            if (text.includes(searchValue)) {
+                found = true;
+            }
+        });
 
-                                    // Apply highlighting
-                                    if (searchValue !== "") {
-                                        let regex = new RegExp(`(${searchValue})`, "gi");
-                                        cell.innerHTML = text.replace(regex, `<span class="highlight">$1</span>`);
-                                    }
-                                } else {
-                                    row.style.display = "none";
-                                }
-                            });
-                        });
+        // Show or hide row based on match
+        if (searchValue === "" || found) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+});
+
                     </script>
 
                     <script>

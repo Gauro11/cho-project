@@ -137,7 +137,7 @@
                 <div class="container-fluid p-0">
 
                     <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <h1 style="color:#000957;" class="h3 mb-3">Vital Statistics Recordsss</h1>
+                        <h1 style="color:#000957;" class="h3 mb-3">Vital Statistics Records</h1>
                         <div class="d-flex gap-2" style="width: 100%; max-width: 400px;">
 
                             
