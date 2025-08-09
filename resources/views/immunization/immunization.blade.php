@@ -64,7 +64,7 @@
             background: var(--primary-gradient);
             backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            border-radius: 30px;
             box-shadow: var(--shadow-glow);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
@@ -927,38 +927,129 @@
                         });
                     </script>
 
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            document.querySelectorAll(".delete-button").forEach(button => {
-                                button.addEventListener("click", function () {
-                                    const dataId = this.dataset.id;
+                    
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-button").forEach(button => {
+        button.addEventListener("click", function () {
+            const dataId = this.dataset.id;
+            const tableRow = this.closest("tr"); // Save reference to the row
 
-                                    if (confirm("Are you sure you want to delete this data?")) {
-                                        fetch(`/immunization/delete/${dataId}`, {
-                                            method: "DELETE",
-                                            headers: {
-                                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                                                "Content-Type": "application/json"
-                                            }
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.success) {
-                                                alert("Data deleted successfully!");
-                                                location.reload();
-                                            } else {
-                                                alert("Failed to delete data.");
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error("Error:", error);
-                                            alert("Something went wrong.");
-                                        });
-                                    }
-                                });
-                            });
-                        });
-                    </script>
+            // Modern confirmation overlay
+            const confirmOverlay = document.createElement('div');
+            confirmOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(5px);
+                z-index: 10000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                animation: fadeIn 0.3s ease-out;
+            `;
+
+            // Modal box
+            const confirmBox = document.createElement('div');
+            confirmBox.style.cssText = `
+                background: #1e1e2f;
+                border-radius: 20px;
+                padding: 2rem;
+                max-width: 400px;
+                width: 100%;
+                text-align: center;
+                color: #fff;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+                animation: modalSlideIn 0.3s ease-out;
+            `;
+
+            confirmBox.innerHTML = `
+                <h3 style="margin-bottom: 1rem; font-size: 1.4rem; background: linear-gradient(90deg, #ff4d4d, #ff8080); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🗑️ Confirm Delete</h3>
+                <p style="margin-bottom: 2rem; font-size: 1rem; color: #ccc;">Are you sure you want to delete this data? This action cannot be undone.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="cancelDelete" style="background: linear-gradient(90deg, #6c757d, #8a94a6); border: none; border-radius: 12px; padding: 10px 20px; color: white; font-weight: 600; cursor: pointer;">❌ Cancel</button>
+                    <button id="confirmDelete" style="background: linear-gradient(90deg, #ff4d4d, #ff8080); border: none; border-radius: 12px; padding: 10px 20px; color: white; font-weight: 600; cursor: pointer;">🗑️ Delete</button>
+                </div>
+            `;
+
+            confirmOverlay.appendChild(confirmBox);
+            document.body.appendChild(confirmOverlay);
+
+            // Cancel action
+            confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
+                confirmOverlay.remove();
+            });
+
+            // Confirm action
+            confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
+                fetch(`/immunization/delete/${dataId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    confirmOverlay.remove();
+                    if (data.success) {
+                        // Remove the row from the table without reloading
+                        tableRow.remove();
+                        showModernAlert("✅ Success", "Data deleted successfully!");
+                    } else {
+                        showModernAlert("❌ Error", "Failed to delete data.");
+                    }
+                })
+                .catch(error => {
+                    confirmOverlay.remove();
+                    console.error("Error:", error);
+                    showModernAlert("❌ Error", "Something went wrong.");
+                });
+            });
+        });
+    });
+
+    // Simple modern alert
+    window.showModernAlert = function(title, message) {
+        const alertBox = document.createElement('div');
+        alertBox.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e1e2f;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10001;
+            animation: fadeIn 0.3s ease-out;
+        `;
+        alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+        document.body.appendChild(alertBox);
+        setTimeout(() => {
+            alertBox.style.opacity = "0";
+            setTimeout(() => alertBox.remove(), 500);
+        }, 2000);
+    };
+});
+</script>
+
+
+
+<style>
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+@keyframes modalSlideIn {
+    from {transform: translateY(-20px); opacity: 0;}
+    to {transform: translateY(0); opacity: 1;}
+}
+</style>
+
 
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script>
@@ -990,31 +1081,7 @@
 
                     </script>
 
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            document.querySelectorAll(".delete-button").forEach(button => {
-                                button.addEventListener("click", function () {
-                                    let dataId = this.dataset.id;
-
-                                    if (confirm("Are you sure you want to delete this data?")) {
-                                        fetch(`/data/${dataId}`, {
-                                            method: "DELETE",
-                                            headers: {
-                                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-                                            }
-                                        }).then(response => {
-                                            if (response.ok) {
-                                                alert("Data deleted successfully!");
-                                                location.reload();
-                                            } else {
-                                                alert("Error deleting data.");
-                                            }
-                                        });
-                                    }
-                                });
-                            });
-                        });
-                    </script>
+                 
 
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {
@@ -1064,7 +1131,7 @@
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.success) {
-                                        alert("Record updated successfully!");
+                                        
                                         location.reload();
                                     } else {
                                         alert("Failed to update record: " + (data.message || "Unknown error."));

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\VitalStatisticsManagement;
 use Illuminate\Support\Facades\Auth;
+use App\Models\VitalStatistic; // your model
+use Maatwebsite\Excel\Facades\Excel; // if you're using Laravel Excel
+use App\Imports\VitalStatisticsImport; // your import class
 
 
 
@@ -78,5 +81,16 @@ public function store_vitalstatiscs(Request $request)
         $data = VitalStatisticsManagement::paginate(10);
         return view('vitalstatistics.vitalstatistics', compact('data'));
     }
+
+      public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls',
+    ]);
+
+    Excel::import(new VitalStatisticsImport, $request->file('file'));
+
+    return back()->with('success', 'Population data imported successfully.');
+}
     
 }
