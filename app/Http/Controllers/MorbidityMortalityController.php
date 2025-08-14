@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 
+
 class MorbidityMortalityController extends Controller
 {
 
@@ -106,7 +107,7 @@ public function update_morbidity(Request $request)
         $totalCases = $request->male_count + $request->female_count;
 
         // Calculate total cases in the 'mortality' category for percentage calculation
-        $totalCategoryCases = MorbidityMortalityManagement::where('category', 'morbidity')->sum(\DB::raw('male_count + female_count'));
+        $totalCategoryCases = MorbidityMortalityManagement::where('category', 'morbidity')->sum(DB::raw('male_count + female_count'));
 
         // Calculate percentage
         $percentage = $totalCategoryCases > 0 
@@ -137,7 +138,7 @@ public function update_morbidity(Request $request)
         $totalCases = $request->male_count + $request->female_count;
 
         // Calculate total cases in the 'mortality' category for percentage calculation
-        $totalCategoryCases = MorbidityMortalityManagement::where('category', 'mortality')->sum(\DB::raw('male_count + female_count'));
+        $totalCategoryCases = MorbidityMortalityManagement::where('category', 'mortality')->sum(DB::raw('male_count + female_count'));
 
         // Calculate percentage
         $percentage = $totalCategoryCases > 0 

@@ -2,9 +2,11 @@
 <html lang="en">
 
 <head>
-<meta name="csrf-token" content="{{ csrf_token() }}">
-	@include('staff.css')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('staff.css')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 
     <style>
         :root {
@@ -27,7 +29,7 @@
             color: var(--text-primary);
         }
 
-      
+
 
         .content {
             padding: 2rem;
@@ -221,6 +223,7 @@
                 opacity: 0;
                 transform: translateY(-50px) scale(0.9);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -331,6 +334,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -456,19 +460,21 @@
             .page-title {
                 font-size: 1.8rem;
             }
-            
+
             .modern-modal-content {
                 width: 95%;
                 padding: 1.5rem;
             }
-            
+
             .content {
                 padding: 1rem;
             }
         }
 
         @media print {
-            .no-print, .pagination {
+
+            .no-print,
+            .pagination {
                 display: none !important;
             }
         }
@@ -476,10 +482,10 @@
 </head>
 
 <body>
-	<div class="wrapper">
-	@include('staff.sidebar')
+    <div class="wrapper">
+        @include('staff.sidebar')
 
-		<div class="main">
+        <div class="main">
             @include('staff.header')
             <main class="content">
                 <div class="container-fluid p-0">
@@ -500,13 +506,15 @@
                                     <button class="modern-btn btn-success btn-sm" id="openModal">
                                         ➕ Add New Record
                                     </button>
-                                    
+
                                     <span class="separator">|</span>
-                                    
+
                                     <div class="modern-input-group input-group" style="width: 300px;">
-                                        <span class="input-group-text bg-transparent"><i data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search" class="form-control modern-form-control"
-                                            placeholder="Search records..." style="border-left: none;">
+                                        <span class="input-group-text bg-transparent"><i
+                                                data-feather="search"></i></span>
+                                        <input type="text" id="searchInput" name="search"
+                                            class="form-control modern-form-control" placeholder="Search records..."
+                                            style="border-left: none;">
                                     </div>
 
                                     <span class="separator">|</span>
@@ -523,7 +531,7 @@
                                     </button>
 
                                     <a href="{{ route('immunization.export') }}" class="modern-btn btn-success btn-sm">
-                                        <i data-feather="download"></i> Download 
+                                        <i data-feather="download"></i> Download
                                     </a>
                                 </div>
                             </div>
@@ -545,23 +553,32 @@
                             <form action="{{ route('immunization.store') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="date" class="modern-form-label form-label">📅 Date of Immunization</label>
-                                    <input type="date" class="modern-form-control form-control" id="date" name="date" required min="">
+                                    <label for="date" class="modern-form-label form-label">📅 Date of
+                                        Immunization</label>
+                                    <input type="date" class="modern-form-control form-control" id="date"
+                                        name="date" required min="">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="vaccine_name" class="modern-form-label form-label">💊 Vaccine Name</label>
-                                    <input type="text" class="modern-form-control form-control text-uppercase" id="vaccine_name" name="vaccine_name" required oninput="this.value = this.value.toUpperCase()">
+                                    <label for="vaccine_name" class="modern-form-label form-label">💊 Vaccine
+                                        Name</label>
+                                    <input type="text" class="modern-form-control form-control text-uppercase"
+                                        id="vaccine_name" name="vaccine_name" required
+                                        oninput="this.value = this.value.toUpperCase()">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="male_vaccinated" class="modern-form-label form-label">👨 Male Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="male_vaccinated" name="male_vaccinated" required min="0">
+                                    <label for="male_vaccinated" class="modern-form-label form-label">👨 Male
+                                        Vaccinated</label>
+                                    <input type="number" class="modern-form-control form-control" id="male_vaccinated"
+                                        name="male_vaccinated" required min="0">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="female_vaccinated" class="modern-form-label form-label">👩 Female Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="female_vaccinated" name="female_vaccinated" required min="0">
+                                    <label for="female_vaccinated" class="modern-form-label form-label">👩 Female
+                                        Vaccinated</label>
+                                    <input type="number" class="modern-form-control form-control"
+                                        id="female_vaccinated" name="female_vaccinated" required min="0">
                                 </div>
 
                                 <div class="modern-modal-footer modal-footer">
@@ -576,16 +593,19 @@
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close" id="closeImportModal">&times;</span>
                             <h2>📤 Import Immunization Records</h2>
-                            <form action="{{ route('immunization.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
+                            <form action="{{ route('immunization.import') }}" method="POST"
+                                enctype="multipart/form-data" id="importForm">
                                 @csrf
                                 <div class="file-upload-area" id="fileUploadArea">
                                     <div class="file-upload-icon">📁</div>
                                     <div class="file-upload-text">
                                         <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
                                     </div>
-                                    <input type="file" name="file" id="fileInput" class="modern-form-control form-control" 
-                                           accept=".xlsx,.xls,.csv" required style="display: none;">
-                                    <button type="button" class="modern-btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()">
+                                    <input type="file" name="file" id="fileInput"
+                                        class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
+                                        style="display: none;">
+                                    <button type="button" class="modern-btn btn-secondary btn-sm"
+                                        onclick="document.getElementById('fileInput').click()">
                                         📂 Choose File
                                     </button>
                                 </div>
@@ -599,13 +619,16 @@
                                 <div class="mb-3">
                                     <small class="text-muted">
                                         <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
-                                        <strong>Required columns:</strong> Date, Vaccine Name, Male Vaccinated, Female Vaccinated
+                                        <strong>Required columns:</strong> Date, Vaccine Name, Male Vaccinated, Female
+                                        Vaccinated
                                     </small>
                                 </div>
 
                                 <div class="modern-modal-footer modal-footer">
-                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌ Cancel</button>
-                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤 Upload File</button>
+                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌
+                                        Cancel</button>
+                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤
+                                        Upload File</button>
                                 </div>
                             </form>
                         </div>
@@ -622,27 +645,35 @@
                                 <input type="hidden" id="edit_id" name="id">
 
                                 <div class="mb-3">
-                                    <label for="edit_vaccine" class="modern-form-label form-label">💊 Vaccine Name</label>
-                                    <input type="text" class="modern-form-control form-control" id="edit_vaccine" name="vaccine_name" required>
+                                    <label for="edit_vaccine" class="modern-form-label form-label">💊 Vaccine
+                                        Name</label>
+                                    <input type="text" class="modern-form-control form-control" id="edit_vaccine"
+                                        name="vaccine_name" required>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="edit_date" class="modern-form-label form-label">📅 Date</label>
-                                    <input type="date" class="modern-form-control form-control" id="edit_date" name="date" required>
+                                    <input type="date" class="modern-form-control form-control" id="edit_date"
+                                        name="date" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="edit_male" class="modern-form-label form-label">👨 Male Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_male" name="male_vaccinated" required>
+                                    <label for="edit_male" class="modern-form-label form-label">👨 Male
+                                        Vaccinated</label>
+                                    <input type="number" class="modern-form-control form-control" id="edit_male"
+                                        name="male_vaccinated" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="edit_female" class="modern-form-label form-label">👩 Female Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_female" name="female_vaccinated" required>
+                                    <label for="edit_female" class="modern-form-label form-label">👩 Female
+                                        Vaccinated</label>
+                                    <input type="number" class="modern-form-control form-control" id="edit_female"
+                                        name="female_vaccinated" required>
                                 </div>
 
                                 <div class="modern-modal-footer modal-footer">
-                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌ Cancel</button>
+                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌
+                                        Cancel</button>
                                     <button type="submit" class="modern-btn btn-primary">💾 Update</button>
                                 </div>
                             </form>
@@ -650,7 +681,7 @@
                     </div>
 
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             // Add New Record Modal
                             setTimeout(() => {
                                 var modal = document.getElementById("customModal");
@@ -662,15 +693,15 @@
                                     return;
                                 }
 
-                                openModalBtn.addEventListener("click", function () {
+                                openModalBtn.addEventListener("click", function() {
                                     modal.style.display = "flex";
                                 });
 
-                                closeModalBtn.addEventListener("click", function () {
+                                closeModalBtn.addEventListener("click", function() {
                                     modal.style.display = "none";
                                 });
 
-                                window.addEventListener("click", function (event) {
+                                window.addEventListener("click", function(event) {
                                     if (event.target === modal) {
                                         modal.style.display = "none";
                                     }
@@ -689,64 +720,74 @@
                             var fileSize = document.getElementById("fileSize");
                             var uploadBtn = document.getElementById("uploadBtn");
 
+                            // Allowed file types
+                            const allowedExtensions = ['xlsx', 'xls', 'csv'];
+
                             // Open Import Modal
-                            openImportModalBtn.addEventListener("click", function () {
+                            openImportModalBtn.addEventListener("click", function() {
                                 importModal.style.display = "flex";
                             });
 
                             // Close Import Modal
-                            closeImportModalBtn.addEventListener("click", function () {
-                                importModal.style.display = "none";
-                                resetFileUpload();
-                            });
+                            closeImportModalBtn.addEventListener("click", closeImportModal);
+                            cancelImportModalBtn.addEventListener("click", closeImportModal);
 
-                            cancelImportModalBtn.addEventListener("click", function () {
+                            function closeImportModal() {
                                 importModal.style.display = "none";
                                 resetFileUpload();
-                            });
+                            }
 
                             // Close modal when clicking outside
-                            window.addEventListener("click", function (event) {
+                            window.addEventListener("click", function(event) {
                                 if (event.target === importModal) {
-                                    importModal.style.display = "none";
-                                    resetFileUpload();
+                                    closeImportModal();
                                 }
                             });
 
                             // File upload functionality
-                            fileInput.addEventListener("change", function () {
-                                handleFileSelect(this.files[0]);
+                            fileInput.addEventListener("change", function() {
+                                validateAndHandleFile(this.files[0]);
                             });
 
                             // Drag and drop functionality
-                            fileUploadArea.addEventListener("dragover", function (e) {
+                            fileUploadArea.addEventListener("dragover", function(e) {
                                 e.preventDefault();
                                 this.classList.add("dragover");
                             });
 
-                            fileUploadArea.addEventListener("dragleave", function (e) {
+                            fileUploadArea.addEventListener("dragleave", function(e) {
                                 this.classList.remove("dragover");
                             });
 
-                            fileUploadArea.addEventListener("drop", function (e) {
+                            fileUploadArea.addEventListener("drop", function(e) {
                                 e.preventDefault();
                                 this.classList.remove("dragover");
                                 var files = e.dataTransfer.files;
                                 if (files.length > 0) {
                                     fileInput.files = files;
-                                    handleFileSelect(files[0]);
+                                    validateAndHandleFile(files[0]);
                                 }
                             });
 
-                            function handleFileSelect(file) {
-                                if (file) {
-                                    fileName.textContent = file.name;
-                                    fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
-                                    fileInfo.classList.add("show");
-                                    uploadBtn.disabled = false;
-                                } else {
+                            // Validate file extension before showing info
+                            function validateAndHandleFile(file) {
+                                if (!file) {
                                     resetFileUpload();
+                                    return;
                                 }
+
+                                const ext = file.name.split('.').pop().toLowerCase();
+                                if (!allowedExtensions.includes(ext)) {
+                                    showModernAlert("❌ Invalid File",
+                                    "Please upload only Excel (.xlsx, .xls) or CSV (.csv) files.");
+                                    resetFileUpload();
+                                    return;
+                                }
+
+                                fileName.textContent = file.name;
+                                fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                                fileInfo.classList.add("show");
+                                uploadBtn.disabled = false;
                             }
 
                             function resetFileUpload() {
@@ -754,19 +795,35 @@
                                 fileInfo.classList.remove("show");
                                 uploadBtn.disabled = true;
                             }
+
+                            // Modern toast alert
+                            function showModernAlert(title, message) {
+                                const alertBox = document.createElement('div');
+                                alertBox.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e1e2f;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10001;
+            animation: fadeIn 0.3s ease-out;
+        `;
+                                alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+                                document.body.appendChild(alertBox);
+                                setTimeout(() => {
+                                    alertBox.style.opacity = "0";
+                                    setTimeout(() => alertBox.remove(), 500);
+                                }, 2500);
+                            }
                         });
                     </script>
 
-                    <script>
-                        // Prevent selection of past dates
-                        document.addEventListener("DOMContentLoaded", function () {
-                            let today = new Date().toISOString().split("T")[0];
-                            document.getElementById("date").setAttribute("min", today);
-                        });
-                    </script>
 
                     <script>
-                        document.getElementById("printTable").addEventListener("click", function () {
+                        document.getElementById("printTable").addEventListener("click", function() {
                             let printContent = document.getElementById("dataTable").outerHTML;
                             let newWindow = window.open("", "", "width=800,height=600");
 
@@ -867,7 +924,7 @@
                     </div> -->
 
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             setTimeout(() => {
                                 var modal = document.getElementById("customModal");
                                 var openModalBtn = document.getElementById("openModal");
@@ -878,15 +935,15 @@
                                     return;
                                 }
 
-                                openModalBtn.addEventListener("click", function () {
+                                openModalBtn.addEventListener("click", function() {
                                     modal.style.display = "flex";
                                 });
 
-                                closeModalBtn.addEventListener("click", function () {
+                                closeModalBtn.addEventListener("click", function() {
                                     modal.style.display = "none";
                                 });
 
-                                window.addEventListener("click", function (event) {
+                                window.addEventListener("click", function(event) {
                                     if (event.target === modal) {
                                         modal.style.display = "none";
                                     }
@@ -897,14 +954,14 @@
 
                     <script>
                         // Prevent selection of past dates
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             let today = new Date().toISOString().split("T")[0];
                             document.getElementById("date").setAttribute("min", today);
                         });
                     </script>
 
                     <script>
-                        document.getElementById("printTable").addEventListener("click", function () {
+                        document.getElementById("printTable").addEventListener("click", function() {
                             let printContent = document.getElementById("dataTable").outerHTML;
                             let newWindow = window.open("", "", "width=800,height=600");
 
@@ -927,17 +984,17 @@
                         });
                     </script>
 
-                    
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".delete-button").forEach(button => {
-        button.addEventListener("click", function () {
-            const dataId = this.dataset.id;
-            const tableRow = this.closest("tr"); // Save reference to the row
 
-            // Modern confirmation overlay
-            const confirmOverlay = document.createElement('div');
-            confirmOverlay.style.cssText = `
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            document.querySelectorAll(".delete-button").forEach(button => {
+                                button.addEventListener("click", function() {
+                                    const dataId = this.dataset.id;
+                                    const tableRow = this.closest("tr"); // Save reference to the row
+
+                                    // Modern confirmation overlay
+                                    const confirmOverlay = document.createElement('div');
+                                    confirmOverlay.style.cssText = `
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -952,9 +1009,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: fadeIn 0.3s ease-out;
             `;
 
-            // Modal box
-            const confirmBox = document.createElement('div');
-            confirmBox.style.cssText = `
+                                    // Modal box
+                                    const confirmBox = document.createElement('div');
+                                    confirmBox.style.cssText = `
                 background: #1e1e2f;
                 border-radius: 20px;
                 padding: 2rem;
@@ -966,7 +1023,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: modalSlideIn 0.3s ease-out;
             `;
 
-            confirmBox.innerHTML = `
+                                    confirmBox.innerHTML = `
                 <h3 style="margin-bottom: 1rem; font-size: 1.4rem; background: linear-gradient(90deg, #ff4d4d, #ff8080); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🗑️ Confirm Delete</h3>
                 <p style="margin-bottom: 2rem; font-size: 1rem; color: #ccc;">Are you sure you want to delete this data? This action cannot be undone.</p>
                 <div style="display: flex; gap: 1rem; justify-content: center;">
@@ -975,47 +1032,50 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
 
-            confirmOverlay.appendChild(confirmBox);
-            document.body.appendChild(confirmOverlay);
+                                    confirmOverlay.appendChild(confirmBox);
+                                    document.body.appendChild(confirmOverlay);
 
-            // Cancel action
-            confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
-                confirmOverlay.remove();
-            });
+                                    // Cancel action
+                                    confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
+                                        confirmOverlay.remove();
+                                    });
 
-            // Confirm action
-            confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-                fetch(`/immunization/delete/${dataId}`, {
-                    method: "DELETE",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                        "Content-Type": "application/json"
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    confirmOverlay.remove();
-                    if (data.success) {
-                        // Remove the row from the table without reloading
-                        tableRow.remove();
-                        showModernAlert("✅ Success", "Data deleted successfully!");
-                    } else {
-                        showModernAlert("❌ Error", "Failed to delete data.");
-                    }
-                })
-                .catch(error => {
-                    confirmOverlay.remove();
-                    console.error("Error:", error);
-                    showModernAlert("❌ Error", "Something went wrong.");
-                });
-            });
-        });
-    });
+                                    // Confirm action
+                                    confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
+                                        fetch(`/immunization/delete/${dataId}`, {
+                                                method: "DELETE",
+                                                headers: {
+                                                    "X-CSRF-TOKEN": document.querySelector(
+                                                        'meta[name="csrf-token"]').content,
+                                                    "Content-Type": "application/json"
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                confirmOverlay.remove();
+                                                if (data.success) {
+                                                    // Remove the row from the table without reloading
+                                                    tableRow.remove();
+                                                    showModernAlert("✅ Success",
+                                                        "Data deleted successfully!");
+                                                } else {
+                                                    showModernAlert("❌ Error",
+                                                    "Failed to delete data.");
+                                                }
+                                            })
+                                            .catch(error => {
+                                                confirmOverlay.remove();
+                                                console.error("Error:", error);
+                                                showModernAlert("❌ Error", "Something went wrong.");
+                                            });
+                                    });
+                                });
+                            });
 
-    // Simple modern alert
-    window.showModernAlert = function(title, message) {
-        const alertBox = document.createElement('div');
-        alertBox.style.cssText = `
+                            // Simple modern alert
+                            window.showModernAlert = function(title, message) {
+                                const alertBox = document.createElement('div');
+                                alertBox.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -1027,71 +1087,82 @@ document.addEventListener("DOMContentLoaded", function () {
             z-index: 10001;
             animation: fadeIn 0.3s ease-out;
         `;
-        alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
-        document.body.appendChild(alertBox);
-        setTimeout(() => {
-            alertBox.style.opacity = "0";
-            setTimeout(() => alertBox.remove(), 500);
-        }, 2000);
-    };
-});
-</script>
+                                alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+                                document.body.appendChild(alertBox);
+                                setTimeout(() => {
+                                    alertBox.style.opacity = "0";
+                                    setTimeout(() => alertBox.remove(), 500);
+                                }, 2000);
+                            };
+                        });
+                    </script>
 
 
 
-<style>
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-}
-@keyframes modalSlideIn {
-    from {transform: translateY(-20px); opacity: 0;}
-    to {transform: translateY(0); opacity: 1;}
-}
-</style>
+                    <style>
+                        @keyframes fadeIn {
+                            from {
+                                opacity: 0;
+                            }
+
+                            to {
+                                opacity: 1;
+                            }
+                        }
+
+                        @keyframes modalSlideIn {
+                            from {
+                                transform: translateY(-20px);
+                                opacity: 0;
+                            }
+
+                            to {
+                                transform: translateY(0);
+                                opacity: 1;
+                            }
+                        }
+                    </style>
 
 
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script>
-                       document.getElementById("searchInput").addEventListener("input", function () {
-    let searchValue = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#dataTable tbody tr");
+                        document.getElementById("searchInput").addEventListener("input", function() {
+                            let searchValue = this.value.toLowerCase();
+                            let rows = document.querySelectorAll("#dataTable tbody tr");
 
-    rows.forEach(row => {
-        let cells = row.querySelectorAll("td");
-        let rowText = "";
-        let found = false;
+                            rows.forEach(row => {
+                                let cells = row.querySelectorAll("td");
+                                let rowText = "";
+                                let found = false;
 
-        // Collect all cell text & check if search matches any
-        cells.forEach(cell => {
-            let text = cell.innerText.toLowerCase();
-            if (text.includes(searchValue)) {
-                found = true;
-            }
-        });
+                                // Collect all cell text & check if search matches any
+                                cells.forEach(cell => {
+                                    let text = cell.innerText.toLowerCase();
+                                    if (text.includes(searchValue)) {
+                                        found = true;
+                                    }
+                                });
 
-        // Show or hide row based on match
-        if (searchValue === "" || found) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-    });
-});
-
+                                // Show or hide row based on match
+                                if (searchValue === "" || found) {
+                                    row.style.display = "";
+                                } else {
+                                    row.style.display = "none";
+                                }
+                            });
+                        });
                     </script>
 
-                 
 
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             const editModal = document.getElementById("editModal");
                             const closeEditModalBtn = document.querySelector("#editModal .close");
                             const cancelEditModalBtn = document.getElementById("cancelEditModal");
 
                             // Open modal and populate form
                             document.querySelectorAll(".edit-button").forEach(button => {
-                                button.addEventListener("click", function () {
+                                button.addEventListener("click", function() {
                                     document.getElementById("edit_id").value = this.dataset.id;
                                     document.getElementById("edit_vaccine").value = this.dataset.vaccine;
                                     document.getElementById("edit_date").value = this.dataset.date;
@@ -1114,33 +1185,33 @@ document.addEventListener("DOMContentLoaded", function () {
                             });
 
                             // Handle form submission with AJAX
-                            document.getElementById("updateForm").addEventListener("submit", function (event) {
+                            document.getElementById("updateForm").addEventListener("submit", function(event) {
                                 event.preventDefault();
 
                                 let formData = new FormData(this);
                                 formData.append('_method', 'PUT');
 
                                 fetch(`/immunization/update`, {
-                                    method: "POST",
-                                    headers: {
-                                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                                        "X-Requested-With": "XMLHttpRequest",
-                                    },
-                                    body: formData,
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        
-                                        location.reload();
-                                    } else {
-                                        alert("Failed to update record: " + (data.message || "Unknown error."));
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error("Error:", error);
-                                    alert("An error occurred while updating the record.");
-                                });
+                                        method: "POST",
+                                        headers: {
+                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                                            "X-Requested-With": "XMLHttpRequest",
+                                        },
+                                        body: formData,
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+
+                                            location.reload();
+                                        } else {
+                                            alert("Failed to update record: " + (data.message || "Unknown error."));
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Error:", error);
+                                        alert("An error occurred while updating the record.");
+                                    });
                             });
                         });
                     </script>
@@ -1151,23 +1222,23 @@ document.addEventListener("DOMContentLoaded", function () {
                     </script>
 
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             var modal = document.getElementById("customModal");
                             var openModalBtn = document.getElementById("openModal");
                             var closeModalBtn = document.querySelector(".close");
 
                             // Open Modal
-                            openModalBtn.addEventListener("click", function () {
+                            openModalBtn.addEventListener("click", function() {
                                 modal.style.display = "flex";
                             });
 
                             // Close Modal
-                            closeModalBtn.addEventListener("click", function () {
+                            closeModalBtn.addEventListener("click", function() {
                                 modal.style.display = "none";
                             });
 
                             // Close if clicked outside the modal
-                            window.addEventListener("click", function (event) {
+                            window.addEventListener("click", function(event) {
                                 if (event.target === modal) {
                                     modal.style.display = "none";
                                 }
@@ -1177,11 +1248,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </main>
 
-			@include('staff.footer')
-		</div>
-	</div>
+            @include('staff.footer')
+        </div>
+    </div>
 
-@include('staff.js')
+    @include('staff.js')
 
 </body>
 

@@ -183,7 +183,7 @@
 		<ul class="sidebar-nav">
 
 			<li class="sidebar-item active">
-				<a class="sidebar-link" href="{{url('/home')}}">
+				<a class="sidebar-link" href="{{url('/staff')}}">
 					<i class="align-middle" data-feather="grid"></i> <span class="align-middle">Dashboard</span>
 				</a>
 			</li>

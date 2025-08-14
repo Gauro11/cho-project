@@ -8,6 +8,8 @@ use App\Http\Controllers\ImmunizationController;
 use App\Http\Controllers\PopulationController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\StaffController;
+use Illuminate\Support\Facades\Auth;
 
 // ✅ Root route to fix 404 on http://127.0.0.1:8000/
 Route::get('/', function () {
@@ -30,14 +32,16 @@ Route::get('/', function () {
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/staff', [AdminController::class, 'search'])->name('data.search');
 
 
 Route::get('/', function () {
     return view('auth.login');
 });
+
+
+
+
 
 
 
@@ -65,7 +69,8 @@ Route::put('/year/{id}', [AdminController::class, 'update_year'])->name('year.up
 Route::delete('/year/{id}', [AdminController::class, 'delete_year'])->name('year.destroy');
 
 // Admin Views
-Route::get('/home', [AdminController::class, 'index']);
+//  Route::get('/home', [AdminController::class, 'index']);
+// Route::get('/staff', [StaffController::class, 'index']);
 Route::get('/show_category', [AdminController::class, 'show_category']);
 Route::get('/show_year', [AdminController::class, 'show_year']);
 Route::get('/show_staff', [AdminController::class, 'show_staff']);
@@ -116,8 +121,21 @@ Route::get('/immunization/export', [DownloadController::class, 'exportImmunizati
 Route::get('/export-vital-statistics', [DownloadController::class, 'exportVitalStatistics'])->name('exportVitalStatistics');
 Route::get('/export-morbidity', [DownloadController::class, 'exportMorbidity'])->name('exportMorbidity');
 Route::get('/export-mortality', [DownloadController::class, 'exportMortality'])->name('mortality.export');
+Route::get('/population/export', [DownloadController::class, 'export'])->name('population.export');
+
 
 // Charts / Trends
 Route::get('/fetch-trend-data/{category}', [AdminController::class, 'fetchTrendData']);
 Route::post('/population/import', [PopulationController::class, 'import'])->name('population.import');
 Route::post('/vital-statistics/import', [VitalStatisticsController::class, 'import'])->name('vital_statistics.import');
+
+
+
+
+Route::middleware('auth:admin')->group(function () {
+    Route::get('/home', [AdminController::class, 'index'])->name('admin.dashboard');
+});
+
+Route::middleware('auth:staff')->group(function () {
+    Route::get('/staff', [StaffController::class, 'index'])->name('staff.dashboard');
+});

@@ -10,6 +10,10 @@ use App\Models\User;
 
 class LoginController extends Controller
 {
+
+
+
+
     public function login(Request $request)
     {
         // Validate form inputs
@@ -31,15 +35,25 @@ class LoginController extends Controller
             return back()->withErrors(['password' => 'Incorrect password']);
         }
 
-        // Login user
-        Auth::login($user);
-        $request->session()->regenerate();
+        // Choose guard based on usertype
+        $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
 
-        // Redirect based on usertype
-        if ($user->usertype === 'admin') {
-            return redirect('/home'); // or route('admin.dashboard')
-        } else {
-            return redirect('/home'); // or route('staff.dashboard')
+        // Attempt login on the correct guard
+        if (Auth::guard($guard)->attempt([
+            'staff_id' => $request->staff_id,
+            'password' => $request->password
+        ])) {
+            $request->session()->regenerate();
+
+            if ($guard === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } else {
+                return redirect()->route('staff.dashboard');
+            }
         }
+
+        return back()->withErrors(['password' => 'Incorrect password']);
     }
+
+
 }

@@ -35,12 +35,22 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
+   'guards' => [
+    'admin' => [
+        'driver' => 'session',
+        'provider' => 'users', // You can also create a separate provider for admins if needed
     ],
+    'staff' => [
+        'driver' => 'session',
+        'provider' => 'users', // Same provider if both are in the same table
+    ],
+],
+
+
+
+   
+
+
 
     /*
     |--------------------------------------------------------------------------

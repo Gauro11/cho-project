@@ -4,6 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -257,6 +258,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -268,6 +270,7 @@
                 opacity: 0;
                 transform: translateY(50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -275,9 +278,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px) rotate(0deg);
             }
+
             50% {
                 transform: translateY(-20px) rotate(180deg);
             }
@@ -287,9 +293,11 @@
             0% {
                 box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
             }
+
             70% {
                 box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
             }
+
             100% {
                 box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
             }
@@ -300,10 +308,21 @@
             animation-fill-mode: both;
         }
 
-        .card-enter:nth-child(1) { animation-delay: 0.1s; }
-        .card-enter:nth-child(2) { animation-delay: 0.2s; }
-        .card-enter:nth-child(3) { animation-delay: 0.3s; }
-        .card-enter:nth-child(4) { animation-delay: 0.4s; }
+        .card-enter:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .card-enter:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .card-enter:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .card-enter:nth-child(4) {
+            animation-delay: 0.4s;
+        }
 
         canvas {
             background-color: transparent !important;
@@ -313,11 +332,11 @@
             .section-title {
                 font-size: 1.5rem;
             }
-            
+
             .map-image-modern {
                 height: 250px;
             }
-            
+
             .stats-grid {
                 grid-template-columns: 1fr;
                 gap: 1rem;
@@ -325,6 +344,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="floating-elements">
         <div class="floating-circle"></div>
@@ -335,19 +355,18 @@
     <div class="">
         <div class="container-fluid py-4">
             <h1 class="section-title pulse-animation">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
-            
+
             <!-- Modern Map Section -->
             <div class="map-container-modern">
-                <img src="https://tools.paintmaps.com/og_image/map_cropping/4-1108697425-3.jpeg"
-                     alt="Dagupan City Map"
-                     class="map-image-modern">
+                <img src="https://tools.paintmaps.com/og_image/map_cropping/4-1108697425-3.jpeg" alt="Dagupan City Map"
+                    class="map-image-modern">
                 <div class="map-title-modern">
                     <h4>🚩 Dagupan City Map / Population 174,302</h4>
                 </div>
             </div>
 
             <h1 class="section-title">VITAL STATISTICS OVERVIEW</h1>
-            
+
             <div class="stats-grid">
                 <div class="glass-card card-enter">
                     <div class="card-header-modern">
@@ -371,7 +390,7 @@
             </div>
 
             <h1 class="section-title">IMMUNIZATION OVERVIEW</h1>
-            
+
             <div class="glass-card card-enter" style="margin: 2rem auto; max-width: 1000px;">
                 <div class="card-header-modern">
                     <h5 class="card-title-modern">🛡️ Immunization Statistics</h5>
@@ -383,7 +402,7 @@
             </div>
 
             <h1 class="section-title">MORBIDITY & MORTALITY OVERVIEW</h1>
-            
+
             <div class="stats-grid">
                 <div class="glass-card card-enter">
                     <div class="card-header-modern">
@@ -411,8 +430,8 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-           
+        document.addEventListener("DOMContentLoaded", function() {
+
 
             // Modern chart configurations
             const modernChartOptions = {
@@ -481,8 +500,7 @@
                 type: "line",
                 data: {
                     labels: sortedData.map(item => item.year),
-                    datasets: [
-                        {
+                    datasets: [{
                             label: "Live Births",
                             borderColor: "#43e97b",
                             backgroundColor: "rgba(67, 233, 123, 0.1)",
@@ -517,8 +535,7 @@
                 type: "bar",
                 data: {
                     labels: immunizationData.map(item => item.vaccine_name),
-                    datasets: [
-                        {
+                    datasets: [{
                             label: "Male",
                             backgroundColor: "rgba(102, 126, 234, 0.8)",
                             borderColor: "#667eea",
@@ -540,13 +557,13 @@
                     ...modernChartOptions,
                     scales: {
                         ...modernChartOptions.scales,
-                        x: { 
+                        x: {
                             ...modernChartOptions.scales.x,
-                            stacked: false 
+                            stacked: false
                         },
-                        y: { 
+                        y: {
                             ...modernChartOptions.scales.y,
-                            stacked: false 
+                            stacked: false
                         }
                     }
                 }
@@ -561,8 +578,7 @@
                     type: "bar",
                     data: {
                         labels: caseData.map(c => c.case_name),
-                        datasets: [
-                            {
+                        datasets: [{
                                 label: "Male",
                                 backgroundColor: "rgba(67, 233, 123, 0.8)",
                                 borderColor: "#43e97b",
@@ -589,6 +605,7 @@
         });
     </script>
 </body>
+
 </html>
 
 <!-- Scripts -->
@@ -596,7 +613,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         let vitalStatisticsData = {!! json_encode($vitalStatisticsData) !!};
         let sortedData = vitalStatisticsData.sort((a, b) => a.year - b.year);
 
@@ -615,7 +632,11 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
         });
 
@@ -623,8 +644,7 @@
             type: "line",
             data: {
                 labels: sortedData.map(item => item.year),
-                datasets: [
-                    {
+                datasets: [{
                         label: "Live Births",
                         borderColor: "#2ECC71",
                         borderWidth: 3,
@@ -648,7 +668,11 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
         });
 
@@ -656,8 +680,7 @@
             type: "bar",
             data: {
                 labels: {!! json_encode($immunizationData->pluck('vaccine_name')) !!},
-                datasets: [
-                    {
+                datasets: [{
                         label: "Male",
                         backgroundColor: "#4A90E2",
                         data: {!! json_encode($immunizationData->pluck('male_vaccinated')) !!}
@@ -673,8 +696,13 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { stacked: true },
-                    y: { beginAtZero: true, stacked: false }
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        beginAtZero: true,
+                        stacked: false
+                    }
                 }
             }
         });
@@ -691,8 +719,7 @@
                 type: "bar",
                 data: {
                     labels: caseData.map(c => c.case_name),
-                    datasets: [
-                        {
+                    datasets: [{
                             label: "Male",
                             backgroundColor: "yellow",
                             data: caseData.map(c => c.male_count)
@@ -708,11 +735,24 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { ticks: { color: "black" } },
-                        y: { beginAtZero: true, ticks: { color: "black" } }
+                        x: {
+                            ticks: {
+                                color: "black"
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: "black"
+                            }
+                        }
                     },
                     plugins: {
-                        legend: { labels: { color: "black" } }
+                        legend: {
+                            labels: {
+                                color: "black"
+                            }
+                        }
                     }
                 }
             });
@@ -724,4 +764,5 @@
 </script>
 
 </body>
+
 </html>

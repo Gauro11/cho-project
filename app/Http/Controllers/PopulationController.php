@@ -78,7 +78,7 @@ public function show_population()
 public function import(Request $request)
 {
     $request->validate([
-        'file' => 'required|mimes:xlsx,xls',
+        'file' => 'required|mimes:xlsx,xls,csv',
     ]);
 
     Excel::import(new PopulationImport, $request->file('file'));

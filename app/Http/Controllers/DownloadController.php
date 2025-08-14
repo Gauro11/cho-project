@@ -11,6 +11,9 @@ use App\Models\VitalStatisticsManagement;
 use App\Models\MorbidityMortalityManagement;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PopulationExport;
+
 
 
 class DownloadController extends Controller
@@ -252,5 +255,11 @@ public function exportMorbidity()
     fclose($handle);
     exit;
 }
+
+  public function export()
+{
+    return $this->exportPopulation();
+}
+
 
 }

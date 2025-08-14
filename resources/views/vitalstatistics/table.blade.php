@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -176,20 +177,28 @@
         color: white;
     }
 
-    .coverage-high { background: linear-gradient(135deg, #10b981, #059669); }
-    .coverage-medium { background: linear-gradient(135deg, #f59e0b, #d97706); }
-    .coverage-low { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .coverage-high {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .coverage-medium {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .coverage-low {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
 
     @media (max-width: 768px) {
         .table-responsive {
             border-radius: 16px;
         }
-        
+
         .pagination-container {
             flex-direction: column;
             gap: 15px;
         }
-        
+
         .custom-pagination {
             justify-content: center;
         }
@@ -228,133 +237,135 @@
     }
 </style>
 
-@if($data->isNotEmpty())
-        <div class="row">
-            <div class="col-12 col-lg-12 col-xxl-12 d-flex">
-                <div class="card flex-fill" id="dataTable">
-                    <table class="table table-hover my-0">
-                        <thead>
-                            <tr style="color: white;">
-                                <th>Month and Year</th>
-                                <th>Population</th>
-                                <th>Total Live Births</th>
-                                <th>Crude Birth Rate</th>
-                                <th>Total Deaths</th>
-                                <th>Crude Death Rate</th>
-                                <th>Infant Deaths</th>
-                                <th>Infant Mortality Rate</th>
-                                <th>Maternal Deaths</th>
-                                <th>Maternal Mortality Rate</th>
-                                <th class="no-print">Actions</th>
+@if ($data->isNotEmpty())
+    <div class="row">
+        <div class="col-12 col-lg-12 col-xxl-12 d-flex">
+            <div class="card flex-fill" id="dataTable">
+                <table class="table table-hover my-0">
+                    <thead>
+                        <tr style="color: white;">
+                            <th>Month and Year</th>
+                            <th>Population</th>
+                            <th>Total Live Births</th>
+                            <th>Crude Birth Rate</th>
+                            <th>Total Deaths</th>
+                            <th>Crude Death Rate</th>
+                            <th>Infant Deaths</th>
+                            <th>Infant Mortality Rate</th>
+                            <th>Maternal Deaths</th>
+                            <th>Maternal Mortality Rate</th>
+                            <th class="no-print">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: white;">
+                        @foreach ($data as $row)
+                            @php
+                                $population = $row->total_population;
+                                $births = $row->total_live_births;
+                                $deaths = $row->total_deaths;
+                                $infantDeaths = $row->infant_deaths;
+                                $maternalDeaths = $row->maternal_deaths;
+
+                                $crudeBirthRate = $population > 0 ? ($births / $population) * 1000 : 0;
+                                $crudeDeathRate = $population > 0 ? ($deaths / $population) * 1000 : 0;
+                                $infantMortalityRate = $births > 0 ? ($infantDeaths / $births) * 1000 : 0;
+                                $maternalMortalityRate = $births > 0 ? ($maternalDeaths / $births) * 100000 : 0;
+                            @endphp
+                            <tr>
+                                <td>{{ $row->year }}</td>
+                                <td>{{ number_format($population) }}</td>
+                                <td>{{ number_format($births) }}</td>
+                                <td>{{ number_format($crudeBirthRate, 2) }}</td>
+                                <td>{{ number_format($deaths) }}</td>
+                                <td>{{ number_format($crudeDeathRate, 2) }}</td>
+                                <td>{{ number_format($infantDeaths) }}</td>
+                                <td>{{ number_format($infantMortalityRate, 2) }}</td>
+                                <td>{{ number_format($maternalDeaths) }}</td>
+                                <td>{{ number_format($maternalMortalityRate, 2) }}</td>
+                                <td class="no-print">
+                                    <button class="btn btn-warning btn-sm edit-button" data-id="{{ $row->id }}"
+                                        data-year="{{ $row->year }}" data-population="{{ $row->total_population }}"
+                                        data-births="{{ $row->total_live_births }}"
+                                        data-deaths="{{ $row->total_deaths }}" data-infant="{{ $row->infant_deaths }}"
+                                        data-maternal="{{ $row->maternal_deaths }}">
+                                        Edit
+                                    </button>
+
+
+                                    <button type="button" class="btn btn-danger btn-sm delete-button"
+                                        data-id="{{ $row->id }}">
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody style="background-color: white;">
-                            @foreach($data as $row)
-                                                    @php
-        $population = $row->total_population;
-        $births = $row->total_live_births;
-        $deaths = $row->total_deaths;
-        $infantDeaths = $row->infant_deaths;
-        $maternalDeaths = $row->maternal_deaths;
+                        @endforeach
+                    </tbody>
+                </table>
 
-        $crudeBirthRate = $population > 0 ? ($births / $population) * 1000 : 0;
-        $crudeDeathRate = $population > 0 ? ($deaths / $population) * 1000 : 0;
-        $infantMortalityRate = $births > 0 ? ($infantDeaths / $births) * 1000 : 0;
-        $maternalMortalityRate = $births > 0 ? ($maternalDeaths / $births) * 100000 : 0;
-                                                    @endphp
-                                                    <tr>
-                                                        <td>{{ $row->year }}</td>
-                                                        <td>{{ number_format($population) }}</td>
-                                                        <td>{{ number_format($births) }}</td>
-                                                        <td>{{ number_format($crudeBirthRate, 2) }}</td>
-                                                        <td>{{ number_format($deaths) }}</td>
-                                                        <td>{{ number_format($crudeDeathRate, 2) }}</td>
-                                                        <td>{{ number_format($infantDeaths) }}</td>
-                                                        <td>{{ number_format($infantMortalityRate, 2) }}</td>
-                                                        <td>{{ number_format($maternalDeaths) }}</td>
-                                                        <td>{{ number_format($maternalMortalityRate, 2) }}</td>
-                                                        <td class="no-print">
-                                                        <button class="btn btn-warning btn-sm edit-button"
-                                                            data-id="{{ $row->id }}" 
-                                                            data-year="{{ $row->year }}"
-                                                            data-population="{{ $row->total_population }}"
-                                                            data-births="{{ $row->total_live_births }}"
-                                                            data-deaths="{{ $row->total_deaths }}"
-                                                            data-infant="{{ $row->infant_deaths }}"
-                                                            data-maternal="{{ $row->maternal_deaths }}">
-                                                            Edit
-                                                        </button>
+                @php
+                    $start = max(1, $data->currentPage() - 2);
+                    $end = min($data->lastPage(), $start + 4);
 
+                    if ($end - $start < 4) {
+                        $start = max(1, $end - 4);
+                    }
+                @endphp
 
-                                                            <button type="button" class="btn btn-danger btn-sm delete-button" data-id="{{ $row->id }}">
-                                                                Delete
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="pagination-container mt-3 no-print">
+                    <p>Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} results
+                    </p>
+                    <nav>
+                        <ul class="pagination custom-pagination">
+                            @if ($data->onFirstPage())
+                                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="{{ $data->appends(['search' => request()->search])->previousPageUrl() }}"
+                                        rel="prev">&laquo; Previous</a>
+                                </li>
+                            @endif
 
-                    @php
-    $start = max(1, $data->currentPage() - 2);
-    $end = min($data->lastPage(), $start + 4);
-
-    if ($end - $start < 4) {
-        $start = max(1, $end - 4);
-    }
-                    @endphp
-
-                    <div class="pagination-container mt-3 no-print">
-                        <p>Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} results</p>
-                        <nav>
-                            <ul class="pagination custom-pagination">
-                                @if ($data->onFirstPage())
-                                    <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $data->appends(['search' => request()->search])->previousPageUrl() }}"
-                                            rel="prev">&laquo; Previous</a>
-                                    </li>
+                            @if ($start > 1)
+                                <li class="page-item"><a class="page-link"
+                                        href="{{ $data->appends(['search' => request()->search])->url(1) }}">1</a></li>
+                                @if ($start > 2)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
                                 @endif
+                            @endif
 
-                                @if ($start > 1)
-                                    <li class="page-item"><a class="page-link"
-                                            href="{{ $data->appends(['search' => request()->search])->url(1) }}">1</a></li>
-                                    @if ($start > 2)
-                                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                                    @endif
+                            @for ($i = $start; $i <= $end; $i++)
+                                <li class="page-item {{ $i == $data->currentPage() ? 'active' : '' }}">
+                                    <a class="page-link"
+                                        href="{{ $data->appends(['search' => request()->search])->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            @if ($end < $data->lastPage())
+                                @if ($end < $data->lastPage() - 1)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
                                 @endif
+                                <li class="page-item"><a class="page-link"
+                                        href="{{ $data->appends(['search' => request()->search])->url($data->lastPage()) }}">{{ $data->lastPage() }}</a>
+                                </li>
+                            @endif
 
-                                @for ($i = $start; $i <= $end; $i++)
-                                    <li class="page-item {{ $i == $data->currentPage() ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $data->appends(['search' => request()->search])->url($i) }}">{{ $i }}</a>
-                                    </li>
-                                @endfor
-
-                                @if ($end < $data->lastPage())
-                                    @if ($end < $data->lastPage() - 1)
-                                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                                    @endif
-                                    <li class="page-item"><a class="page-link"
-                                            href="{{ $data->appends(['search' => request()->search])->url($data->lastPage()) }}">{{ $data->lastPage() }}</a>
-                                    </li>
-                                @endif
-
-                                @if ($data->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $data->appends(['search' => request()->search])->nextPageUrl() }}"
-                                            rel="next">Next &raquo;</a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
-                                @endif
-                            </ul>
-                        </nav>
-                    </div>
-
+                            @if ($data->hasMorePages())
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="{{ $data->appends(['search' => request()->search])->nextPageUrl() }}"
+                                        rel="next">Next &raquo;</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                            @endif
+                        </ul>
+                    </nav>
                 </div>
+
             </div>
         </div>
+    </div>
 @else
     <p class="text-center mt-4" style="color: #000957; font-size: 18px;">No data available.</p>
 @endif

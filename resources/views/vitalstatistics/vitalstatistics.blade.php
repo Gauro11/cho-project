@@ -2,9 +2,10 @@
 <html lang="en">
 
 <head>
-<meta name="csrf-token" content="{{ csrf_token() }}">
-	@include('staff.css')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('staff.css')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
     <style>
         :root {
@@ -27,7 +28,7 @@
             color: var(--text-primary);
         }
 
-      
+
 
         .content {
             padding: 2rem;
@@ -221,6 +222,7 @@
                 opacity: 0;
                 transform: translateY(-50px) scale(0.9);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -331,6 +333,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -456,19 +459,21 @@
             .page-title {
                 font-size: 1.8rem;
             }
-            
+
             .modern-modal-content {
                 width: 95%;
                 padding: 1.5rem;
             }
-            
+
             .content {
                 padding: 1rem;
             }
         }
 
         @media print {
-            .no-print, .pagination {
+
+            .no-print,
+            .pagination {
                 display: none !important;
             }
         }
@@ -476,10 +481,10 @@
 </head>
 
 <body>
-	<div class="wrapper">
-	@include('staff.sidebar')
+    <div class="wrapper">
+        @include('staff.sidebar')
 
-		<div class="main">
+        <div class="main">
             @include('staff.header')
             <main class="content">
                 <div class="container-fluid p-0">
@@ -498,22 +503,24 @@
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <!-- Settings Icon (White Color) -->
                                     <button class="modern-btn btn-success btn-sm" id="openModal">
-                                        ➕ Add New Record   
+                                        ➕ Add New Record
                                     </button>
                                     <!-- <i id="openModal" data-feather="plus" style="color: white; cursor: pointer;"></i> -->
 
                                     <!-- Vertical Bar Separator -->
                                     <span class="separator">|</span>
                                     <div class="modern-input-group input-group" style="width: 300px;">
-                                        <span class="input-group-text bg-transparent"><i data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search" class="form-control modern-form-control"
-                                            placeholder="Search records..." style="border-left: none;">
+                                        <span class="input-group-text bg-transparent"><i
+                                                data-feather="search"></i></span>
+                                        <input type="text" id="searchInput" name="search"
+                                            class="form-control modern-form-control" placeholder="Search records..."
+                                            style="border-left: none;">
                                     </div>
 
                                     <span class="separator">|</span>
 
                                     <!-- Search Field with Icon (Next to the Separator) -->
-                                    
+
                                 </div>
 
                                 <!-- Pagination + Download Icon on the Right -->
@@ -523,14 +530,15 @@
                                         <i data-feather="upload"></i> Import
                                     </button>
 
-                                <button id="printTable" class="modern-btn btn-primary btn-sm">
-                                    <i data-feather="printer"></i> Print
-                                </button>
+                                    <button id="printTable" class="modern-btn btn-primary btn-sm">
+                                        <i data-feather="printer"></i> Print
+                                    </button>
 
                                     <!-- Download Icon -->
-                                    <a href="{{ route('exportVitalStatistics') }}" class="modern-btn btn-success btn-sm">
-    <i data-feather="download"></i> Download 
-</a>
+                                    <a href="{{ route('exportVitalStatistics') }}"
+                                        class="modern-btn btn-success btn-sm">
+                                        <i data-feather="download"></i> Download
+                                    </a>
 
 
 
@@ -550,23 +558,26 @@
                         feather.replace();
                     </script>
 
-                    
+
 
                     <!-- Import Modal -->
                     <div id="importModal" class="modern-modal modal">
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close" id="closeImportModal">&times;</span>
                             <h2>📤 Import Vital Statistics Records</h2>
-                            <form action="{{ route('vital_statistics.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
+                            <form action="{{ route('vital_statistics.import') }}" method="POST"
+                                enctype="multipart/form-data" id="importForm">
                                 @csrf
                                 <div class="file-upload-area" id="fileUploadArea">
                                     <div class="file-upload-icon">📁</div>
                                     <div class="file-upload-text">
                                         <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
                                     </div>
-                                    <input type="file" name="file" id="fileInput" class="modern-form-control form-control" 
-                                           accept=".xlsx,.xls,.csv" required style="display: none;">
-                                    <button type="button" class="modern-btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()">
+                                    <input type="file" name="file" id="fileInput"
+                                        class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
+                                        style="display: none;">
+                                    <button type="button" class="modern-btn btn-secondary btn-sm"
+                                        onclick="document.getElementById('fileInput').click()">
                                         📂 Choose File
                                     </button>
                                 </div>
@@ -580,13 +591,16 @@
                                 <div class="mb-3">
                                     <small class="text-muted">
                                         <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
-                                        <strong>Required columns:</strong> Month & Year, Total Population, Total Live Births, Total Deaths, Infant Deaths, Maternal Deaths
+                                        <strong>Required columns:</strong> Month & Year, Total Population, Total Live
+                                        Births, Total Deaths, Infant Deaths, Maternal Deaths
                                     </small>
                                 </div>
 
                                 <div class="modern-modal-footer modal-footer">
-                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌ Cancel</button>
-                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤 Upload File</button>
+                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌
+                                        Cancel</button>
+                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤
+                                        Upload File</button>
                                 </div>
                             </form>
                         </div>
@@ -600,15 +614,17 @@
                             <form action="{{ route('vital_statistics.store') }}" method="POST">
                                 @csrf
 
-                                    <div class="mb-3">
+                                <div class="mb-3">
                                     <label for="month_year" class="modern-form-label form-label">📅 Month & Year</label>
-                                    <select class="modern-form-control form-control" id="month_year" name="month_year" required>
+                                    <select class="modern-form-control form-control" id="month_year" name="month_year"
+                                        required>
                                         @for ($y = date('Y'); $y >= 1900; $y--)
                                             @php
-    $startMonth = ($y == date('Y')) ? date('n') : 12;
+                                                $startMonth = $y == date('Y') ? date('n') : 12;
                                             @endphp
                                             @for ($m = $startMonth; $m >= 1; $m--)
-                                                <option value="{{ $y }}-{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">
+                                                <option
+                                                    value="{{ $y }}-{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">
                                                     {{ date('F', mktime(0, 0, 0, $m, 1)) }} {{ $y }}
                                                 </option>
                                             @endfor
@@ -617,32 +633,43 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="total_population" class="modern-form-label form-label">👥 Total Population</label>
-                                    <input type="number" class="modern-form-control form-control" id="total_population" name="total_population" required min="0">
+                                    <label for="total_population" class="modern-form-label form-label">👥 Total
+                                        Population</label>
+                                    <input type="number" class="modern-form-control form-control"
+                                        id="total_population" name="total_population" required min="0">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="total_live_births" class="modern-form-label form-label">👶 Total Live Births</label>
-                                    <input type="number" class="modern-form-control form-control" id="total_live_births" name="total_live_births" required min="0">
+                                    <label for="total_live_births" class="modern-form-label form-label">👶 Total Live
+                                        Births</label>
+                                    <input type="number" class="modern-form-control form-control"
+                                        id="total_live_births" name="total_live_births" required min="0">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="total_deaths" class="modern-form-label form-label">⚰️ Total Deaths</label>
-                                    <input type="number" class="modern-form-control form-control" id="total_deaths" name="total_deaths" required min="0">
+                                    <label for="total_deaths" class="modern-form-label form-label">⚰️ Total
+                                        Deaths</label>
+                                    <input type="number" class="modern-form-control form-control" id="total_deaths"
+                                        name="total_deaths" required min="0">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="infant_deaths" class="modern-form-label form-label">👼 Infant Deaths</label>
-                                    <input type="number" class="modern-form-control form-control" id="infant_deaths" name="infant_deaths" required min="0">
+                                    <label for="infant_deaths" class="modern-form-label form-label">👼 Infant
+                                        Deaths</label>
+                                    <input type="number" class="modern-form-control form-control" id="infant_deaths"
+                                        name="infant_deaths" required min="0">
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="maternal_deaths" class="modern-form-label form-label">🤱 Maternal Deaths</label>
-                                    <input type="number" class="modern-form-control form-control" id="maternal_deaths" name="maternal_deaths" required min="0">
+                                    <label for="maternal_deaths" class="modern-form-label form-label">🤱 Maternal
+                                        Deaths</label>
+                                    <input type="number" class="modern-form-control form-control"
+                                        id="maternal_deaths" name="maternal_deaths" required min="0">
                                 </div>
 
                                 <div class="modern-modal-footer modal-footer">
-                                    <button type="submit" class="modern-btn btn-primary">✅ Add Vital Statistics Records</button>
+                                    <button type="submit" class="modern-btn btn-primary">✅ Add Vital Statistics
+                                        Records</button>
                                 </div>
                             </form>
 
@@ -651,35 +678,35 @@
                     </div>
                     <script>
                         const totalDeathsInput = document.getElementById("total_deaths");
-    const infantDeathsInput = document.getElementById("infant_deaths");
-    const maternalDeathsInput = document.getElementById("maternal_deaths");
+                        const infantDeathsInput = document.getElementById("infant_deaths");
+                        const maternalDeathsInput = document.getElementById("maternal_deaths");
 
-    function enforceDependency() {
-        let totalDeaths = parseInt(totalDeathsInput.value) || 0;
-        let infantDeaths = parseInt(infantDeathsInput.value) || 0;
-        let maternalDeaths = parseInt(maternalDeathsInput.value) || 0;
-        let maxAllowed = totalDeaths;
+                        function enforceDependency() {
+                            let totalDeaths = parseInt(totalDeathsInput.value) || 0;
+                            let infantDeaths = parseInt(infantDeathsInput.value) || 0;
+                            let maternalDeaths = parseInt(maternalDeathsInput.value) || 0;
+                            let maxAllowed = totalDeaths;
 
-        // Reset error states
-        infantDeathsInput.classList.remove('input-dependency-error');
-        maternalDeathsInput.classList.remove('input-dependency-error');
+                            // Reset error states
+                            infantDeathsInput.classList.remove('input-dependency-error');
+                            maternalDeathsInput.classList.remove('input-dependency-error');
 
-        // Ensure infant and maternal deaths do not exceed total deaths
-        if (infantDeaths + maternalDeaths > maxAllowed) {
-            infantDeathsInput.classList.add('input-dependency-error');
-            maternalDeathsInput.classList.add('input-dependency-error');
-            
-            // Create modern alert
-            showModernAlert("⚠️ Validation Error", "The sum of Infant and Maternal Deaths cannot exceed Total Deaths.");
-            infantDeathsInput.value = Math.max(0, maxAllowed - maternalDeaths);
-        }
-    }
+                            // Ensure infant and maternal deaths do not exceed total deaths
+                            if (infantDeaths + maternalDeaths > maxAllowed) {
+                                infantDeathsInput.classList.add('input-dependency-error');
+                                maternalDeathsInput.classList.add('input-dependency-error');
 
-    // Modern alert function
-    function showModernAlert(title, message) {
-        // Create alert overlay
-        const alertOverlay = document.createElement('div');
-        alertOverlay.style.cssText = `
+                                // Create modern alert
+                                showModernAlert("⚠️ Validation Error", "The sum of Infant and Maternal Deaths cannot exceed Total Deaths.");
+                                infantDeathsInput.value = Math.max(0, maxAllowed - maternalDeaths);
+                            }
+                        }
+
+                        // Modern alert function
+                        function showModernAlert(title, message) {
+                            // Create alert overlay
+                            const alertOverlay = document.createElement('div');
+                            alertOverlay.style.cssText = `
             position: fixed;
             top: 0;
             left: 0;
@@ -694,9 +721,9 @@
             animation: fadeIn 0.3s ease-out;
         `;
 
-        // Create alert box
-        const alertBox = document.createElement('div');
-        alertBox.style.cssText = `
+                            // Create alert box
+                            const alertBox = document.createElement('div');
+                            alertBox.style.cssText = `
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
@@ -709,74 +736,77 @@
             animation: modalSlideIn 0.3s ease-out;
         `;
 
-        alertBox.innerHTML = `
+                            alertBox.innerHTML = `
             <h3 style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">${title}</h3>
             <p style="margin-bottom: 2rem; color: var(--text-secondary);">${message}</p>
             <button onclick="this.closest('.alert-overlay').remove()" style="background: var(--primary-gradient); border: none; border-radius: 15px; padding: 10px 20px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">OK</button>
         `;
 
-        alertOverlay.className = 'alert-overlay';
-        alertOverlay.appendChild(alertBox);
-        document.body.appendChild(alertOverlay);
+                            alertOverlay.className = 'alert-overlay';
+                            alertOverlay.appendChild(alertBox);
+                            document.body.appendChild(alertOverlay);
 
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            if (document.body.contains(alertOverlay)) {
-                alertOverlay.remove();
-            }
-        }, 5000);
-    }
+                            // Auto remove after 5 seconds
+                            setTimeout(() => {
+                                if (document.body.contains(alertOverlay)) {
+                                    alertOverlay.remove();
+                                }
+                            }, 5000);
+                        }
 
-    totalDeathsInput.addEventListener("input", function () {
-        let totalDeaths = parseInt(this.value) || 0;
-        infantDeathsInput.max = totalDeaths;
-        maternalDeathsInput.max = totalDeaths;
-        enforceDependency();
-    });
+                        totalDeathsInput.addEventListener("input", function() {
+                            let totalDeaths = parseInt(this.value) || 0;
+                            infantDeathsInput.max = totalDeaths;
+                            maternalDeathsInput.max = totalDeaths;
+                            enforceDependency();
+                        });
 
-    infantDeathsInput.addEventListener("input", enforceDependency);
-    maternalDeathsInput.addEventListener("input", enforceDependency);
+                        infantDeathsInput.addEventListener("input", enforceDependency);
+                        maternalDeathsInput.addEventListener("input", enforceDependency);
 
-    const maleCountInput = document.getElementById('male_count');
-    const femaleCountInput = document.getElementById('female_count');
-    const totalInput = document.getElementById('total');
+                        const maleCountInput = document.getElementById('male_count');
+                        const femaleCountInput = document.getElementById('female_count');
+                        const totalInput = document.getElementById('total');
 
-    function calculate() {
-        if (maleCountInput && femaleCountInput && totalInput) {
-            const maleCount = parseInt(maleCountInput.value) || 0;
-            const femaleCount = parseInt(femaleCountInput.value) || 0;
-            const total = maleCount + femaleCount;
-            totalInput.value = total;
+                        function calculate() {
+                            if (maleCountInput && femaleCountInput && totalInput) {
+                                const maleCount = parseInt(maleCountInput.value) || 0;
+                                const femaleCount = parseInt(femaleCountInput.value) || 0;
+                                const total = maleCount + femaleCount;
+                                totalInput.value = total;
 
-            // Percentage calculation based on male count relative to total
-            const percentage = total > 0 ? ((maleCount / total) * 100).toFixed(2) : 0;
-        }
-    }
+                                // Percentage calculation based on male count relative to total
+                                const percentage = total > 0 ? ((maleCount / total) * 100).toFixed(2) : 0;
+                            }
+                        }
 
-    if (maleCountInput) maleCountInput.addEventListener('input', calculate);
-    if (femaleCountInput) femaleCountInput.addEventListener('input', calculate);
-</script>
+                        if (maleCountInput) maleCountInput.addEventListener('input', calculate);
+                        if (femaleCountInput) femaleCountInput.addEventListener('input', calculate);
+                    </script>
 
 
 
-<div id="editModal" class="modern-modal modal" style="display: none;">
-    <div class="modern-modal-content modal-content">
-       <span id="closeEditModalTop" class="modern-close close">&times;</span>
-        <h2>✏️ Edit Data</h2>
-        <form id="updateForm" action="{{ route('vital_statistics.update') }}" method="POST">
-            @csrf
-            @method('PUT')
-            <input type="hidden" id="edit_id" name="id">
+                    <div id="editModal" class="modern-modal modal" style="display: none;">
+                        <div class="modern-modal-content modal-content">
+                            <span id="closeEditModalTop" class="modern-close close">&times;</span>
+                            <h2>✏️ Edit Data</h2>
+                            <form id="updateForm" action="{{ route('vital_statistics.update') }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" id="edit_id" name="id">
 
-            <div class="mb-3">
-                                    <label for="month_year" class="modern-form-label form-label">📅 Month & Year</label>
-                                    <select class="modern-form-control form-control" id="edit_year" name="year" required>
+                                <div class="mb-3">
+                                    <label for="month_year" class="modern-form-label form-label">📅 Month &
+                                        Year</label>
+                                    <select class="modern-form-control form-control" id="edit_year" name="year"
+                                        required>
                                         @for ($y = date('Y'); $y >= 1900; $y--)
                                             @php
-    $startMonth = ($y == date('Y')) ? date('n') : 12;
+                                                $startMonth = $y == date('Y') ? date('n') : 12;
                                             @endphp
                                             @for ($m = $startMonth; $m >= 1; $m--)
-                                                <option value="{{ $y }}-{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">
+                                                <option
+                                                    value="{{ $y }}-{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">
                                                     {{ date('F', mktime(0, 0, 0, $m, 1)) }} {{ $y }}
                                                 </option>
                                             @endfor
@@ -785,38 +815,50 @@
                                 </div>
 
 
-            <div class="mb-3">
-                <label for="edit_population" class="modern-form-label form-label">👥 Population</label>
-                <input type="number" class="modern-form-control form-control" id="edit_population" name="total_population" required min="0">
-            </div>
+                                <div class="mb-3">
+                                    <label for="edit_population" class="modern-form-label form-label">👥
+                                        Population</label>
+                                    <input type="number" class="modern-form-control form-control"
+                                        id="edit_population" name="total_population" required min="0">
+                                </div>
 
-            <div class="mb-3">
-                <label for="edit_births" class="modern-form-label form-label">👶 Total Live Births</label>
-                <input type="number" class="modern-form-control form-control" id="edit_births" name="total_live_births" required min="0">
-            </div>
+                                <div class="mb-3">
+                                    <label for="edit_births" class="modern-form-label form-label">👶 Total Live
+                                        Births</label>
+                                    <input type="number" class="modern-form-control form-control" id="edit_births"
+                                        name="total_live_births" required min="0">
+                                </div>
 
-            <div class="mb-3">
-                <label for="edit_deaths" class="modern-form-label form-label">⚰️ Total Deaths</label>
-                <input type="number" class="modern-form-control form-control" id="edit_deaths" name="total_deaths" required min="0">
-            </div>
+                                <div class="mb-3">
+                                    <label for="edit_deaths" class="modern-form-label form-label">⚰️ Total
+                                        Deaths</label>
+                                    <input type="number" class="modern-form-control form-control" id="edit_deaths"
+                                        name="total_deaths" required min="0">
+                                </div>
 
-            <div class="mb-3">
-                <label for="edit_infant" class="modern-form-label form-label">👼 Infant Deaths</label>
-                <input type="number" class="modern-form-control form-control" id="edit_infant" name="infant_deaths" required min="0">
-            </div>
+                                <div class="mb-3">
+                                    <label for="edit_infant" class="modern-form-label form-label">👼 Infant
+                                        Deaths</label>
+                                    <input type="number" class="modern-form-control form-control" id="edit_infant"
+                                        name="infant_deaths" required min="0">
+                                </div>
 
-            <div class="mb-3">
-                <label for="edit_maternal" class="modern-form-label form-label">🤱 Maternal Deaths</label>
-                <input type="number" class="modern-form-control form-control" id="edit_maternal" name="maternal_deaths" required min="0">
-            </div>
+                                <div class="mb-3">
+                                    <label for="edit_maternal" class="modern-form-label form-label">🤱 Maternal
+                                        Deaths</label>
+                                    <input type="number" class="modern-form-control form-control" id="edit_maternal"
+                                        name="maternal_deaths" required min="0">
+                                </div>
 
-            <div class="modern-modal-footer modal-footer">
-                <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌ Cancel</button>
-                <button type="submit" class="modern-btn btn-primary">💾 Update Vital Statistics Records</button>
-            </div>
-        </form>
-    </div>
-</div>
+                                <div class="modern-modal-footer modal-footer">
+                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌
+                                        Cancel</button>
+                                    <button type="submit" class="modern-btn btn-primary">💾 Update Vital Statistics
+                                        Records</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
 
 
@@ -826,108 +868,107 @@
                     </script>
 
 
-<script>
-                        document.addEventListener("DOMContentLoaded", function () {
-    setTimeout(() => {
-        var modal = document.getElementById("customModal");
-        var openModalBtn = document.getElementById("openModal");
-        var closeModalBtn = document.querySelector("#customModal .close");
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            setTimeout(() => {
+                                var modal = document.getElementById("customModal");
+                                var openModalBtn = document.getElementById("openModal");
+                                var closeModalBtn = document.querySelector("#customModal .close");
 
-        if (!modal || !openModalBtn) {
-            console.error("Modal or button not found!");
-            return;
-        }
+                                if (!modal || !openModalBtn) {
+                                    console.error("Modal or button not found!");
+                                    return;
+                                }
 
-        openModalBtn.addEventListener("click", function () {
-            modal.style.display = "flex";
-        });
+                                openModalBtn.addEventListener("click", function() {
+                                    modal.style.display = "flex";
+                                });
 
-        closeModalBtn.addEventListener("click", function () {
-            modal.style.display = "none";
-        });
+                                closeModalBtn.addEventListener("click", function() {
+                                    modal.style.display = "none";
+                                });
 
-        window.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        });
-    }, 100); // Delay to ensure icons are loaded
-});
-
+                                window.addEventListener("click", function(event) {
+                                    if (event.target === modal) {
+                                        modal.style.display = "none";
+                                    }
+                                });
+                            }, 100); // Delay to ensure icons are loaded
+                        });
                     </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const modal = document.getElementById('editModal');
-    const cancelBtn = document.getElementById('cancelEditModal');
-    const topCloseBtn = document.getElementById('closeEditModalTop'); // the X
-    const updateForm = document.getElementById('updateForm');
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const modal = document.getElementById('editModal');
+                            const cancelBtn = document.getElementById('cancelEditModal');
+                            const topCloseBtn = document.getElementById('closeEditModalTop'); // the X
+                            const updateForm = document.getElementById('updateForm');
 
-    // Form submit (AJAX)
-    updateForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        let formData = new FormData(this);
-        formData.append('_method', 'PUT');
-        fetch(`/vital-statistics/update`, {
-            method: "POST",
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: formData,
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                showModernAlert("✅ Success", "Record updated successfully!");
-                setTimeout(() => location.reload(), 1400);
-            } else {
-                showModernAlert("❌ Error", data.message || "Failed to update.");
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            showModernAlert("❌ Error", "An error occurred while updating.");
-        });
-    });
+                            // Form submit (AJAX)
+                            updateForm.addEventListener('submit', function(e) {
+                                e.preventDefault();
+                                let formData = new FormData(this);
+                                formData.append('_method', 'PUT');
+                                fetch(`/vital-statistics/update`, {
+                                        method: "POST",
+                                        headers: {
+                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                                            "X-Requested-With": "XMLHttpRequest",
+                                        },
+                                        body: formData,
+                                    })
+                                    .then(r => r.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            showModernAlert("✅ Success", "Record updated successfully!");
+                                            setTimeout(() => location.reload(), 1400);
+                                        } else {
+                                            showModernAlert("❌ Error", data.message || "Failed to update.");
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        showModernAlert("❌ Error", "An error occurred while updating.");
+                                    });
+                            });
 
-    // Close handlers
-    function closeModal() {
-        modal.style.display = 'none';
-    }
+                            // Close handlers
+                            function closeModal() {
+                                modal.style.display = 'none';
+                            }
 
-    cancelBtn && cancelBtn.addEventListener('click', closeModal);
-    topCloseBtn && topCloseBtn.addEventListener('click', closeModal);
+                            cancelBtn && cancelBtn.addEventListener('click', closeModal);
+                            topCloseBtn && topCloseBtn.addEventListener('click', closeModal);
 
-    // close on click outside content
-    window.addEventListener('click', function (ev) {
-        if (ev.target === modal) closeModal();
-    });
+                            // close on click outside content
+                            window.addEventListener('click', function(ev) {
+                                if (ev.target === modal) closeModal();
+                            });
 
-    // close on ESC
-    document.addEventListener('keydown', function (ev) {
-        if (ev.key === 'Escape' || ev.key === 'Esc') {
-            // ensure modal visible before closing
-            if (getComputedStyle(modal).display !== 'none') closeModal();
-        }
-    });
-});
-</script>
-
-
+                            // close on ESC
+                            document.addEventListener('keydown', function(ev) {
+                                if (ev.key === 'Escape' || ev.key === 'Esc') {
+                                    // ensure modal visible before closing
+                                    if (getComputedStyle(modal).display !== 'none') closeModal();
+                                }
+                            });
+                        });
+                    </script>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".delete-button").forEach(button => {
-        button.addEventListener("click", function () {
-            const dataId = this.dataset.id;
-            const tableRow = this.closest("tr"); // Get the row to delete later
 
-            // Modern confirmation overlay
-            const confirmOverlay = document.createElement('div');
-            confirmOverlay.classList.add("confirm-overlay"); // Add class for easy removal
-            confirmOverlay.style.cssText = `
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            document.querySelectorAll(".delete-button").forEach(button => {
+                                button.addEventListener("click", function() {
+                                    const dataId = this.dataset.id;
+                                    const tableRow = this.closest("tr"); // Get the row to delete later
+
+                                    // Modern confirmation overlay
+                                    const confirmOverlay = document.createElement('div');
+                                    confirmOverlay.classList.add("confirm-overlay"); // Add class for easy removal
+                                    confirmOverlay.style.cssText = `
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -942,9 +983,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: fadeIn 0.3s ease-out;
             `;
 
-            // Modal box
-            const confirmBox = document.createElement('div');
-            confirmBox.style.cssText = `
+                                    // Modal box
+                                    const confirmBox = document.createElement('div');
+                                    confirmBox.style.cssText = `
                 background: #1e1e2f;
                 border-radius: 20px;
                 padding: 2rem;
@@ -956,7 +997,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 animation: modalSlideIn 0.3s ease-out;
             `;
 
-            confirmBox.innerHTML = `
+                                    confirmBox.innerHTML = `
                 <h3 style="margin-bottom: 1rem; font-size: 1.4rem; background: linear-gradient(90deg, #ff4d4d, #ff8080); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🗑️ Confirm Delete</h3>
                 <p style="margin-bottom: 2rem; font-size: 1rem; color: #ccc;">Are you sure you want to delete this vital statistics record? This action cannot be undone.</p>
                 <div style="display: flex; gap: 1rem; justify-content: center;">
@@ -965,55 +1006,55 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
 
-            confirmOverlay.appendChild(confirmBox);
-            document.body.appendChild(confirmOverlay);
+                                    confirmOverlay.appendChild(confirmBox);
+                                    document.body.appendChild(confirmOverlay);
 
-            // Cancel action
-            confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
-                confirmOverlay.remove();
-            });
+                                    // Cancel action
+                                    confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
+                                        confirmOverlay.remove();
+                                    });
 
-            // Confirm action
-            confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-                confirmDelete(dataId, tableRow);
-            });
-        });
-    });
+                                    // Confirm action
+                                    confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
+                                        confirmDelete(dataId, tableRow);
+                                    });
+                                });
+                            });
 
-    // Confirm delete function without page reload
-    window.confirmDelete = function(dataId, tableRow) {
-        fetch(`/vitalstatistics/delete/${dataId}`, {
-            method: "DELETE",
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                "Content-Type": "application/json"
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.querySelector('.confirm-overlay')?.remove();
-            if (data.success) {
-                // Fade out before removing
-                tableRow.style.transition = "opacity 0.5s";
-                tableRow.style.opacity = "0";
-                setTimeout(() => tableRow.remove(), 500);
+                            // Confirm delete function without page reload
+                            window.confirmDelete = function(dataId, tableRow) {
+                                fetch(`/vitalstatistics/delete/${dataId}`, {
+                                        method: "DELETE",
+                                        headers: {
+                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                                            "Content-Type": "application/json"
+                                        }
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        document.querySelector('.confirm-overlay')?.remove();
+                                        if (data.success) {
+                                            // Fade out before removing
+                                            tableRow.style.transition = "opacity 0.5s";
+                                            tableRow.style.opacity = "0";
+                                            setTimeout(() => tableRow.remove(), 500);
 
-                showModernAlert("✅ Success", "Data deleted successfully!");
-            } else {
-                showModernAlert("❌ Error", "Failed to delete data.");
-            }
-        })
-        .catch(error => {
-            document.querySelector('.confirm-overlay')?.remove();
-            console.error("Error:", error);
-            showModernAlert("❌ Error", "Something went wrong.");
-        });
-    };
+                                            showModernAlert("✅ Success", "Data deleted successfully!");
+                                        } else {
+                                            showModernAlert("❌ Error", "Failed to delete data.");
+                                        }
+                                    })
+                                    .catch(error => {
+                                        document.querySelector('.confirm-overlay')?.remove();
+                                        console.error("Error:", error);
+                                        showModernAlert("❌ Error", "Something went wrong.");
+                                    });
+                            };
 
-    // Modern toast alert
-    window.showModernAlert = function(title, message) {
-        const alertBox = document.createElement('div');
-        alertBox.style.cssText = `
+                            // Modern toast alert
+                            window.showModernAlert = function(title, message) {
+                                const alertBox = document.createElement('div');
+                                alertBox.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -1025,32 +1066,45 @@ document.addEventListener("DOMContentLoaded", function () {
             z-index: 10001;
             animation: fadeIn 0.3s ease-out;
         `;
-        alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
-        document.body.appendChild(alertBox);
-        setTimeout(() => {
-            alertBox.style.opacity = "0";
-            setTimeout(() => alertBox.remove(), 500);
-        }, 2000);
-    };
-});
-</script>
+                                alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+                                document.body.appendChild(alertBox);
+                                setTimeout(() => {
+                                    alertBox.style.opacity = "0";
+                                    setTimeout(() => alertBox.remove(), 500);
+                                }, 2000);
+                            };
+                        });
+                    </script>
 
 
-<style>
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-}
-@keyframes modalSlideIn {
-    from {transform: translateY(-20px); opacity: 0;}
-    to {transform: translateY(0); opacity: 1;}
-}
-</style>
+                    <style>
+                        @keyframes fadeIn {
+                            from {
+                                opacity: 0;
+                            }
+
+                            to {
+                                opacity: 1;
+                            }
+                        }
+
+                        @keyframes modalSlideIn {
+                            from {
+                                transform: translateY(-20px);
+                                opacity: 0;
+                            }
+
+                            to {
+                                transform: translateY(0);
+                                opacity: 1;
+                            }
+                        }
+                    </style>
 
 
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script>
-                        document.getElementById("searchInput").addEventListener("input", function () {
+                        document.getElementById("searchInput").addEventListener("input", function() {
                             let searchValue = this.value.toLowerCase();
                             let rows = document.querySelectorAll("#dataTable tbody tr");
 
@@ -1069,14 +1123,15 @@ document.addEventListener("DOMContentLoaded", function () {
                                 // Show or hide row based on match
                                 if (searchValue === "" || found) {
                                     row.style.display = "";
-                                    
+
                                     // Apply highlighting to matching text
                                     if (searchValue !== "") {
                                         cells.forEach(cell => {
                                             let text = cell.innerText;
                                             let regex = new RegExp(`(${searchValue})`, "gi");
                                             if (text.toLowerCase().includes(searchValue)) {
-                                                cell.innerHTML = text.replace(regex, `<span class="highlight">$1</span>`);
+                                                cell.innerHTML = text.replace(regex,
+                                                    `<span class="highlight">$1</span>`);
                                             }
                                         });
                                     } else {
@@ -1093,16 +1148,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     </script>
 
                     <!-- <script>
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             document.querySelectorAll(".delete-button").forEach(button => {
-                                button.addEventListener("click", function () {
+                                button.addEventListener("click", function() {
                                     let dataId = this.dataset.id;
 
                                     if (confirm("Are you sure you want to delete this data?")) {
                                         fetch(`/data/${dataId}`, {
                                             method: "DELETE",
                                             headers: {
-                                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                                                "X-CSRF-TOKEN": document.querySelector(
+                                                    'meta[name="csrf-token"]').content
                                             }
                                         }).then(response => {
                                             if (response.ok) {
@@ -1118,9 +1174,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     </script> -->
 
-
-<script>
- document.addEventListener("DOMContentLoaded", function () {
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
                             // Add New Record Modal
                             setTimeout(() => {
                                 var modal = document.getElementById("customModal");
@@ -1132,15 +1187,15 @@ document.addEventListener("DOMContentLoaded", function () {
                                     return;
                                 }
 
-                                openModalBtn.addEventListener("click", function () {
+                                openModalBtn.addEventListener("click", function() {
                                     modal.style.display = "flex";
                                 });
 
-                                closeModalBtn.addEventListener("click", function () {
+                                closeModalBtn.addEventListener("click", function() {
                                     modal.style.display = "none";
                                 });
 
-                                window.addEventListener("click", function (event) {
+                                window.addEventListener("click", function(event) {
                                     if (event.target === modal) {
                                         modal.style.display = "none";
                                     }
@@ -1159,64 +1214,74 @@ document.addEventListener("DOMContentLoaded", function () {
                             var fileSize = document.getElementById("fileSize");
                             var uploadBtn = document.getElementById("uploadBtn");
 
+                            // Allowed file types
+                            const allowedExtensions = ['xlsx', 'xls', 'csv'];
+
                             // Open Import Modal
-                            openImportModalBtn.addEventListener("click", function () {
+                            openImportModalBtn.addEventListener("click", function() {
                                 importModal.style.display = "flex";
                             });
 
                             // Close Import Modal
-                            closeImportModalBtn.addEventListener("click", function () {
-                                importModal.style.display = "none";
-                                resetFileUpload();
-                            });
+                            closeImportModalBtn.addEventListener("click", closeImportModal);
+                            cancelImportModalBtn.addEventListener("click", closeImportModal);
 
-                            cancelImportModalBtn.addEventListener("click", function () {
+                            function closeImportModal() {
                                 importModal.style.display = "none";
                                 resetFileUpload();
-                            });
+                            }
 
                             // Close modal when clicking outside
-                            window.addEventListener("click", function (event) {
+                            window.addEventListener("click", function(event) {
                                 if (event.target === importModal) {
-                                    importModal.style.display = "none";
-                                    resetFileUpload();
+                                    closeImportModal();
                                 }
                             });
 
                             // File upload functionality
-                            fileInput.addEventListener("change", function () {
-                                handleFileSelect(this.files[0]);
+                            fileInput.addEventListener("change", function() {
+                                validateAndHandleFile(this.files[0]);
                             });
 
                             // Drag and drop functionality
-                            fileUploadArea.addEventListener("dragover", function (e) {
+                            fileUploadArea.addEventListener("dragover", function(e) {
                                 e.preventDefault();
                                 this.classList.add("dragover");
                             });
 
-                            fileUploadArea.addEventListener("dragleave", function (e) {
+                            fileUploadArea.addEventListener("dragleave", function(e) {
                                 this.classList.remove("dragover");
                             });
 
-                            fileUploadArea.addEventListener("drop", function (e) {
+                            fileUploadArea.addEventListener("drop", function(e) {
                                 e.preventDefault();
                                 this.classList.remove("dragover");
                                 var files = e.dataTransfer.files;
                                 if (files.length > 0) {
                                     fileInput.files = files;
-                                    handleFileSelect(files[0]);
+                                    validateAndHandleFile(files[0]);
                                 }
                             });
 
-                            function handleFileSelect(file) {
-                                if (file) {
-                                    fileName.textContent = file.name;
-                                    fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
-                                    fileInfo.classList.add("show");
-                                    uploadBtn.disabled = false;
-                                } else {
+                            // Validate file extension before showing info
+                            function validateAndHandleFile(file) {
+                                if (!file) {
                                     resetFileUpload();
+                                    return;
                                 }
+
+                                const ext = file.name.split('.').pop().toLowerCase();
+                                if (!allowedExtensions.includes(ext)) {
+                                    showModernAlert("❌ Invalid File",
+                                    "Please upload only Excel (.xlsx, .xls) or CSV (.csv) files.");
+                                    resetFileUpload();
+                                    return;
+                                }
+
+                                fileName.textContent = file.name;
+                                fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                                fileInfo.classList.add("show");
+                                uploadBtn.disabled = false;
                             }
 
                             function resetFileUpload() {
@@ -1224,91 +1289,112 @@ document.addEventListener("DOMContentLoaded", function () {
                                 fileInfo.classList.remove("show");
                                 uploadBtn.disabled = true;
                             }
+
+                            // Modern toast alert
+                            function showModernAlert(title, message) {
+                                const alertBox = document.createElement('div');
+                                alertBox.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e1e2f;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10001;
+            animation: fadeIn 0.3s ease-out;
+        `;
+                                alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+                                document.body.appendChild(alertBox);
+                                setTimeout(() => {
+                                    alertBox.style.opacity = "0";
+                                    setTimeout(() => alertBox.remove(), 500);
+                                }, 2500);
+                            }
                         });
                     </script>
 
                     <script>
                         // Prevent selection of past dates
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             let today = new Date().toISOString().split("T")[0];
                             document.getElementById("date").setAttribute("min", today);
                         });
 
-    // Populate form with data when edit button is clicked
-    document.querySelectorAll(".edit-button").forEach(button => {
-        button.addEventListener("click", function () {
-            document.getElementById("edit_id").value = this.dataset.id;
-            document.getElementById("edit_year").value = this.dataset.year;
-            document.getElementById("edit_population").value = this.dataset.population;
-            document.getElementById("edit_births").value = this.dataset.births;
-            document.getElementById("edit_deaths").value = this.dataset.deaths;
-            document.getElementById("edit_infant").value = this.dataset.infant;
-            document.getElementById("edit_maternal").value = this.dataset.maternal;
+                        // Populate form with data when edit button is clicked
+                        document.querySelectorAll(".edit-button").forEach(button => {
+                            button.addEventListener("click", function() {
+                                document.getElementById("edit_id").value = this.dataset.id;
+                                document.getElementById("edit_year").value = this.dataset.year;
+                                document.getElementById("edit_population").value = this.dataset.population;
+                                document.getElementById("edit_births").value = this.dataset.births;
+                                document.getElementById("edit_deaths").value = this.dataset.deaths;
+                                document.getElementById("edit_infant").value = this.dataset.infant;
+                                document.getElementById("edit_maternal").value = this.dataset.maternal;
 
-            editModal.style.display = "flex";
-        });
-    });
+                                editModal.style.display = "flex";
+                            });
+                        });
 
-    // Close modal when clicking close or cancel button
-    closeEditModalBtn.addEventListener("click", function () {
-        editModal.style.display = "none";
-    });
+                        // Close modal when clicking close or cancel button
+                        closeEditModalBtn.addEventListener("click", function() {
+                            editModal.style.display = "none";
+                        });
 
-    cancelEditModalBtn.addEventListener("click", function () {
-        editModal.style.display = "none";
-    });
+                        cancelEditModalBtn.addEventListener("click", function() {
+                            editModal.style.display = "none";
+                        });
 
-    // Close modal if clicked outside the modal content
-    window.addEventListener("click", function (event) {
-        if (event.target === editModal) {
-            editModal.style.display = "none";
-        }
-    });
+                        // Close modal if clicked outside the modal content
+                        window.addEventListener("click", function(event) {
+                            if (event.target === editModal) {
+                                editModal.style.display = "none";
+                            }
+                        });
 
-    // Add validation to edit form inputs
-    const editTotalDeathsInput = document.getElementById("edit_deaths");
-    const editInfantDeathsInput = document.getElementById("edit_infant");
-    const editMaternalDeathsInput = document.getElementById("edit_maternal");
+                        // Add validation to edit form inputs
+                        const editTotalDeathsInput = document.getElementById("edit_deaths");
+                        const editInfantDeathsInput = document.getElementById("edit_infant");
+                        const editMaternalDeathsInput = document.getElementById("edit_maternal");
 
-    function enforceEditDependency() {
-        let totalDeaths = parseInt(editTotalDeathsInput.value) || 0;
-        let infantDeaths = parseInt(editInfantDeathsInput.value) || 0;
-        let maternalDeaths = parseInt(editMaternalDeathsInput.value) || 0;
-        let maxAllowed = totalDeaths;
+                        function enforceEditDependency() {
+                            let totalDeaths = parseInt(editTotalDeathsInput.value) || 0;
+                            let infantDeaths = parseInt(editInfantDeathsInput.value) || 0;
+                            let maternalDeaths = parseInt(editMaternalDeathsInput.value) || 0;
+                            let maxAllowed = totalDeaths;
 
-        // Reset error states
-        editInfantDeathsInput.classList.remove('input-dependency-error');
-        editMaternalDeathsInput.classList.remove('input-dependency-error');
+                            // Reset error states
+                            editInfantDeathsInput.classList.remove('input-dependency-error');
+                            editMaternalDeathsInput.classList.remove('input-dependency-error');
 
-        // Ensure infant and maternal deaths do not exceed total deaths
-        if (infantDeaths + maternalDeaths > maxAllowed) {
-            editInfantDeathsInput.classList.add('input-dependency-error');
-            editMaternalDeathsInput.classList.add('input-dependency-error');
-            
-            showModernAlert("⚠️ Validation Error", "The sum of Infant and Maternal Deaths cannot exceed Total Deaths.");
-            editInfantDeathsInput.value = Math.max(0, maxAllowed - maternalDeaths);
-        }
-    }
+                            // Ensure infant and maternal deaths do not exceed total deaths
+                            if (infantDeaths + maternalDeaths > maxAllowed) {
+                                editInfantDeathsInput.classList.add('input-dependency-error');
+                                editMaternalDeathsInput.classList.add('input-dependency-error');
 
-    editTotalDeathsInput.addEventListener("input", function () {
-        let totalDeaths = parseInt(this.value) || 0;
-        editInfantDeathsInput.max = totalDeaths;
-        editMaternalDeathsInput.max = totalDeaths;
-        enforceEditDependency();
-    });
+                                showModernAlert("⚠️ Validation Error", "The sum of Infant and Maternal Deaths cannot exceed Total Deaths.");
+                                editInfantDeathsInput.value = Math.max(0, maxAllowed - maternalDeaths);
+                            }
+                        }
 
-    editInfantDeathsInput.addEventListener("input", enforceEditDependency);
-    editMaternalDeathsInput.addEventListener("input", enforceEditDependency);
+                        editTotalDeathsInput.addEventListener("input", function() {
+                            let totalDeaths = parseInt(this.value) || 0;
+                            editInfantDeathsInput.max = totalDeaths;
+                            editMaternalDeathsInput.max = totalDeaths;
+                            enforceEditDependency();
+                        });
 
+                        editInfantDeathsInput.addEventListener("input", enforceEditDependency);
+                        editMaternalDeathsInput.addEventListener("input", enforceEditDependency);
+                    </script>
 
-</script>
+                    <script>
+                        document.getElementById("printTable").addEventListener("click", function() {
+                            let printContent = document.getElementById("dataTable").outerHTML;
+                            let newWindow = window.open("", "", "width=800,height=600");
 
-<script>
-    document.getElementById("printTable").addEventListener("click", function () {
-            let printContent = document.getElementById("dataTable").outerHTML;
-            let newWindow = window.open("", "", "width=800,height=600");
-
-            newWindow.document.write(`
+                            newWindow.document.write(`
         <html>
         <head>
             <title>Vital Statistics Records - Print</title>
@@ -1360,85 +1446,103 @@ document.addEventListener("DOMContentLoaded", function () {
         </html>
     `);
 
-            newWindow.document.close();
-            newWindow.print();
-        });
-</script>
+                            newWindow.document.close();
+                            newWindow.print();
+                        });
+                    </script>
 
-                <!-- CSS Animations -->
-                <style>
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
+                    <!-- CSS Animations -->
+                    <style>
+                        @keyframes fadeIn {
+                            from {
+                                opacity: 0;
+                            }
 
-                    /* Loading spinner for buttons */
-                    .loading {
-                        position: relative;
-                        pointer-events: none;
-                    }
+                            to {
+                                opacity: 1;
+                            }
+                        }
 
-                    .loading::after {
-                        content: '';
-                        position: absolute;
-                        width: 16px;
-                        height: 16px;
-                        margin: auto;
-                        border: 2px solid transparent;
-                        border-top-color: #ffffff;
-                        border-radius: 50%;
-                        animation: spin 1s linear infinite;
-                        top: 0;
-                        left: 0;
-                        bottom: 0;
-                        right: 0;
-                    }
+                        /* Loading spinner for buttons */
+                        .loading {
+                            position: relative;
+                            pointer-events: none;
+                        }
 
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
+                        .loading::after {
+                            content: '';
+                            position: absolute;
+                            width: 16px;
+                            height: 16px;
+                            margin: auto;
+                            border: 2px solid transparent;
+                            border-top-color: #ffffff;
+                            border-radius: 50%;
+                            animation: spin 1s linear infinite;
+                            top: 0;
+                            left: 0;
+                            bottom: 0;
+                            right: 0;
+                        }
 
-                    /* Smooth transitions for form inputs */
-                    .modern-form-control {
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    }
+                        @keyframes spin {
+                            0% {
+                                transform: rotate(0deg);
+                            }
 
-                    .modern-form-control:hover {
-                        background: rgba(255, 255, 255, 0.12);
-                        transform: translateY(-1px);
-                    }
+                            100% {
+                                transform: rotate(360deg);
+                            }
+                        }
 
-                    /* Enhanced button hover effects */
-                    .modern-btn {
-                        position: relative;
-                        overflow: hidden;
-                    }
+                        /* Smooth transitions for form inputs */
+                        .modern-form-control {
+                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        }
 
-                    .modern-btn:active {
-                        transform: translateY(0);
-                        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-                    }
+                        .modern-form-control:hover {
+                            background: rgba(255, 255, 255, 0.12);
+                            transform: translateY(-1px);
+                        }
 
-                    /* Success animation */
-                    @keyframes successPulse {
-                        0% { transform: scale(1); }
-                        50% { transform: scale(1.05); }
-                        100% { transform: scale(1); }
-                    }
+                        /* Enhanced button hover effects */
+                        .modern-btn {
+                            position: relative;
+                            overflow: hidden;
+                        }
 
-                    .success-animation {
-                        animation: successPulse 0.6s ease-in-out;
-                    }
-                </style>
+                        .modern-btn:active {
+                            transform: translateY(0);
+                            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+                        }
+
+                        /* Success animation */
+                        @keyframes successPulse {
+                            0% {
+                                transform: scale(1);
+                            }
+
+                            50% {
+                                transform: scale(1.05);
+                            }
+
+                            100% {
+                                transform: scale(1);
+                            }
+                        }
+
+                        .success-animation {
+                            animation: successPulse 0.6s ease-in-out;
+                        }
+                    </style>
                 </div>
             </main>
 
-			@include('staff.footer')
-		</div>
-	</div>
+            @include('staff.footer')
+        </div>
+    </div>
 
-@include('staff.js')
+    @include('staff.js')
 
 </body>
 
