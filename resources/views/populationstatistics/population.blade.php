@@ -164,11 +164,22 @@
             transition: all 0.3s ease;
         }
 
+        /* Generic focus style for all .modern-form-control */
         .modern-form-control:focus {
             background: rgba(255, 255, 255, 0.15);
             border-color: #667eea;
             box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+
+        /* Text inputs, textareas get one color */
+        input.modern-form-control:focus,
+        textarea.modern-form-control:focus {
             color: var(--text-primary);
+        }
+
+        /* Select elements get their own color */
+        select.modern-form-control:focus {
+            color: gray;
         }
 
         .modern-form-control::placeholder {
@@ -487,7 +498,9 @@
         }
 
         @media print {
-            .no-print, .pagination {
+
+            .no-print,
+            .pagination {
                 display: none !important;
             }
         }
@@ -497,6 +510,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -534,9 +548,11 @@
 
                                     <!-- Search Input -->
                                     <div class="modern-input-group input-group" style="width: 300px;">
-                                        <span class="input-group-text bg-transparent"><i data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search" class="form-control modern-form-control"
-                                               placeholder="Search records..." style="border-left: none;">
+                                        <span class="input-group-text bg-transparent"><i
+                                                data-feather="search"></i></span>
+                                        <input type="text" id="searchInput" name="search"
+                                            class="form-control modern-form-control" placeholder="Search records..."
+                                            style="border-left: none;">
                                     </div>
 
                                     <span class="separator">|</span>
@@ -580,8 +596,10 @@
 
                                 <!-- Barangay Dropdown -->
                                 <div class="mb-3">
-                                    <label for="location" class="modern-form-label form-label">🏘️ Location (Barangay)</label>
-                                    <select class="modern-form-control form-control" id="location" name="location" required>
+                                    <label for="location" class="modern-form-label form-label">🏘️ Location
+                                        (Barangay)</label>
+                                    <select class="modern-form-control form-control" id="location" name="location"
+                                        required>
                                         <option value="" disabled selected>Select Barangay</option>
                                         <option value="Bacayao Norte">Bacayao Norte</option>
                                         <option value="Bacayao Sur">Bacayao Sur</option>
@@ -620,13 +638,16 @@
                                 <!-- Date Picker -->
                                 <div class="mb-3">
                                     <label for="date" class="modern-form-label form-label">📅 Date</label>
-                                    <input type="date" class="modern-form-control form-control" id="date" name="date" required>
+                                    <input type="date" class="modern-form-control form-control" id="date"
+                                        name="date" required>
                                 </div>
 
                                 <!-- Total Population -->
                                 <div class="mb-3">
-                                    <label for="population" class="modern-form-label form-label">👥 Total Population</label>
-                                    <input type="number" class="modern-form-control form-control" id="population" name="population" required min="0">
+                                    <label for="population" class="modern-form-label form-label">👥 Total
+                                        Population</label>
+                                    <input type="number" class="modern-form-control form-control" id="population"
+                                        name="population" required min="0">
                                 </div>
 
                                 <!-- Submit Button -->
@@ -642,17 +663,19 @@
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close" id="closeImportModal">&times;</span>
                             <h2>📤 Import Population Records</h2>
-                            <form action="{{ route('population.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
+                            <form action="{{ route('population.import') }}" method="POST"
+                                enctype="multipart/form-data" id="importForm">
                                 @csrf
                                 <div class="file-upload-area" id="fileUploadArea">
                                     <div class="file-upload-icon">📁</div>
                                     <div class="file-upload-text">
                                         <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
                                     </div>
-                                    <input type="file" name="file" id="fileInput" class="modern-form-control form-control" 
-                                           accept=".xlsx,.xls,.csv" required style="display: none;">
-                                    <button type="button" class="modern-btn btn-secondary btn-sm" 
-                                            onclick="document.getElementById('fileInput').click()">
+                                    <input type="file" name="file" id="fileInput"
+                                        class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
+                                        style="display: none;">
+                                    <button type="button" class="modern-btn btn-secondary btn-sm"
+                                        onclick="document.getElementById('fileInput').click()">
                                         📂 Choose File
                                     </button>
                                 </div>
@@ -671,8 +694,10 @@
                                 </div>
 
                                 <div class="modern-modal-footer modal-footer">
-                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌ Cancel</button>
-                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤 Upload File</button>
+                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌
+                                        Cancel</button>
+                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤
+                                        Upload File</button>
                                 </div>
                             </form>
                         </div>
@@ -690,8 +715,10 @@
 
                                 <!-- Barangay Dropdown (Location) -->
                                 <div class="mb-3">
-                                    <label for="edit_location" class="modern-form-label form-label">🏘️ Location (Barangay)</label>
-                                    <select class="modern-form-control form-control" id="edit_location" name="location" required>
+                                    <label for="edit_location" class="modern-form-label form-label">🏘️ Location
+                                        (Barangay)</label>
+                                    <select class="modern-form-control form-control" id="edit_location"
+                                        name="location" required>
                                         <option value="" disabled>Select Barangay</option>
                                         <option value="Bacayao Norte">Bacayao Norte</option>
                                         <option value="Bacayao Sur">Bacayao Sur</option>
@@ -730,17 +757,21 @@
                                 <!-- Date -->
                                 <div class="mb-3">
                                     <label for="edit_year" class="modern-form-label form-label">📅 Date</label>
-                                    <input type="date" class="modern-form-control form-control" id="edit_year" name="year" required>
+                                    <input type="date" class="modern-form-control form-control" id="edit_year"
+                                        name="year" required>
                                 </div>
 
                                 <!-- Total Population -->
                                 <div class="mb-3">
-                                    <label for="edit_population" class="modern-form-label form-label">👥 Total Population</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_population" name="total_population" required min="0">
+                                    <label for="edit_population" class="modern-form-label form-label">👥 Total
+                                        Population</label>
+                                    <input type="number" class="modern-form-control form-control"
+                                        id="edit_population" name="total_population" required min="0">
                                 </div>
 
                                 <div class="modern-modal-footer modal-footer">
-                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌ Cancel</button>
+                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌
+                                        Cancel</button>
                                     <button type="submit" class="modern-btn btn-primary">💾 Update Record</button>
                                 </div>
                             </form>
@@ -749,7 +780,7 @@
 
                     <!-- JavaScript Section -->
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             // Add New Record Modal
                             setTimeout(() => {
                                 var modal = document.getElementById("customModal");
@@ -761,15 +792,15 @@
                                     return;
                                 }
 
-                                openModalBtn.addEventListener("click", function () {
+                                openModalBtn.addEventListener("click", function() {
                                     modal.style.display = "flex";
                                 });
 
-                                closeModalBtn.addEventListener("click", function () {
+                                closeModalBtn.addEventListener("click", function() {
                                     modal.style.display = "none";
                                 });
 
-                                window.addEventListener("click", function (event) {
+                                window.addEventListener("click", function(event) {
                                     if (event.target === modal) {
                                         modal.style.display = "none";
                                     }
@@ -846,7 +877,8 @@
 
                                 const ext = file.name.split('.').pop().toLowerCase();
                                 if (!allowedExtensions.includes(ext)) {
-                                    showModernAlert("❌ Invalid File", "Please upload only Excel (.xlsx, .xls) or CSV (.csv) files.");
+                                    showModernAlert("❌ Invalid File",
+                                    "Please upload only Excel (.xlsx, .xls) or CSV (.csv) files.");
                                     resetFileUpload();
                                     return;
                                 }
@@ -892,39 +924,40 @@
                         });
 
                         // Update Form Submission
-                        document.getElementById("updateForm").addEventListener("submit", function (event) {
+                        document.getElementById("updateForm").addEventListener("submit", function(event) {
                             event.preventDefault();
 
                             let formData = new FormData(this);
                             formData.append('_method', 'PUT');
 
                             fetch(`/population/update`, {
-                                method: "POST",
-                                headers: {
-                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                                    "X-Requested-With": "XMLHttpRequest",
-                                },
-                                body: formData,
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    showModernAlert("✅ Success", "Record updated successfully!");
-                                    location.reload();
-                                } else {
-                                    showModernAlert("❌ Error", "Failed to update record: " + (data.message || "Unknown error."));
-                                }
-                            })
-                            .catch(error => {
-                                console.error("Error:", error);
-                                showModernAlert("❌ Error", "An error occurred while updating the record.");
-                            });
+                                    method: "POST",
+                                    headers: {
+                                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                                        "X-Requested-With": "XMLHttpRequest",
+                                    },
+                                    body: formData,
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        showModernAlert("✅ Success", "Record updated successfully!");
+                                        location.reload();
+                                    } else {
+                                        showModernAlert("❌ Error", "Failed to update record: " + (data.message ||
+                                            "Unknown error."));
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Error:", error);
+                                    showModernAlert("❌ Error", "An error occurred while updating the record.");
+                                });
                         });
 
                         // Delete Functionality
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             document.querySelectorAll(".delete-button").forEach(button => {
-                                button.addEventListener("click", function () {
+                                button.addEventListener("click", function() {
                                     const dataId = this.dataset.id;
                                     const tableRow = this.closest("tr");
 
@@ -979,34 +1012,37 @@
                                     // Confirm action
                                     confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
                                         fetch(`/population/delete/${dataId}`, {
-                                            method: "DELETE",
-                                            headers: {
-                                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                                                "Content-Type": "application/json"
-                                            }
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            confirmOverlay.remove();
-                                            if (data.success) {
-                                                tableRow.remove();
-                                                showModernAlert("✅ Success", "Data deleted successfully!");
-                                            } else {
-                                                showModernAlert("❌ Error", "Failed to delete data.");
-                                            }
-                                        })
-                                        .catch(error => {
-                                            confirmOverlay.remove();
-                                            console.error("Error:", error);
-                                            showModernAlert("❌ Error", "Something went wrong.");
-                                        });
+                                                method: "DELETE",
+                                                headers: {
+                                                    "X-CSRF-TOKEN": document.querySelector(
+                                                        'meta[name="csrf-token"]').content,
+                                                    "Content-Type": "application/json"
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                confirmOverlay.remove();
+                                                if (data.success) {
+                                                    tableRow.remove();
+                                                    showModernAlert("✅ Success",
+                                                        "Data deleted successfully!");
+                                                } else {
+                                                    showModernAlert("❌ Error",
+                                                    "Failed to delete data.");
+                                                }
+                                            })
+                                            .catch(error => {
+                                                confirmOverlay.remove();
+                                                console.error("Error:", error);
+                                                showModernAlert("❌ Error", "Something went wrong.");
+                                            });
                                     });
                                 });
                             });
                         });
 
                         // Search Functionality
-                        document.getElementById("searchInput").addEventListener("input", function () {
+                        document.getElementById("searchInput").addEventListener("input", function() {
                             let searchValue = this.value.toLowerCase();
                             let rows = document.querySelectorAll("#dataTable tbody tr");
 
@@ -1030,14 +1066,14 @@
                         });
 
                         // Edit Modal
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             const editModal = document.getElementById("editModal");
                             const closeEditModalBtn = document.querySelector("#editModal .close");
                             const cancelEditModalBtn = document.getElementById("cancelEditModal");
 
                             // Show and populate modal
                             document.querySelectorAll(".edit-button").forEach(button => {
-                                button.addEventListener("click", function () {
+                                button.addEventListener("click", function() {
                                     document.getElementById("edit_id").value = this.dataset.id;
                                     document.getElementById("edit_year").value = this.dataset.year;
                                     document.getElementById("edit_population").value = this.dataset.population;
@@ -1057,16 +1093,16 @@
                             });
 
                             // Close modal when clicking close or cancel button
-                            closeEditModalBtn.addEventListener("click", function () {
+                            closeEditModalBtn.addEventListener("click", function() {
                                 editModal.style.display = "none";
                             });
 
-                            cancelEditModalBtn.addEventListener("click", function () {
+                            cancelEditModalBtn.addEventListener("click", function() {
                                 editModal.style.display = "none";
                             });
 
                             // Close modal if clicked outside the modal content
-                            window.addEventListener("click", function (event) {
+                            window.addEventListener("click", function(event) {
                                 if (event.target === editModal) {
                                     editModal.style.display = "none";
                                 }
@@ -1074,7 +1110,7 @@
                         });
 
                         // Print Functionality
-                        document.getElementById("printTable").addEventListener("click", function () {
+                        document.getElementById("printTable").addEventListener("click", function() {
                             let printContent = document.getElementById("dataTable").outerHTML;
                             let newWindow = window.open("", "", "width=800,height=600");
 
@@ -1132,4 +1168,5 @@
     @include('staff.js')
 
 </body>
+
 </html>

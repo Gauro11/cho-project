@@ -163,12 +163,24 @@
             transition: all 0.3s ease;
         }
 
+        /* Generic focus style for all .modern-form-control */
         .modern-form-control:focus {
             background: rgba(255, 255, 255, 0.15);
             border-color: #667eea;
             box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+
+        /* Text inputs, textareas get one color */
+        input.modern-form-control:focus,
+        textarea.modern-form-control:focus {
             color: var(--text-primary);
         }
+
+        /* Select elements get their own color */
+        select.modern-form-control:focus {
+            color: gray;
+        }
+
 
         .modern-form-control::placeholder {
             color: var(--text-secondary);
@@ -1273,7 +1285,7 @@
                                 const ext = file.name.split('.').pop().toLowerCase();
                                 if (!allowedExtensions.includes(ext)) {
                                     showModernAlert("❌ Invalid File",
-                                    "Please upload only Excel (.xlsx, .xls) or CSV (.csv) files.");
+                                        "Please upload only Excel (.xlsx, .xls) or CSV (.csv) files.");
                                     resetFileUpload();
                                     return;
                                 }
