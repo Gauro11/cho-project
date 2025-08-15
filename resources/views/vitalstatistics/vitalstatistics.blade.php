@@ -176,7 +176,7 @@
             color: var(--text-primary);
         }
 
-        /* Select elements get their own color */
+        /* Select elements get their own color *//
         select.modern-form-control:focus {
             color: gray;
         }
