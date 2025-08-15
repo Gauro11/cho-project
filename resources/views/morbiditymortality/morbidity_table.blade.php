@@ -1,7 +1,7 @@
 @if($data->isNotEmpty())
         <div class="row">
             <div class="col-12 col-lg-12 col-xxl-12 d-flex">
-                <div class="card flex-fill" id="dataTable">
+                <div class="table flex-fill" id="dataTable">
                     <table class="table table-hover my-0">
                         <thead>
                             <tr style="color: white;">

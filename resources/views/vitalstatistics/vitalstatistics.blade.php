@@ -576,7 +576,7 @@
                     <div id="importModal" class="modern-modal modal">
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close" id="closeImportModal">&times;</span>
-                            <h2>📤 Import Vital Statistics Records</h2>
+                            <h2>Import Vital Statistics Records</h2>
                             <form action="{{ route('vital_statistics.import') }}" method="POST"
                                 enctype="multipart/form-data" id="importForm">
                                 @csrf
@@ -622,7 +622,7 @@
                     <div id="customModal" class="modern-modal modal">
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close">&times;</span>
-                            <h2>📈 Add Vital Statistics Records</h2>
+                            <h2>Add Vital Statistics Records</h2>
                             <form action="{{ route('vital_statistics.store') }}" method="POST">
                                 @csrf
 

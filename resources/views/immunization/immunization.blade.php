@@ -549,7 +549,7 @@
                     <div id="customModal" class="modern-modal modal">
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close">&times;</span>
-                            <h2>🩹 Add Immunization Record</h2>
+                            <h2>Add Immunization Record</h2>
                             <form action="{{ route('immunization.store') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
@@ -592,7 +592,7 @@
                     <div id="importModal" class="modern-modal modal">
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close" id="closeImportModal">&times;</span>
-                            <h2>📤 Import Immunization Records</h2>
+                            <h2>Import Immunization Records</h2>
                             <form action="{{ route('immunization.import') }}" method="POST"
                                 enctype="multipart/form-data" id="importForm">
                                 @csrf

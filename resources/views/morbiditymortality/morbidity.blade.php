@@ -2,192 +2,558 @@
 <html lang="en">
 
 <head>
-<meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-	@include('staff.css')
+    @include('staff.css')
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-            .highlight {
-        background-color: yellow;
-        font-weight: bold;
-    }
-.custom-pagination {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    border-radius: 5px;
-    background: #f8f9fa;
-    padding: 8px 12px;
-}
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --warning-gradient: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            --dark-bg: #0f0f23;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --shadow-glow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
 
-.custom-pagination .page-item {
-    margin: 0 5px;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+        }
 
-.custom-pagination .page-link {
-    color: #000957;
-    padding: 8px 12px;
-    border: 1px solid #000957;
-    border-radius: 5px;
-    transition: 0.3s;
-    text-decoration: none;
-}
+        .content {
+            padding: 2rem;
+        }
 
-.custom-pagination .page-item.active .page-link,
-.custom-pagination .page-link:hover {
-    background-color: #000957;
-    color: white;
-}
+        /* Modern Page Title */
+        .page-title {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out;
+        }
 
-.custom-pagination .disabled .page-link {
-    color: #ccc;
-    pointer-events: none;
-    border: 1px solid #ccc;
-}
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+        }
 
-        
+        /* Modern Glass Cards */
+        .glass-card {
+            background: var(--primary-gradient);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            box-shadow: var(--shadow-glow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 2rem;
+        }
 
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
 
-            .half-width {
-                width: 48%;
+        .glass-card:hover::before {
+            left: 100%;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.5);
+        }
+
+        /* Modern Card Body */
+        .card-body {
+            padding: 2rem;
+            background: transparent;
+        }
+
+        /* Modern Buttons */
+        .btn {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 15px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.5);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Modern Form Controls */
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 12px 20px;
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            color: var(--text-primary);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Modern Input Group */
+        .input-group {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .input-group .input-group-text {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+        }
+
+        /* Modern Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            box-shadow: var(--shadow-glow);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
             }
 
-            .input-row {
-                display: flex;
-                justify-content: space-between;
-                gap: 4%;
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-content h2 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: var(--secondary-gradient);
+            transform: rotate(90deg);
+        }
+
+        /* Modern Form Labels */
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Modern Modal Footer */
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        /* Highlight Search Results */
+        .highlight {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            color: #000;
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        /* Modern Pagination */
+        .custom-pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            border-radius: 15px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            padding: 8px 12px;
+            justify-content: center;
+        }
+
+        .custom-pagination .page-item {
+            margin: 0 5px;
+        }
+
+        .custom-pagination .page-link {
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            transition: 0.3s;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-pagination .page-item.active .page-link,
+        .custom-pagination .page-link:hover {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .custom-pagination .disabled .page-link {
+            color: var(--text-secondary);
+            pointer-events: none;
+            border: 1px solid var(--text-secondary);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
 
-            .save-button {
-                margin-top: 20px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Modern Table Styles */
+        .modern-table {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .modern-table th {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .modern-table td {
+            background: rgba(255, 255, 255, 0.02);
+            border: none;
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem;
+            color: var(--text-primary);
+        }
+
+        .modern-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        /* Action Buttons in Table */
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            margin: 0 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .action-btn.edit {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: var(--secondary-gradient);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Separator Styles */
+        .separator {
+            color: var(--text-secondary);
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        /* Original preserved styles */
+        .half-width {
+            width: 48%;
+        }
+
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 4%;
+        }
+
+        .save-button {
+            margin-top: 20px;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
             }
 
-            .half-width {
-                width: 48%;
-            }
-
-            .input-row {
-                display: flex;
-                justify-content: space-between;
-                gap: 4%;
-            }
-
-            .save-button {
-                margin-top: 20px;
-            }
-
-            /* Modal Background */
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                justify-content: center;
-                align-items: center;
-            }
-
-            /* Modal Content */
             .modal-content {
-                background-color: white;
-                padding: 20px;
-                width: 400px;
-                border-radius: 10px;
-                text-align: left;
-                position: relative;
-                border: 2px solid blue;
+                width: 95%;
+                padding: 1.5rem;
             }
 
-            /* Close Button */
-            .close {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                font-size: 20px;
-                cursor: pointer;
+            .content {
+                padding: 1rem;
             }
 
-            /* Modal Footer */
-            .modal-footer {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 15px;
+            .card-body {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media print {
+
+            .no-print,
+            .pagination {
+                display: none !important;
+            }
+        }
+
+        /* Delete confirmation styles */
+        .modern-confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modern-confirm-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-glow);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
 
-            @media print {
-                .no-print, .pagination {
-                    display: none !important;
-                }
+            to {
+                opacity: 1;
             }
-
-        </style>
+        }
+    </style>
 </head>
 
 <body>
-	<div class="wrapper">
-	@include('staff.sidebar')
+    <div class="wrapper">
+        @include('staff.sidebar')
 
-
-
-			<div class="main">
+        <div class="main">
             @include('staff.header')
             <main class="content">
                 <div class="container-fluid p-0">
 
                     <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <h1 style="color:#000957;" class="h3 mb-3">Morbidity Records</h1>
+                        <h1 class="page-title">Morbidity Records</h1>
                         <div class="d-flex gap-2" style="width: 100%; max-width: 400px;">
-
-                            
                         </div>
                     </div>
 
                     <br><br>
 
-                    <div class="col-12 col-lg-12">
-                        <div class="card">
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
+                    <div class="col-12 col-lg-12 fade-in-up">
+                        <div class="glass-card card">
+                            <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <!-- Settings Icon (White Color) -->
                                     <button class="btn btn-success btn-sm" id="openModal">
-                                        Add New Record
+                                        ➕ Add New Record
                                     </button>
                                     <!-- <i id="openModal" data-feather="plus" style="color: white; cursor: pointer;"></i> -->
 
                                     <!-- Vertical Bar Separator -->
-                                    <span style="color: white; font-weight: bold;">|</span>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white"><i data-feather="search"></i></span>
+                                    <span class="separator">|</span>
+                                    <div class="input-group" style="width: 300px;">
+                                        <span class="input-group-text bg-transparent"><i
+                                                data-feather="search"></i></span>
                                         <input type="text" id="searchInput" name="search" class="form-control"
-                                            placeholder="Search..." style="background-color: white; color: black;">
+                                            placeholder="Search records..." style="border-left: none;">
                                     </div>
 
-                                    <span style="color: white; font-weight: bold;">|</span>
+                                    <span class="separator">|</span>
 
                                     <!-- Search Field with Icon (Next to the Separator) -->
-                                    
+
                                 </div>
 
                                 <!-- Pagination + Download Icon on the Right -->
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <!-- Pagination (Smaller Size) -->
 
-                                <button id="printTable" class="btn btn-primary btn-sm">
-                                    <i data-feather="printer" style="color: white;"></i> Print
-                                </button>
+                                    <button id="printTable" class="btn btn-primary btn-sm">
+                                        <i data-feather="printer"></i> Print
+                                    </button>
 
                                     <!-- Download Icon -->
-                                    
-
-<a href="{{ route('exportMorbidity') }}" class="btn btn-success btn-sm">
-    <i data-feather="download" style="color: white;"></i> Download 
-</a>
 
 
+                                    <a href="{{ route('exportMorbidity') }}" class="btn btn-success btn-sm">
+                                        <i data-feather="download"></i> Download
+                                    </a>
 
                                     <!-- <span style="color: white; font-weight: bold;">|</span>
 
@@ -204,115 +570,120 @@
                     </script>
 
                     @include('morbiditymortality.mortality_table')
-                    
+
 
                     <!-- Modal Structure -->
                     <div id="customModal" class="modal">
                         <div class="modal-content">
                             <span class="close">&times;</span>
-                            <h2>Add New Record</h2>
+                            <h2>Add New Morbidity Record</h2>
                             <form action="{{ route('morbidity.store') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="date" class="form-label">Date</label>
+                                    <label for="date" class="form-label">📅 Date</label>
                                     <input type="date" class="form-control" id="date" name="date" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="case_name" class="form-label">Case Name</label>
-                                    <input type="text" class="form-control" id="case_name" name="case_name" placeholder="Enter case name" required>
+                                    <label for="case_name" class="form-label">📝 Case Name</label>
+                                    <input type="text" class="form-control" id="case_name" name="case_name"
+                                        placeholder="Enter case name" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="male_count" class="form-label">Male Count</label>
-                                    <input type="number" class="form-control" id="male_count" name="male_count" required>
+                                    <label for="male_count" class="form-label">👨 Male Count</label>
+                                    <input type="number" class="form-control" id="male_count" name="male_count"
+                                        required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="female_count" class="form-label">Female Count</label>
-                                    <input type="number" class="form-control" id="female_count" name="female_count" required>
+                                    <label for="female_count" class="form-label">👩 Female Count</label>
+                                    <input type="number" class="form-control" id="female_count" name="female_count"
+                                        required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="total" class="form-label">Total Cases</label>
+                                    <label for="total" class="form-label">📊 Total Cases</label>
                                     <input type="text" class="form-control" id="total" readonly>
                                 </div>
-                               
+
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Add New Record</button>
+                                    <button type="submit" class="btn btn-primary">✅ Add New Record</button>
                                 </div>
                             </form>
 
                         </div>
                     </div>
                     <script>
-    const maleCountInput = document.getElementById('male_count');
-    const femaleCountInput = document.getElementById('female_count');
-    const totalInput = document.getElementById('total');
+                        const maleCountInput = document.getElementById('male_count');
+                        const femaleCountInput = document.getElementById('female_count');
+                        const totalInput = document.getElementById('total');
 
-    function calculate() {
-        const maleCount = parseInt(maleCountInput.value) || 0;
-        const femaleCount = parseInt(femaleCountInput.value) || 0;
-        const total = maleCount + femaleCount;
-        totalInput.value = total;
+                        function calculate() {
+                            const maleCount = parseInt(maleCountInput.value) || 0;
+                            const femaleCount = parseInt(femaleCountInput.value) || 0;
+                            const total = maleCount + femaleCount;
+                            totalInput.value = total;
 
-        // Percentage calculation based on male count relative to total
-        const percentage = total > 0 ? ((maleCount / total) * 100).toFixed(2) : 0;
-    }
+                            // Percentage calculation based on male count relative to total
+                            const percentage = total > 0 ? ((maleCount / total) * 100).toFixed(2) : 0;
+                        }
 
-    maleCountInput.addEventListener('input', calculate);
-    femaleCountInput.addEventListener('input', calculate);
-</script>
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-        document.getElementById("date").setAttribute("min", today);
-    });
-</script>
+                        maleCountInput.addEventListener('input', calculate);
+                        femaleCountInput.addEventListener('input', calculate);
+                    </script>
 
 
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            let today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+                            document.getElementById("date").setAttribute("min", today);
+                        });
+                    </script>
 
+                    <div id="editModal" class="modal" style="display: none;">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2>✏️ Edit Morbidity Data</h2>
+                            <form id="updateForm" action="{{ route('mortality.update') }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" id="edit_id" name="id">
 
+                                <div class="mb-3">
+                                    <label for="edit_date" class="form-label">📅 Date</label>
+                                    <input type="date" class="form-control" id="edit_date" name="date"
+                                        required>
+                                </div>
 
+                                <div class="mb-3">
+                                    <label for="edit_case_name" class="form-label">📝 Case Name</label>
+                                    <input type="text" class="form-control" id="edit_case_name" name="case_name"
+                                        required>
+                                </div>
 
-<div id="editModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Edit Data</h2>
-        <form id="updateForm" action="{{ route('mortality.update') }}" method="POST">
-            @csrf
-            @method('PUT')
-            <input type="hidden" id="edit_id" name="id">
+                                <div class="mb-3">
+                                    <label for="edit_male_count" class="form-label">👨 Male Count</label>
+                                    <input type="number" class="form-control" id="edit_male_count"
+                                        name="male_count" required>
+                                </div>
 
-            <div class="mb-3">
-                <label for="edit_date" class="form-label">Date</label>
-                <input type="date" class="form-control" id="edit_date" name="date" required>
-            </div>
+                                <div class="mb-3">
+                                    <label for="edit_female_count" class="form-label">👩 Female Count</label>
+                                    <input type="number" class="form-control" id="edit_female_count"
+                                        name="female_count" required>
+                                </div>
 
-            <div class="mb-3">
-                <label for="edit_case_name" class="form-label">Case Name</label>
-                <input type="text" class="form-control" id="edit_case_name" name="case_name" required>
-            </div>
+                                <div class="mb-3">
+                                    <label for="edit_total" class="form-label">📊 Total</label>
+                                    <input type="number" class="form-control" id="edit_total" readonly>
+                                </div>
 
-            <div class="mb-3">
-                <label for="edit_male_count" class="form-label">Male Count</label>
-                <input type="number" class="form-control" id="edit_male_count" name="male_count" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="edit_female_count" class="form-label">Female Count</label>
-                <input type="number" class="form-control" id="edit_female_count" name="female_count" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="edit_total" class="form-label">Total</label>
-                <input type="number" class="form-control" id="edit_total" readonly>
-            </div>
-
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Update Morbidity Records</button>
-            </div>
-        </form>
-    </div>
-</div>
+                                <div class="modal-footer">
+                                    <button type="button" id="cancelEditModal" class="btn btn-secondary">❌
+                                        Cancel</button>
+                                    <button type="submit" class="btn btn-primary">💾 Update Morbidity
+                                        Records</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
 
                     <!-- Initialize Feather Icons -->
@@ -321,72 +692,70 @@
                     </script>
 
 
-<script>
-                        document.addEventListener("DOMContentLoaded", function () {
-    setTimeout(() => {
-        var modal = document.getElementById("customModal");
-        var openModalBtn = document.getElementById("openModal");
-        var closeModalBtn = document.querySelector(".close");
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            setTimeout(() => {
+                                var modal = document.getElementById("customModal");
+                                var openModalBtn = document.getElementById("openModal");
+                                var closeModalBtn = document.querySelector(".close");
 
-        if (!modal || !openModalBtn) {
-            console.error("Modal or button not found!");
-            return;
-        }
+                                if (!modal || !openModalBtn) {
+                                    console.error("Modal or button not found!");
+                                    return;
+                                }
 
-        openModalBtn.addEventListener("click", function () {
-            modal.style.display = "flex";
-        });
+                                openModalBtn.addEventListener("click", function() {
+                                    modal.style.display = "flex";
+                                });
 
-        closeModalBtn.addEventListener("click", function () {
-            modal.style.display = "none";
-        });
+                                closeModalBtn.addEventListener("click", function() {
+                                    modal.style.display = "none";
+                                });
 
-        window.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        });
-    }, 100); // Delay to ensure icons are loaded
-});
-
+                                window.addEventListener("click", function(event) {
+                                    if (event.target === modal) {
+                                        modal.style.display = "none";
+                                    }
+                                });
+                            }, 100); // Delay to ensure icons are loaded
+                        });
                     </script>
-<script>
-    document.getElementById("updateForm").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent default form submission
+                    <script>
+                        document.getElementById("updateForm").addEventListener("submit", function(event) {
+                            event.preventDefault(); // Prevent default form submission
 
-    let formData = new FormData(this);
-    let id = document.getElementById("edit_id").value;
+                            let formData = new FormData(this);
+                            let id = document.getElementById("edit_id").value;
 
-    fetch(`/mortality/update`, {
-        method: "POST", // Keep it POST for FormData, but spoof method
-        headers: {
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-            "X-Requested-With": "XMLHttpRequest",
-        },
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert("Record updated successfully!");
-            location.reload();
-        } else {
-            alert("Failed to update record: " + (data.message || "Unknown error."));
-        }
-    })
-    .catch(error => console.error("Error:", error));
-});
-
-</script>
-
+                            fetch(`/mortality/update`, {
+                                    method: "POST", // Keep it POST for FormData, but spoof method
+                                    headers: {
+                                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                                        "X-Requested-With": "XMLHttpRequest",
+                                    },
+                                    body: formData,
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        alert("Record updated successfully!");
+                                        location.reload();
+                                    } else {
+                                        alert("Failed to update record: " + (data.message || "Unknown error."));
+                                    }
+                                })
+                                .catch(error => console.error("Error:", error));
+                        });
+                    </script>
 
 
-<script>
-    document.getElementById("printTable").addEventListener("click", function () {
-            let printContent = document.getElementById("dataTable").outerHTML;
-            let newWindow = window.open("", "", "width=800,height=600");
 
-            newWindow.document.write(`
+                    <script>
+                        document.getElementById("printTable").addEventListener("click", function() {
+                            let printContent = document.getElementById("dataTable").outerHTML;
+                            let newWindow = window.open("", "", "width=800,height=600");
+
+                            newWindow.document.write(`
         <html>
         <head>
             <title>Print</title>
@@ -400,49 +769,154 @@
         </html>
     `);
 
-    newWindow.document.close();
-    newWindow.print();
-    });
+                            newWindow.document.close();
+                            newWindow.print();
+                        });
+                    </script>
 
-</script>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            document.querySelectorAll(".delete-button").forEach(button => {
+                                button.addEventListener("click", function() {
+                                    const dataId = this.dataset.id;
+                                    const tableRow = this.closest("tr"); // Save reference to the row
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".delete-button").forEach(button => {
-        button.addEventListener("click", function () {
-            const dataId = this.dataset.id;
+                                    // Modern confirmation overlay
+                                    const confirmOverlay = document.createElement('div');
+                                    confirmOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(5px);
+                z-index: 10000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                animation: fadeIn 0.3s ease-out;
+            `;
 
-            if (confirm("Are you sure you want to delete this data?")) {
-                fetch(`/mortality/delete/${dataId}`, {
-                    method: "DELETE",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                        "Content-Type": "application/json"
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Data deleted successfully!");
-                        location.reload();
-                    } else {
-                        alert("Failed to delete data.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Something went wrong.");
-                });
-            }
-        });
-    });
-});
+                                    // Modal box
+                                    const confirmBox = document.createElement('div');
+                                    confirmBox.style.cssText = `
+                background: #1e1e2f;
+                border-radius: 20px;
+                padding: 2rem;
+                max-width: 400px;
+                width: 100%;
+                text-align: center;
+                color: #fff;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+                animation: modalSlideIn 0.3s ease-out;
+            `;
 
-</script>
+                                    confirmBox.innerHTML = `
+                <h3 style="margin-bottom: 1rem; font-size: 1.4rem; background: linear-gradient(90deg, #ff4d4d, #ff8080); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🗑️ Confirm Delete</h3>
+                <p style="margin-bottom: 2rem; font-size: 1rem; color: #ccc;">Are you sure you want to delete this data? This action cannot be undone.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="cancelDelete" style="background: linear-gradient(90deg, #6c757d, #8a94a6); border: none; border-radius: 12px; padding: 10px 20px; color: white; font-weight: 600; cursor: pointer;">❌ Cancel</button>
+                    <button id="confirmDelete" style="background: linear-gradient(90deg, #ff4d4d, #ff8080); border: none; border-radius: 12px; padding: 10px 20px; color: white; font-weight: 600; cursor: pointer;">🗑️ Delete</button>
+                </div>
+            `;
+
+                                    confirmOverlay.appendChild(confirmBox);
+                                    document.body.appendChild(confirmOverlay);
+
+                                    // Cancel action
+                                    confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
+                                        confirmOverlay.remove();
+                                    });
+
+                                    // Confirm action
+                                    confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
+                                        fetch(`/mortality/delete/${dataId}`, {
+                                                method: "DELETE",
+                                                headers: {
+                                                    "X-CSRF-TOKEN": document.querySelector(
+                                                        'meta[name="csrf-token"]').content,
+                                                    "Content-Type": "application/json"
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                confirmOverlay.remove();
+                                                if (data.success) {
+                                                    // Remove the row from the table without reloading
+                                                    tableRow.remove();
+                                                    showModernAlert("✅ Success",
+                                                        "Data deleted successfully!");
+                                                } else {
+                                                    showModernAlert("❌ Error",
+                                                        "Failed to delete data.");
+                                                }
+                                            })
+                                            .catch(error => {
+                                                confirmOverlay.remove();
+                                                console.error("Error:", error);
+                                                showModernAlert("❌ Error", "Something went wrong.");
+                                            });
+                                    });
+                                });
+                            });
+
+                            // Simple modern alert
+                            window.showModernAlert = function(title, message) {
+                                const alertBox = document.createElement('div');
+                                alertBox.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e1e2f;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10001;
+            animation: fadeIn 0.3s ease-out;
+        `;
+                                alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+                                document.body.appendChild(alertBox);
+                                setTimeout(() => {
+                                    alertBox.style.opacity = "0";
+                                    setTimeout(() => alertBox.remove(), 500);
+                                }, 2000);
+                            };
+                        });
+                    </script>
+
+
+
+                    <style>
+                        @keyframes fadeIn {
+                            from {
+                                opacity: 0;
+                            }
+
+                            to {
+                                opacity: 1;
+                            }
+                        }
+
+                        @keyframes modalSlideIn {
+                            from {
+                                transform: translateY(-20px);
+                                opacity: 0;
+                            }
+
+                            to {
+                                transform: translateY(0);
+                                opacity: 1;
+                            }
+                        }
+                    </style>
+
+                    </script>
 
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script>
-                        document.getElementById("searchInput").addEventListener("input", function () {
+                        document.getElementById("searchInput").addEventListener("input", function() {
                             let searchValue = this.value.toLowerCase();
                             let rows = document.querySelectorAll("#dataTable tbody tr");
 
@@ -469,16 +943,19 @@
                     </script>
 
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
+                        document.addEventListener("DOMContentLoaded", function() {
                             document.querySelectorAll(".delete-button").forEach(button => {
-                                button.addEventListener("click", function () {
+                                button.addEventListener("click", function() {
                                     let dataId = this.dataset.id;
 
                                     if (confirm("Are you sure you want to delete this data?")) {
-                                        fetch(/data/${ dataId }, {
+                                        fetch(/data/$ {
+                                            dataId
+                                        }, {
                                             method: "DELETE",
                                             headers: {
-                                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                                                "X-CSRF-TOKEN": document.querySelector(
+                                                    'meta[name="csrf-token"]').content
                                             }
                                         }).then(response => {
                                             if (response.ok) {
@@ -495,72 +972,72 @@
                     </script>
 
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var editModal = document.getElementById("editModal");
-        var closeEditModalBtn = document.querySelector("#editModal .close");
-        var cancelEditModalBtn = document.getElementById("cancelEditModal");
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var editModal = document.getElementById("editModal");
+                            var closeEditModalBtn = document.querySelector("#editModal .close");
+                            var cancelEditModalBtn = document.getElementById("cancelEditModal");
 
-        const maleCountInput = document.getElementById("edit_male_count");
-        const femaleCountInput = document.getElementById("edit_female_count");
-        const totalInput = document.getElementById("edit_total");
+                            const maleCountInput = document.getElementById("edit_male_count");
+                            const femaleCountInput = document.getElementById("edit_female_count");
+                            const totalInput = document.getElementById("edit_total");
 
-        // Function to update total
-        function updateTotalAndPercentage() {
-            const maleCount = parseInt(maleCountInput.value) || 0;
-            const femaleCount = parseInt(femaleCountInput.value) || 0;
-            const total = maleCount + femaleCount;
-            totalInput.value = total;
-        }
+                            // Function to update total
+                            function updateTotalAndPercentage() {
+                                const maleCount = parseInt(maleCountInput.value) || 0;
+                                const femaleCount = parseInt(femaleCountInput.value) || 0;
+                                const total = maleCount + femaleCount;
+                                totalInput.value = total;
+                            }
 
-        // Update total on input change
-        maleCountInput.addEventListener("input", updateTotalAndPercentage);
-        femaleCountInput.addEventListener("input", updateTotalAndPercentage);
+                            // Update total on input change
+                            maleCountInput.addEventListener("input", updateTotalAndPercentage);
+                            femaleCountInput.addEventListener("input", updateTotalAndPercentage);
 
-        // Open Edit Modal and populate data
-        document.querySelectorAll(".edit-button").forEach(button => {
-            button.addEventListener("click", function () {
-                maleCountInput.value = this.dataset.male_count;
-                femaleCountInput.value = this.dataset.female_count;
-                document.getElementById("edit_id").value = this.dataset.id;
-                document.getElementById("edit_case_name").value = this.dataset.case_name;
-                document.getElementById("edit_date").value = this.dataset.date;
+                            // Open Edit Modal and populate data
+                            document.querySelectorAll(".edit-button").forEach(button => {
+                                button.addEventListener("click", function() {
+                                    maleCountInput.value = this.dataset.male_count;
+                                    femaleCountInput.value = this.dataset.female_count;
+                                    document.getElementById("edit_id").value = this.dataset.id;
+                                    document.getElementById("edit_case_name").value = this.dataset.case_name;
+                                    document.getElementById("edit_date").value = this.dataset.date;
 
-                // Update total when opening the modal
-                updateTotalAndPercentage();
-                
-                editModal.style.display = "flex";
-            });
-        });
+                                    // Update total when opening the modal
+                                    updateTotalAndPercentage();
 
-        // Close modal when clicking close or cancel button
-        closeEditModalBtn.addEventListener("click", function () {
-            editModal.style.display = "none";
-        });
+                                    editModal.style.display = "flex";
+                                });
+                            });
 
-        cancelEditModalBtn.addEventListener("click", function () {
-            editModal.style.display = "none";
-        });
+                            // Close modal when clicking close or cancel button
+                            closeEditModalBtn.addEventListener("click", function() {
+                                editModal.style.display = "none";
+                            });
 
-        // Close modal if clicked outside
-        window.addEventListener("click", function (event) {
-            if (event.target === editModal) {
-                editModal.style.display = "none";
-            }
-        });
-    });
-</script>
+                            cancelEditModalBtn.addEventListener("click", function() {
+                                editModal.style.display = "none";
+                            });
+
+                            // Close modal if clicked outside
+                            window.addEventListener("click", function(event) {
+                                if (event.target === editModal) {
+                                    editModal.style.display = "none";
+                                }
+                            });
+                        });
+                    </script>
 
 
-                   
+
                 </div>
             </main>
 
-			@include('staff.footer')
-		</div>
-	</div>
+            @include('staff.footer')
+        </div>
+    </div>
 
-@include('staff.js')
+    @include('staff.js')
 
 </body>
 
