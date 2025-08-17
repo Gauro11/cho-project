@@ -668,6 +668,76 @@
         .save-button {
             margin-top: 20px;
         }
+
+         /* File Upload Styling */
+        .file-upload-area {
+            border: 2px dashed var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #43e97b;
+            background: rgba(67, 233, 123, 0.1);
+            transform: scale(1.02);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .file-info {
+            background: rgba(67, 233, 123, 0.1);
+            border: 1px solid rgba(67, 233, 123, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .modern-modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+        }
+
+        @media print {
+
+            .no-print,
+            .pagination {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -718,6 +788,12 @@
                                 <!-- Pagination + Download Icon on the Right -->
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <!-- Pagination (Smaller Size) -->
+
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <!-- Changed from dropdown to direct button -->
+                                    <button class="modern-btn btn-secondary btn-sm" id="openImportModal">
+                                        <i data-feather="upload"></i> Import
+                                    </button>
 
                                     <button id="printTable" class="btn btn-primary btn-sm modern-btn">
                                         <i data-feather="printer"></i> Print
@@ -787,6 +863,149 @@
 
                         </div>
                     </div>
+                      <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            // Add New Record Modal
+                            setTimeout(() => {
+                                var modal = document.getElementById("customModal");
+                                var openModalBtn = document.getElementById("openModal");
+                                var closeModalBtn = document.querySelector("#customModal .close");
+
+                                if (!modal || !openModalBtn) {
+                                    console.error("Modal or button not found!");
+                                    return;
+                                }
+
+                                openModalBtn.addEventListener("click", function() {
+                                    modal.style.display = "flex";
+                                });
+
+                                closeModalBtn.addEventListener("click", function() {
+                                    modal.style.display = "none";
+                                });
+
+                                window.addEventListener("click", function(event) {
+                                    if (event.target === modal) {
+                                        modal.style.display = "none";
+                                    }
+                                });
+                            }, 100);
+
+                            // Import Modal
+                            var importModal = document.getElementById("importModal");
+                            var openImportModalBtn = document.getElementById("openImportModal");
+                            var closeImportModalBtn = document.getElementById("closeImportModal");
+                            var cancelImportModalBtn = document.getElementById("cancelImportModal");
+                            var fileInput = document.getElementById("fileInput");
+                            var fileUploadArea = document.getElementById("fileUploadArea");
+                            var fileInfo = document.getElementById("fileInfo");
+                            var fileName = document.getElementById("fileName");
+                            var fileSize = document.getElementById("fileSize");
+                            var uploadBtn = document.getElementById("uploadBtn");
+
+                            // Allowed file types
+                            const allowedExtensions = ['xlsx', 'xls', 'csv'];
+
+                            // Open Import Modal
+                            openImportModalBtn.addEventListener("click", function() {
+                                importModal.style.display = "flex";
+                            });
+
+                            // Close Import Modal
+                            closeImportModalBtn.addEventListener("click", closeImportModal);
+                            cancelImportModalBtn.addEventListener("click", closeImportModal);
+
+                            function closeImportModal() {
+                                importModal.style.display = "none";
+                                resetFileUpload();
+                            }
+
+                            // Close modal when clicking outside
+                            window.addEventListener("click", function(event) {
+                                if (event.target === importModal) {
+                                    closeImportModal();
+                                }
+                            });
+
+                            // File upload functionality
+                            fileInput.addEventListener("change", function() {
+                                validateAndHandleFile(this.files[0]);
+                            });
+
+                            // Drag and drop functionality
+                            fileUploadArea.addEventListener("dragover", function(e) {
+                                e.preventDefault();
+                                this.classList.add("dragover");
+                            });
+
+                            fileUploadArea.addEventListener("dragleave", function(e) {
+                                this.classList.remove("dragover");
+                            });
+
+                            fileUploadArea.addEventListener("drop", function(e) {
+                                e.preventDefault();
+                                this.classList.remove("dragover");
+                                var files = e.dataTransfer.files;
+                                if (files.length > 0) {
+                                    fileInput.files = files;
+                                    validateAndHandleFile(files[0]);
+                                }
+                            });
+
+                            // Validate file extension before showing info
+                            function validateAndHandleFile(file) {
+                                if (!file) {
+                                    resetFileUpload();
+                                    return;
+                                }
+
+                                const ext = file.name.split('.').pop().toLowerCase();
+                                if (!allowedExtensions.includes(ext)) {
+                                    showModernAlert("❌ Invalid File",
+                                    "Please upload only Excel (.xlsx, .xls) or CSV (.csv) files.");
+                                    resetFileUpload();
+                                    return;
+                                }
+
+                                fileName.textContent = file.name;
+                                fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                                fileInfo.classList.add("show");
+                                uploadBtn.disabled = false;
+                            }
+
+                            function resetFileUpload() {
+                                fileInput.value = "";
+                                fileInfo.classList.remove("show");
+                                uploadBtn.disabled = true;
+                            }
+
+                            // Modern toast alert
+                            function showModernAlert(title, message) {
+                                const alertBox = document.createElement('div');
+                                alertBox.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e1e2f;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10001;
+            animation: fadeIn 0.3s ease-out;
+        `;
+                                alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+                                document.body.appendChild(alertBox);
+                                setTimeout(() => {
+                                    alertBox.style.opacity = "0";
+                                    setTimeout(() => alertBox.remove(), 500);
+                                }, 2500);
+                            }
+                        });
+                    </script>
+
+
+
                     <script>
                         const maleCountInput = document.getElementById('male_count');
                         const femaleCountInput = document.getElementById('female_count');
@@ -858,6 +1077,51 @@
                             });
                         });
                     </script>
+
+                    <!-- Import Modal -->
+                    <div id="importModal" class="modern-modal modal">
+                        <div class="modern-modal-content modal-content">
+                            <span class="modern-close close" id="closeImportModal">&times;</span>
+                            <h2>Import mortality Records</h2>
+                            <form action="{{ route('mortality.import') }}" method="POST"
+                                enctype="multipart/form-data" id="importForm">
+                                @csrf
+                                <div class="file-upload-area" id="fileUploadArea">
+                                    <div class="file-upload-icon">📁</div>
+                                    <div class="file-upload-text">
+                                        <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
+                                    </div>
+                                    <input type="file" name="file" id="fileInput"
+                                        class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
+                                        style="display: none;">
+                                    <button type="button" class="modern-btn btn-secondary btn-sm"
+                                        onclick="document.getElementById('fileInput').click()">
+                                        📂 Choose File
+                                    </button>
+                                </div>
+
+                                <div class="file-info" id="fileInfo">
+                                    <strong>Selected File:</strong>
+                                    <div id="fileName"></div>
+                                    <div id="fileSize"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
+                                        <strong>Required columns:</strong> case_name date male_count female_count
+                                    </small>
+                                </div>
+
+                                <div class="modern-modal-footer modal-footer">
+                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌
+                                        Cancel</button>
+                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤
+                                        Upload File</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
 
 

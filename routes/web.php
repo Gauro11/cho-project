@@ -128,6 +128,8 @@ Route::get('/population/export', [DownloadController::class, 'export'])->name('p
 Route::get('/fetch-trend-data/{category}', [AdminController::class, 'fetchTrendData']);
 Route::post('/population/import', [PopulationController::class, 'import'])->name('population.import');
 Route::post('/vital-statistics/import', [VitalStatisticsController::class, 'import'])->name('vital_statistics.import');
+Route::post('/mortality/import', [MorbidityMortalityController::class, 'import'])->name('mortality.import');
+Route::post('/morbidity/import', [MorbidityMortalityController::class, 'imports'])->name('morbidity.import');
 
 
 

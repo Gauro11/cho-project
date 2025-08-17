@@ -1114,6 +1114,7 @@
                     </style>
 
 
+                   
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script>
                         document.getElementById("searchInput").addEventListener("input", function() {
@@ -1122,9 +1123,10 @@
 
                             rows.forEach(row => {
                                 let cells = row.querySelectorAll("td");
+                                let rowText = "";
                                 let found = false;
 
-                                // Check all cells in the row for matching text
+                                // Collect all cell text & check if search matches any
                                 cells.forEach(cell => {
                                     let text = cell.innerText.toLowerCase();
                                     if (text.includes(searchValue)) {
@@ -1135,23 +1137,6 @@
                                 // Show or hide row based on match
                                 if (searchValue === "" || found) {
                                     row.style.display = "";
-
-                                    // Apply highlighting to matching text
-                                    if (searchValue !== "") {
-                                        cells.forEach(cell => {
-                                            let text = cell.innerText;
-                                            let regex = new RegExp(`(${searchValue})`, "gi");
-                                            if (text.toLowerCase().includes(searchValue)) {
-                                                cell.innerHTML = text.replace(regex,
-                                                    `<span class="highlight">$1</span>`);
-                                            }
-                                        });
-                                    } else {
-                                        // Remove highlighting when search is cleared
-                                        cells.forEach(cell => {
-                                            cell.innerHTML = cell.innerText;
-                                        });
-                                    }
                                 } else {
                                     row.style.display = "none";
                                 }

@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\MorbidityMortalityManagement;
 use Illuminate\Support\Facades\Auth;
+use App\Imports\MortalityImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\MorbidityImport;
 
 
 
@@ -166,4 +169,28 @@ public function update_morbidity(Request $request)
         $data = MorbidityMortalityManagement::where('category', 'mortality')->paginate(10);
         return view('morbiditymortality.mortality', compact('data'));
     }
+
+    public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls,csv',
+    ]);
+
+    Excel::import(new MortalityImport, $request->file('file'));
+
+   return back()->with('success', 'Mortality records imported successfully.');
+
+}
+
+ public function imports(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls,csv',
+    ]);
+
+    Excel::import(new MorbidityImport, $request->file('file'));
+
+   return back()->with('success', 'Morbidity records imported successfully.');
+
+}
 }
