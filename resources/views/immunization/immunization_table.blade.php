@@ -226,6 +226,7 @@
         font-weight: 500;
         margin-left: 10px;
     }
+    
 </style>
 
 @if($data->isNotEmpty())

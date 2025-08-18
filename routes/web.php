@@ -117,7 +117,7 @@ Route::delete('/population/delete/{id}', [PopulationController::class, 'delete_p
 
 // Export & Download
 Route::get('/download-csv', [DownloadController::class, 'exportPopulation'])->name('download.csv');
-Route::get('/immunization/export', [DownloadController::class, 'exportImmunization'])->name('immunization.export');
+Route::get('/immunization/export/{type}', [DownloadController::class, 'exportImmunization'])->name('immunization.export');
 Route::get('/export-vital-statistics', [DownloadController::class, 'exportVitalStatistics'])->name('exportVitalStatistics');
 Route::get('/export-morbidity', [DownloadController::class, 'exportMorbidity'])->name('exportMorbidity');
 Route::get('/export-mortality', [DownloadController::class, 'exportMortality'])->name('mortality.export');

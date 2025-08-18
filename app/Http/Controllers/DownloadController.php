@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PopulationExport;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 
@@ -145,48 +147,98 @@ public function exportMorbidity()
         return Response::make($csv, 200, $headers);
     }
 
-    public function exportImmunization()
-    {
-        $data = ImmunizationManagement::all(); // Fetch all immunization data
 
-        $filename = "immunization_data.csv";
 
-        // Set headers to force download
-        $headers = [
-            "Content-Type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma" => "no-cache",
-            "Expires" => "0"
-        ];
 
-        $callback = function () use ($data) {
-            $file = fopen('php://output', 'w');
 
-            // Add CSV headers
-            fputcsv($file, ['ID', 'Year', 'Vaccine Name', 'Male Vaccinated', 'Female Vaccinated', 'Total Vaccinated', 'Coverage']);
 
-            $estimatedPopulation = 180000; // Adjust as necessary
+public function exportImmunization($type = 'csv')
+{
+    $data = ImmunizationManagement::all();
+    $estimatedPopulation = 180000;
 
-            foreach ($data as $row) {
-                $totalVaccinated = $row->male_vaccinated + $row->female_vaccinated;
-                $coveragePercentage = $estimatedPopulation > 0 ? ($totalVaccinated / $estimatedPopulation) * 100 : 0;
+    if ($type === 'pdf') {
+        // Build HTML table directly (like CSV loop)
+        $html = '
+            <h2>Immunization Report</h2>
+            <table border="1" cellspacing="0" cellpadding="5" width="100%">
+                <thead>
+                    <tr>
+                       
+                        <th>Year</th>
+                        <th>Vaccine Name</th>
+                        <th>Male Vaccinated</th>
+                        <th>Female Vaccinated</th>
+                        <th>Total Vaccinated</th>
+                        <th>Coverage</th>
+                    </tr>
+                </thead>
+                <tbody>';
+        
+        foreach ($data as $row) {
+            $totalVaccinated = $row->male_vaccinated + $row->female_vaccinated;
+            $coveragePercentage = $estimatedPopulation > 0 
+                ? ($totalVaccinated / $estimatedPopulation) * 100 
+                : 0;
 
-                fputcsv($file, [
-                    $row->id,
-                    date('Y', strtotime($row->date)),
-                    $row->vaccine_name,
-                    $row->male_vaccinated,
-                    $row->female_vaccinated,
-                    $totalVaccinated,
-                    number_format($coveragePercentage, 2) . '%'
-                ]);
-            }
+            $html .= '
+                <tr>
+                    
+                    <td>' . date('Y', strtotime($row->date)) . '</td>
+                    <td>' . $row->vaccine_name . '</td>
+                    <td>' . $row->male_vaccinated . '</td>
+                    <td>' . $row->female_vaccinated . '</td>
+                    <td>' . $totalVaccinated . '</td>
+                    <td>' . number_format($coveragePercentage, 2) . '%</td>
+                </tr>';
+        }
 
-            fclose($file);
-        };
+        $html .= '
+                </tbody>
+            </table>';
 
-        return response()->stream($callback, 200, $headers);
+        // Generate PDF
+        $pdf = Pdf::loadHTML($html);
+        return $pdf->download('immunization_data.pdf');
     }
+
+    // --- CSV export (unchanged) ---
+    $filename = "immunization_data.csv";
+    $headers = [
+        "Content-Type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=$filename",
+        "Pragma" => "no-cache",
+        "Expires" => "0"
+    ];
+
+    $callback = function () use ($data, $estimatedPopulation) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, [ 'Year', 'Vaccine Name', 'Male Vaccinated', 'Female Vaccinated', 'Total Vaccinated', 'Coverage']);
+
+        foreach ($data as $row) {
+            $totalVaccinated = $row->male_vaccinated + $row->female_vaccinated;
+            $coveragePercentage = $estimatedPopulation > 0 ? ($totalVaccinated / $estimatedPopulation) * 100 : 0;
+
+            fputcsv($file, [
+                
+                date('Y', strtotime($row->date)),
+                $row->vaccine_name,
+                $row->male_vaccinated,
+                $row->female_vaccinated,
+                $totalVaccinated,
+                number_format($coveragePercentage, 2) . '%'
+            ]);
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+
+
+
+
 
     public function exportPopulation()
 {

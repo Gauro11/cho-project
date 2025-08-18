@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Imports\ImmunizationImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 
