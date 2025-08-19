@@ -1441,7 +1441,7 @@
 
                                     // Confirm action
                                     confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-                                        fetch(`/immunization/delete/${dataId}`, {
+                                        fetch(`/immunization/delete/${id}`, {
                                                 method: "DELETE",
                                                 headers: {
                                                     "X-CSRF-TOKEN": document.querySelector(
