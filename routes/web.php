@@ -40,6 +40,10 @@ Route::get('/', function () {
 });
 
 
+Route::get('/routes', function() {
+    return response()->json(\Route::getRoutes()->get());
+});
+
 
 
 
