@@ -118,10 +118,11 @@ Route::delete('/population/delete/{id}', [PopulationController::class, 'delete_p
 // Export & Download
 Route::get('/download-csv', [DownloadController::class, 'exportPopulation'])->name('download.csv');
 Route::get('/immunization/export/{type}', [DownloadController::class, 'exportImmunization'])->name('immunization.export');
-Route::get('/export-vital-statistics', [DownloadController::class, 'exportVitalStatistics'])->name('exportVitalStatistics');
-Route::get('/export-morbidity', [DownloadController::class, 'exportMorbidity'])->name('exportMorbidity');
-Route::get('/export-mortality', [DownloadController::class, 'exportMortality'])->name('mortality.export');
-Route::get('/population/export', [DownloadController::class, 'export'])->name('population.export');
+Route::get('/export-vital-statistics/{type}', [DownloadController::class, 'exportVitalStatistics'])->where('type', 'csv|pdf')->name('exportVitalStatistics');
+Route::get('/morbidity/export/{type}', [DownloadController::class, 'exportMorbidity'])->where('type', 'csv|pdf')->name('morbidity.export');
+Route::get('/mortality/export/{type}', [DownloadController::class, 'exportMortality'])->where('type', 'csv|pdf')->name('mortality.export');
+Route::get('/population/export/{type}', [DownloadController::class, 'exportPopulation'])->where('type', 'csv|pdf')->name('population.export');
+
 
 
 // Charts / Trends

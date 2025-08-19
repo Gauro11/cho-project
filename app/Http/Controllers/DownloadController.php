@@ -20,132 +20,269 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class DownloadController extends Controller
 {
-    public function exportMortality()
-    {
-        $data = MorbidityMortalityManagement::all(); // Fetch all mortality records
+    public function exportMortality($type = 'csv')
+{
+    // ✅ Only morbidity records
+    $data = MorbidityMortalityManagement::where('category', 'mortality')->get();
 
-        $csvFileName = 'mortality_data_' . date('Y-m-d') . '.csv';
+    $totalSum = $data->sum(function ($row) {
+        return $row->male_count + $row->female_count;
+    });
 
-        $headers = [
-            "Content-Type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=\"$csvFileName\"",
-        ];
-
-        // Create a temporary file in memory
-        $handle = fopen('php://temp', 'w');
-
-        // Add CSV column headers
-        fputcsv($handle, ['Cases', 'Male Count', 'Female Count', 'Total Count', 'Percentage', 'Date']);
-
-        // Calculate total sum for percentage computation
-        $totalSum = $data->sum(fn($row) => $row->male_count + $row->female_count);
+    if ($type === 'pdf') {
+        // --- PDF Export ---
+        $html = '
+            <h2 style="text-align:center;">Mortality Statistics Report</h2>
+            <table border="1" cellspacing="0" cellpadding="5" width="100%">
+                <thead>
+                    <tr>
+                        <th>Cases</th>
+                        <th>Male Count</th>
+                        <th>Female Count</th>
+                        <th>Total Count</th>
+                        <th>Percentage</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>';
 
         foreach ($data as $row) {
             $totalCount = $row->male_count + $row->female_count;
             $percentage = $totalSum > 0 ? ($totalCount / $totalSum) * 100 : 0;
 
-            fputcsv($handle, [
+            $html .= '
+                <tr>
+                    <td>' . e($row->case_name) . '</td>
+                    <td>' . e($row->male_count) . '</td>
+                    <td>' . e($row->female_count) . '</td>
+                    <td>' . $totalCount . '</td>
+                    <td>' . number_format($percentage, 2) . '%</td>
+                    <td>' . \Carbon\Carbon::parse($row->date)->format('m-d-Y') . '</td>
+                </tr>';
+        }
+
+        $html .= '</tbody></table>';
+
+        $pdf = \PDF::loadHTML($html);
+        return $pdf->download('mortality_data_' . date('Y-m-d') . '.pdf');
+    }
+
+    // --- CSV Export ---
+    $filename = "mortality_data_" . date('Y-m-d') . ".csv";
+    $headers = [
+        "Content-Type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=$filename",
+        "Pragma" => "no-cache",
+        "Expires" => "0"
+    ];
+
+    $callback = function () use ($data, $totalSum) {
+        $file = fopen('php://output', 'w');
+
+        // Header row
+        fputcsv($file, ['Cases', 'Male Count', 'Female Count', 'Total Count', 'Percentage', 'Date']);
+
+        foreach ($data as $row) {
+            $totalCount = $row->male_count + $row->female_count;
+            $percentage = $totalSum > 0 ? ($totalCount / $totalSum) * 100 : 0;
+
+            fputcsv($file, [
                 $row->case_name,
                 $row->male_count,
                 $row->female_count,
                 $totalCount,
                 number_format($percentage, 2) . '%',
-                Carbon::parse($row->date)->format('m-d-Y'),
+                \Carbon\Carbon::parse($row->date)->format('m-d-Y'),
             ]);
         }
 
-        // Read the CSV contents and return as response
-        rewind($handle);
-        $csv = stream_get_contents($handle);
-        fclose($handle);
+        fclose($file);
+    };
 
-        return Response::make($csv, 200, $headers);
-    }
-
-
-public function exportMorbidity()
-{
-    $data = MorbidityMortalityManagement::all(); // Fetch all records
-
-    $csvFileName = 'morbidity_data_' . date('Y-m-d') . '.csv';
-
-    $headers = [
-        "Content-Type" => "text/csv",
-        "Content-Disposition" => "attachment; filename=\"$csvFileName\"",
-    ];
-
-    $handle = fopen('php://temp', 'w');
-    fputcsv($handle, ['Cases', 'Male Count', 'Female Count', 'Total Count', 'Percentage', 'Date']);
-
-    $totalSum = $data->sum(fn($row) => $row->male_count + $row->female_count);
-
-    foreach ($data as $row) {
-        $totalCount = $row->male_count + $row->female_count;
-        $percentage = $totalSum > 0 ? ($totalCount / $totalSum) * 100 : 0;
-
-        fputcsv($handle, [
-            $row->case_name,
-            $row->male_count,
-            $row->female_count,
-            $totalCount,
-            number_format($percentage, 2) . '%',
-            \Carbon\Carbon::parse($row->date)->format('m-d-Y'),
-        ]);
-    }
-
-    rewind($handle);
-    $csv = stream_get_contents($handle);
-    fclose($handle);
-
-    return Response::make($csv, 200, $headers);
+    return response()->stream($callback, 200, $headers);
 }
 
 
 
-    public function exportVitalStatistics()
-    {
-        $data = VitalStatisticsManagement::all(); // Fetch all records
+public function exportMorbidity($type = 'csv')
+{
+     // ✅ Only morbidity records
+    $data = MorbidityMortalityManagement::where('category', 'morbidity')->get();
     
-        $csvFileName = 'vital_statistics_' . date('Y-m-d') . '.csv';
-    
-        $headers = [
-            "Content-Type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=\"$csvFileName\"",
-        ];
-    
-        $handle = fopen('php://temp', 'w');
-        fputcsv($handle, [
-            'Year', 'Population', 'Total Live Births', 'Crude Birth Rate',
-            'Total Deaths', 'Crude Death Rate', 'Infant Deaths',
-            'Infant Mortality Rate', 'Maternal Deaths', 'Maternal Mortality Rate'
-        ]);
-    
+    $totalSum = $data->sum(fn($row) => $row->male_count + $row->female_count);
+
+    if ($type === 'pdf') {
+        // --- PDF Export ---
+        $html = '
+            <h2>Morbidity Statistics Report</h2>
+            <table border="1" cellspacing="0" cellpadding="5" width="100%">
+                <thead>
+                    <tr>
+                        <th>Cases</th>
+                        <th>Male Count</th>
+                        <th>Female Count</th>
+                        <th>Total Count</th>
+                        <th>Percentage</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>';
+
+        foreach ($data as $row) {
+            $totalCount = $row->male_count + $row->female_count;
+            $percentage = $totalSum > 0 ? ($totalCount / $totalSum) * 100 : 0;
+
+            $html .= '
+                <tr>
+                    <td>' . $row->case_name . '</td>
+                    <td>' . $row->male_count . '</td>
+                    <td>' . $row->female_count . '</td>
+                    <td>' . $totalCount . '</td>
+                    <td>' . number_format($percentage, 2) . '%</td>
+                    <td>' . \Carbon\Carbon::parse($row->date)->format('m-d-Y') . '</td>
+                </tr>';
+        }
+
+        $html .= '</tbody></table>';
+
+        $pdf = \PDF::loadHTML($html);
+        return $pdf->download('morbidity_data_' . date('Y-m-d') . '.pdf');
+    }
+
+    // --- CSV Export ---
+    $filename = "morbidity_data_" . date('Y-m-d') . ".csv";
+    $headers = [
+        "Content-Type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=$filename",
+        "Pragma" => "no-cache",
+        "Expires" => "0"
+    ];
+
+    $callback = function () use ($data, $totalSum) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, ['Cases', 'Male Count', 'Female Count', 'Total Count', 'Percentage', 'Date']);
+
+        foreach ($data as $row) {
+            $totalCount = $row->male_count + $row->female_count;
+            $percentage = $totalSum > 0 ? ($totalCount / $totalSum) * 100 : 0;
+
+            fputcsv($file, [
+                $row->case_name,
+                $row->male_count,
+                $row->female_count,
+                $totalCount,
+                number_format($percentage, 2) . '%',
+                \Carbon\Carbon::parse($row->date)->format('m-d-Y'),
+            ]);
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+
+
+
+
+    public function exportVitalStatistics($type = 'csv')
+{
+    $data = VitalStatisticsManagement::all();
+
+    if ($type === 'pdf') {
+        // Build HTML table directly (similar to Immunization)
+        $html = '
+            <h2>Vital Statistics Report</h2>
+            <table border="1" cellspacing="0" cellpadding="5" width="100%">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Population</th>
+                        <th>Total Live Births</th>
+                        <th>Crude Birth Rate</th>
+                        <th>Total Deaths</th>
+                        <th>Crude Death Rate</th>
+                        <th>Infant Deaths</th>
+                        <th>Infant Mortality Rate</th>
+                        <th>Maternal Deaths</th>
+                        <th>Maternal Mortality Rate</th>
+                    </tr>
+                </thead>
+                <tbody>';
+        
         foreach ($data as $row) {
             $crudeBirthRate = $row->total_population > 0 ? ($row->total_live_births / $row->total_population) * 1000 : 0;
             $crudeDeathRate = $row->total_population > 0 ? ($row->total_deaths / $row->total_population) * 1000 : 0;
             $infantMortalityRate = $row->total_live_births > 0 ? ($row->infant_deaths / $row->total_live_births) * 1000 : 0;
             $maternalMortalityRate = $row->total_live_births > 0 ? ($row->maternal_deaths / $row->total_live_births) * 100000 : 0;
-    
-            fputcsv($handle, [
-                $row->year, 
-                $row->total_population, 
-                $row->total_live_births, 
-                number_format($crudeBirthRate, 2), 
-                $row->total_deaths, 
-                number_format($crudeDeathRate, 2), 
-                $row->infant_deaths, 
-                number_format($infantMortalityRate, 2), 
-                $row->maternal_deaths, 
+
+            $html .= '
+                <tr>
+                    <td>' . $row->year . '</td>
+                    <td>' . $row->total_population . '</td>
+                    <td>' . $row->total_live_births . '</td>
+                    <td>' . number_format($crudeBirthRate, 2) . '</td>
+                    <td>' . $row->total_deaths . '</td>
+                    <td>' . number_format($crudeDeathRate, 2) . '</td>
+                    <td>' . $row->infant_deaths . '</td>
+                    <td>' . number_format($infantMortalityRate, 2) . '</td>
+                    <td>' . $row->maternal_deaths . '</td>
+                    <td>' . number_format($maternalMortalityRate, 2) . '</td>
+                </tr>';
+        }
+
+        $html .= '
+                </tbody>
+            </table>';
+
+        // Generate PDF
+        $pdf = Pdf::loadHTML($html);
+        return $pdf->download('vital_statistics_data.pdf');
+    }
+
+    // --- CSV export ---
+    $filename = "vital_statistics_" . date('Y-m-d') . ".csv";
+    $headers = [
+        "Content-Type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=$filename",
+        "Pragma" => "no-cache",
+        "Expires" => "0"
+    ];
+
+    $callback = function () use ($data) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, [
+            'Year', 'Population', 'Total Live Births', 'Crude Birth Rate',
+            'Total Deaths', 'Crude Death Rate', 'Infant Deaths',
+            'Infant Mortality Rate', 'Maternal Deaths', 'Maternal Mortality Rate'
+        ]);
+
+        foreach ($data as $row) {
+            $crudeBirthRate = $row->total_population > 0 ? ($row->total_live_births / $row->total_population) * 1000 : 0;
+            $crudeDeathRate = $row->total_population > 0 ? ($row->total_deaths / $row->total_population) * 1000 : 0;
+            $infantMortalityRate = $row->total_live_births > 0 ? ($row->infant_deaths / $row->total_live_births) * 1000 : 0;
+            $maternalMortalityRate = $row->total_live_births > 0 ? ($row->maternal_deaths / $row->total_live_births) * 100000 : 0;
+
+            fputcsv($file, [
+                $row->year,
+                $row->total_population,
+                $row->total_live_births,
+                number_format($crudeBirthRate, 2),
+                $row->total_deaths,
+                number_format($crudeDeathRate, 2),
+                $row->infant_deaths,
+                number_format($infantMortalityRate, 2),
+                $row->maternal_deaths,
                 number_format($maternalMortalityRate, 2)
             ]);
         }
-    
-        rewind($handle);
-        $csv = stream_get_contents($handle);
-        fclose($handle);
-    
-        return Response::make($csv, 200, $headers);
-    }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
+}
+
 
 
 
@@ -240,9 +377,9 @@ public function exportImmunization($type = 'csv')
 
 
 
-    public function exportPopulation()
+   public function exportPopulation($type = 'csv')
 {
-    $data = PopulationStatisticsManagement::all(); // Fetch all data from the table
+    $data = PopulationStatisticsManagement::all();
 
     $barangayCoordinates = [
         'Bacayao Norte' => ['lat' => 16.037346, 'lng' => 120.346786],
@@ -275,38 +412,76 @@ public function exportImmunization($type = 'csv')
         'Tambac' => ['lat' => 16.046036, 'lng' => 120.356319],
         'Tapuac' => ['lat' => 16.032397, 'lng' => 120.330215],
         'Tebeng' => ['lat' => 16.032023, 'lng' => 120.358877],
-        // Add other barangays...
     ];
 
-    $filename = "barangay_data.csv";
+    if ($type === 'pdf') {
+        // --- PDF Export ---
+        $html = '
+            <h2>Population Statistics Report</h2>
+            <table border="1" cellspacing="0" cellpadding="5" width="100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Barangay</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Population</th>
+                    </tr>
+                </thead>
+                <tbody>';
 
-    // Set headers to force download
-    header('Content-Type: text/csv');
-    header('Content-Disposition: attachment; filename="' . $filename . '"');
-    header('Pragma: no-cache');
-    header('Expires: 0');
+        foreach ($data as $row) {
+            $lat = $barangayCoordinates[$row->location]['lat'] ?? 'N/A';
+            $lng = $barangayCoordinates[$row->location]['lng'] ?? 'N/A';
 
-    $handle = fopen('php://output', 'w');
+            $html .= '
+                <tr>
+                    <td>' . $row->id . '</td>
+                    <td>' . $row->location . '</td>
+                    <td>' . $lat . '</td>
+                    <td>' . $lng . '</td>
+                    <td>' . $row->population . '</td>
+                </tr>';
+        }
 
-    // Add CSV headers
-    fputcsv($handle, ['ID', 'Barangay Name', 'Latitude', 'Longitude', 'Population']);
+        $html .= '</tbody></table>';
 
-    foreach ($data as $row) {
-        $lat = $barangayCoordinates[$row->location]['lat'] ?? 'N/A';
-        $lng = $barangayCoordinates[$row->location]['lng'] ?? 'N/A';
-
-        fputcsv($handle, [
-            $row->id,
-            $row->location,
-            $lat,
-            $lng,
-            $row->population
-        ]);
+        $pdf = \PDF::loadHTML($html);
+        return $pdf->download('barangay_population.pdf');
     }
 
-    fclose($handle);
-    exit;
+    // --- CSV Export ---
+    $filename = "barangay_data_" . date('Y-m-d') . ".csv";
+    $headers = [
+        "Content-Type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=$filename",
+        "Pragma" => "no-cache",
+        "Expires" => "0"
+    ];
+
+    $callback = function () use ($data, $barangayCoordinates) {
+        $file = fopen('php://output', 'w');
+        fputcsv($file, ['ID', 'Barangay Name', 'Latitude', 'Longitude', 'Population']);
+
+        foreach ($data as $row) {
+            $lat = $barangayCoordinates[$row->location]['lat'] ?? 'N/A';
+            $lng = $barangayCoordinates[$row->location]['lng'] ?? 'N/A';
+
+            fputcsv($file, [
+                $row->id,
+                $row->location,
+                $lat,
+                $lng,
+                $row->population
+            ]);
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, $headers);
 }
+
 
   public function export()
 {

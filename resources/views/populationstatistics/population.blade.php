@@ -515,6 +515,375 @@
                 opacity: 1;
             }
         }
+         /* Modern Download Button */
+        .modern-download-btn {
+            background: var(--success-gradient);
+            border: none;
+            border-radius: 15px;
+            padding: 14px 28px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modern-download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .modern-download-btn:hover::before {
+            left: 100%;
+        }
+
+       
+
+        .modern-download-btn:focus {
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            outline: none;
+        }
+
+        .modern-download-btn i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .modern-download-btn:hover i {
+            transform: translateY(-2px);
+        }
+
+        /* Modern Dropdown Menu */
+        .modern-dropdown-menu {
+            background: var(--dark-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-boder);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.4);
+            padding: 12px;
+            margin-top: 8px;
+            min-width: 200px;
+            overflow: hidden;
+            animation: dropdownSlideIn 0.3s ease-out;
+        }
+
+        @keyframes dropdownSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Modern download Items */
+        .modern-dropdown-item {
+            color: var(--text-primary) !important;
+            padding: 14px 20px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            margin-bottom: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-dropdown-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .modern-dropdown-item:hover::before {
+            left: 100%;
+        }
+
+        .modern-dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            color: var(--text-primary) !important;
+            box-shadow: 0 4px 15px rgba(31, 38, 135, 0.2);
+        }
+
+        .modern-dropdown-item:focus {
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            color: var(--text-primary) !important;
+        }
+
+        /* Download Icons */
+        .download-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .file-csv {
+            color: #43e97b;
+            filter: drop-shadow(0 0 8px rgba(67, 233, 123, 0.3));
+        }
+
+        .file-pdf {
+            color: #f5576c;
+            filter: drop-shadow(0 0 8px rgba(245, 87, 108, 0.3));
+        }
+
+        .modern-dropdown-item:hover .download-icon {
+            transform: scale(1.2);
+        }
+
+        /* Dropdown Arrow Animation */
+        .dropdown-toggle::after {
+            transition: transform 0.3s ease;
+            margin-left: 8px;
+        }
+
+        .dropdown-toggle[aria-expanded="true"]::after {
+            transform: rotate(180deg);
+        }
+
+        /* Custom Scrollbar for Dropdown */
+        .modern-dropdown-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modern-dropdown-menu::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .modern-dropdown-menu::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 10px;
+        }
+
+        .modern-dropdown-menu::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-gradient);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modern-download-btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .modern-dropdown-menu {
+                min-width: 160px;
+            }
+
+            .modern-dropdown-item {
+                padding: 12px 16px;
+            }
+        }
+
+        /* Demo Container */
+        .demo-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            box-shadow: var(--shadow-glow);
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .demo-title {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+       
+        .dropdown-menu.show {
+            z-index: 9999 !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            transform: none !important;
+        }
+
+        /* Make sure parent containers don't interfere */
+        .glass-card {
+            overflow: visible !important;
+        }
+
+        /* If inside a table or other container */
+        .table-responsive {
+            overflow: visible !important;
+        }
+
+       
+
+        /* Fix for dropdown appearing behind table */
+        .dropdown {
+            position: relative;
+            z-index: 1050;
+            /* Higher than table */
+        }
+
+        .dropdown-menu {
+            z-index: 1055 !important;
+            /* Even higher for the menu */
+            position: absolute !important;
+        }
+
+        /* Ensure dropdown menu appears on top */
+        .modern-dropdown-menu {
+            z-index: 1055 !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            transform: none !important;
+        }
+
+        /* Fix glass card overflow issues */
+        .glass-card {
+            overflow: visible !important;
+           
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-body {
+            overflow: visible !important;
+            position: relative;
+        }
+
+      
+        .table-responsive {
+            overflow: visible !important;
+            /* Allow dropdown to show outside table */
+        }
+
+        .table-container {
+            overflow-x: auto;
+           
+            overflow-y: visible;
+            /* Allow vertical overflow for dropdowns */
+        }
+
+        /* Ensure table doesn't interfere with dropdowns */
+        .modern-table {
+            position: relative;
+            z-index: 1;
+        }
+
+      
+        .content {
+            position: relative;
+            z-index: auto;
+        }
+
+        .main {
+            position: relative;
+            z-index: auto;
+        }
+
+        /* Specific fix for your export dropdown */
+        #exportDropdown {
+            z-index: 1050;
+        }
+
+        .dropdown-menu.show {
+            z-index: 1055 !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: auto !important;
+            transform: none !important;
+            display: block !important;
+        }
+
+        /* Ensure dropdown parent has proper stacking context */
+        .d-flex.align-items-center.gap-2.flex-wrap {
+            position: relative;
+            z-index: 1050;
+        }
+
+        /* Additional Bootstrap dropdown fixes */
+        .dropdown-toggle::after {
+            vertical-align: middle;
+        }
+
+        /* Fix for mobile responsiveness */
+        @media (max-width: 768px) {
+            .dropdown-menu {
+                position: absolute !important;
+                z-index: 1055 !important;
+                width: auto !important;
+                min-width: 160px !important;
+            }
+        }
+
+        /* Fix for any potential backdrop issues */
+        .dropdown-backdrop {
+            z-index: 1040;
+        }
+
+        /* Ensure proper layering hierarchy */
+        .wrapper {
+            position: relative;
+            z-index: auto;
+        }
+
+        .sidebar {
+            z-index: 1030;
+        }
+
+        .header {
+            z-index: 1020;
+        }
+
+        /* Specific fix for table wrapper if it exists */
+        .table-wrapper,
+        .dataTables_wrapper {
+            overflow: visible !important;
+        }
+
+        /* Fix for any modal that might interfere */
+        .modern-modal {
+            z-index: 1060;
+        }
+
+        /* Ensure button group doesn't clip dropdown */
+        .btn-group {
+            position: relative;
+        }
+
+        .btn-group .dropdown-menu {
+            z-index: 1055 !important;
+        }
     </style>
 </head>
 
@@ -571,9 +940,29 @@
                                     </button>
 
                                     <!-- Download Button -->
-                                    <a href="{{ route('population.export') }}" class="modern-btn btn-success btn-sm">
-                                        <i data-feather="download"></i> Download
-                                    </a>
+                                    <div class="dropdown">
+                                        <button class="modern-download-btn dropdown-toggle" type="button"
+                                            id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-download"></i>
+                                            Download
+                                        </button>
+                                        <ul class="dropdown-menu modern-dropdown-menu" aria-labelledby="exportDropdown">
+                                            <li>
+                                                <a class="dropdown-item modern-dropdown-item"
+                                                    href="{{ route('population.export', 'csv') }}">
+                                                    <i class="fas fa-file-csv download-icon file-csv"></i>
+                                                    Download CSV
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item modern-dropdown-item"
+                                                    href="{{ route('population.export', 'pdf') }}">
+                                                    <i class="fas fa-file-pdf download-icon file-pdf"></i>
+                                                    Download PDF
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>

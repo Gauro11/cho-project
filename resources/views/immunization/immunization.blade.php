@@ -561,7 +561,7 @@
             }
         }
 
-        /* Modern Dropdown Items */
+        /* Modern download Items */
         .modern-dropdown-item {
             color: var(--text-primary) !important;
             padding: 14px 20px;
