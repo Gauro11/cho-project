@@ -352,18 +352,38 @@
         <div class="floating-circle"></div>
     </div>
 
-    <div class="">
-        <div class="container-fluid py-4">
-            <h1 class="section-title pulse-animation">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
+   <div class="">
+    <div class="container-fluid py-4">
+        <h1 class="section-title pulse-animation">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
 
-            <!-- Modern Map Section -->
-            <div class="map-container-modern">
-                <img src="https://tools.paintmaps.com/og_image/map_cropping/4-1108697425-3.jpeg" alt="Dagupan City Map"
-                    class="map-image-modern">
-                <div class="map-title-modern">
-                    <h4>🚩 Dagupan City Map / Population 174,302</h4>
-                </div>
+        <div class="map-container-modern">
+            <img src="https://tools.paintmaps.com/og_image/map_cropping/4-1108697425-3.jpeg"
+                 alt="Dagupan City Map"
+                 class="map-image-modern">
+
+            <div class="map-title-modern">
+                <h4 id="population-text">🚩 Dagupan City Map / Loading population...</h4>
             </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    fetch("{{ url('/dagupan-population') }}")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("population-text").innerHTML =
+                    `🚩 ${data.city} Map / Population ${data.population.toLocaleString()} (${data.year})`;
+            }
+        })
+        .catch(() => {
+            document.getElementById("population-text").innerHTML =
+                "🚩 Dagupan City Map / Population unavailable";
+        });
+</script>
+
+
 
             <h1 class="section-title">VITAL STATISTICS OVERVIEW</h1>
 

@@ -142,3 +142,6 @@ Route::middleware('auth:admin')->group(function () {
 Route::middleware('auth:staff')->group(function () {
     Route::get('/staff', [StaffController::class, 'index'])->name('staff.dashboard');
 });
+
+
+Route::get('/dagupan-population', [PopulationController::class, 'getDagupanPopulation']);
