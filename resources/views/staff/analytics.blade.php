@@ -383,8 +383,6 @@
         });
 </script>
 
-
-
             <h1 class="section-title">VITAL STATISTICS OVERVIEW</h1>
 
             <div class="stats-grid">
