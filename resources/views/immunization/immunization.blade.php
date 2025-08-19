@@ -1440,15 +1440,14 @@
                                     });
 
                                     // Confirm action
-                                    confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-                                        fetch(`/immunization/delete/${id}`, {
-                                                method: "DELETE",
-                                                headers: {
-                                                    "X-CSRF-TOKEN": document.querySelector(
-                                                        'meta[name="csrf-token"]').content,
-                                                    "Content-Type": "application/json"
-                                                }
-                                            })
+                                   fetch(`${window.location.origin}/cho-dash/immunization/delete/${dataId}`, {
+    method: "DELETE",
+    headers: {
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+        "Content-Type": "application/json"
+    }
+})
+
                                             .then(response => response.json())
                                             .then(data => {
                                                 confirmOverlay.remove();
