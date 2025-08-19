@@ -50,7 +50,6 @@ Route::get('/routes', function() {
 
 
 
-
 // Admin Data Management
 Route::get('/datasearch', [AdminController::class, 'search'])->name('data.search');
 Route::get('/data', [AdminController::class, 'filter_category'])->name('data.index');
@@ -111,7 +110,7 @@ Route::delete('/vitalstatistics/delete/{id}', [VitalStatisticsController::class,
 // Immunization
 Route::post('store/immunization', [ImmunizationController::class, 'store_immunization'])->name('immunization.store');
 Route::put('/immunization/update', [ImmunizationController::class, 'update_immunization'])->name('immunization.update');
-Route::delete('/immunization/delete/{id}', [ImmunizationController::class, 'delete_immunization'])->name('immunization.delete');
+// Route::delete('/immunization/delete/{id}', [ImmunizationController::class, 'delete_immunization'])->name('immunization.delete');
 Route::post('/immunization/import', [ImmunizationController::class, 'import'])->name('immunization.import');
 
 // Population

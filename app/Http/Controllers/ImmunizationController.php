@@ -21,12 +21,25 @@ class ImmunizationController extends Controller
 
     
     public function delete_immunization($id)
-    {
-        $data = ImmunizationManagement::findOrFail($id);
-        $data->delete();
-    
-        return response()->json(['success' => true]);
+{
+    try {
+        $immunization = ImmunizationManagement::find($id);
+
+        if (!$immunization) {
+            return response()->json(['success' => false, 'message' => 'Record not found'], 404);
+        }
+
+        $immunization->delete();
+
+        return response()->json(['success' => true, 'message' => 'Deleted successfully']);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
+
 
     public function update_immunization(Request $request)
 {
