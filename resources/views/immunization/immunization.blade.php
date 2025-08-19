@@ -1443,14 +1443,14 @@
     confirmOverlay.remove();
 });
 
-confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-    fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-            "Content-Type": "application/json"
-        }
-    })
+fetch(`${window.location.origin}/immunization/delete/${dataId}`, {
+    method: "DELETE",
+    headers: {
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+        "Content-Type": "application/json"
+    }
+})
+
     .then(async response => {
         confirmOverlay.remove();
 
