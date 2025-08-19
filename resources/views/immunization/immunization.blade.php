@@ -1443,40 +1443,56 @@
     confirmOverlay.remove();
 });
 
-fetch(`${window.location.origin}/immunization/delete/${dataId}`, {
-    method: "DELETE",
-    headers: {
-        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-        "Content-Type": "application/json"
+// Get the CSRF token from meta tag
+const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+// Function to delete a record
+function deleteImmunization(dataId, tableRow) {
+    // Determine base URL (auto-detect /public if needed)
+    let baseUrl = window.location.origin;
+    
+    // Optional: include /public if your server serves Laravel from public folder
+    if (!window.location.origin.includes('/public')) {
+        baseUrl += '/public';
     }
-})
 
+    fetch(`${baseUrl}/immunization/delete/${dataId}`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json"
+        }
+    })
     .then(async response => {
-        confirmOverlay.remove();
-
         if (!response.ok) {
             const text = await response.text();
             console.error("Server response:", text);
             showModernAlert("❌ Error", "Failed to delete data.");
-            return;
+            return null;
         }
-
         return response.json();
     })
     .then(data => {
         if (data && data.success) {
+            // Remove the table row from DOM
             tableRow.remove();
             showModernAlert("✅ Success", "Data deleted successfully!");
-        } else if(data) {
+        } else if (data) {
             showModernAlert("❌ Error", "Failed to delete data.");
         }
     })
     .catch(error => {
-        confirmOverlay.remove();
         console.error("Fetch error:", error);
         showModernAlert("❌ Error", "Something went wrong.");
     });
+}
+
+// Example usage with a confirm button
+confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
+    deleteImmunization(dataId, tableRow);
+    confirmOverlay.remove();
 });
+
 
 
                                
