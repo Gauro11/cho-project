@@ -6,6 +6,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+         "ext-zip": "*",
+    "ext-gd": "*",
+    "ext-mbstring": "*",
+    "ext-dom": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.2",
