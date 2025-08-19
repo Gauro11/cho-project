@@ -1440,48 +1440,29 @@
                                     });
 
                                     // Confirm action
-                               // Cancel delete
-confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
-    confirmOverlay.remove();
-});
-
-// Confirm delete
-confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-    fetch(`${window.location.origin}/cho-dash/api/immunization/delete/${dataId}`, {
-        method: "DELETE",
-        headers: {
+                                  fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
+    method: "DELETE",
+    headers: {
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
             "Content-Type": "application/json"
         }
-    })
-    .then(async response => {
-        confirmOverlay.remove();
-
-        // Check if response is ok
-        if (!response.ok) {
-            const text = await response.text();
-            console.error("Server response:", text);
-            showModernAlert("❌ Error", "Failed to delete data.");
-            return;
-        }
-
-        return response.json();
-    })
-    .then(data => {
-        if (data && data.success) {
-            tableRow.remove();
-            showModernAlert("✅ Success", "Data deleted successfully!");
-        } else if(data) {
-            showModernAlert("❌ Error", "Failed to delete data.");
-        }
-    })
-    .catch(error => {
-        confirmOverlay.remove();
-        console.error("Fetch error:", error);
-        showModernAlert("❌ Error", "Something went wrong.");
-    });
+})
+.then(response => response.json())
+.then(data => {
+    confirmOverlay.remove();
+    if (data.success) {
+        tableRow.remove();
+        showModernAlert("✅ Success", "Data deleted successfully!");
+    } else {
+        showModernAlert("❌ Error", "Failed to delete data.");
+    }
+})
+.catch(error => {
+    confirmOverlay.remove();
+    console.error("Error:", error);
+    showModernAlert("❌ Error", "Something went wrong.");
 });
 
-                            });
 
                             // Simple modern alert
                             window.showModernAlert = function(title, message) {
