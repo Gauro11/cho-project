@@ -226,6 +226,25 @@
         font-weight: 500;
         margin-left: 10px;
     }
+    .percentage-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.percentage-high { 
+    background: linear-gradient(135deg, #ef4444, #dc2626); /* Red for high mortality */
+}
+.percentage-medium { 
+    background: linear-gradient(135deg, #f59e0b, #d97706); /* Orange for medium mortality */
+}
+.percentage-low { 
+    background: linear-gradient(135deg, #10b981, #059669); /* Green for low mortality */
+}
 </style>
 
 
@@ -350,11 +369,20 @@
             totalSum += total;
         });
 
-        // Calculate and update the percentage for each row
-        percentageCells.forEach(cell => {
-            const rowTotal = parseInt(cell.getAttribute("data-total")) || 0;
-            const percentage = totalSum > 0 ? ((rowTotal / totalSum) * 100).toFixed(2) : 0;
-            cell.textContent = `${percentage}%`;
+        // Replace your existing percentage calculation with this:
+percentageCells.forEach(cell => {
+    const rowTotal = parseInt(cell.getAttribute("data-total")) || 0;
+    const percentage = totalSum > 0 ? ((rowTotal / totalSum) * 100).toFixed(2) : 0;
+    
+    let colorClass = 'percentage-low';
+    if (percentage >= 30) {
+        colorClass = 'percentage-high';
+    } else if (percentage >= 15) {
+        colorClass = 'percentage-medium';
+    }
+    
+    cell.innerHTML = `<span class="percentage-badge ${colorClass}">${percentage}%</span>`;
+});
         });
-    });
+   
 </script>
