@@ -562,7 +562,7 @@
                     chart.update();
 
                     // Fetch data from server
-                    let url = `/api/trend-data/${category}`;
+                    let url = `/public/api/trend-data/${category}`;
                     if (subCategory) {
                         url += `?sub_category=${encodeURIComponent(subCategory)}`;
                     }

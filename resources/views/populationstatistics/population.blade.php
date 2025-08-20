@@ -1319,7 +1319,7 @@
                             let formData = new FormData(this);
                             formData.append('_method', 'PUT');
 
-                            fetch(`/population/update`, {
+                            fetch(`/public/population/update`, {
                                     method: "POST",
                                     headers: {
                                         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
@@ -1400,7 +1400,7 @@
 
                                     // Confirm action
                                     confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-                                        fetch(`/population/delete/${dataId}`, {
+                                        fetch(`/public/population/delete/${dataId}`, {
                                                 method: "DELETE",
                                                 headers: {
                                                     "X-CSRF-TOKEN": document.querySelector(

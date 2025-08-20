@@ -1309,7 +1309,7 @@
                                 e.preventDefault();
                                 let formData = new FormData(this);
                                 formData.append('_method', 'PUT');
-                                fetch(`/vital-statistics/update`, {
+                                fetch(`/public/vital-statistics/update`, {
                                         method: "POST",
                                         headers: {
                                             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
@@ -1423,7 +1423,7 @@
 
                             // Confirm delete function without page reload
                             window.confirmDelete = function(dataId, tableRow) {
-                                fetch(`/vitalstatistics/delete/${dataId}`, {
+                                fetch(`/public/vitalstatistics/delete/${dataId}`, {
                                         method: "DELETE",
                                         headers: {
                                             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,

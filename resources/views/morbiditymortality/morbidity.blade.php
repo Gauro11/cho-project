@@ -1443,7 +1443,7 @@
                             let formData = new FormData(this);
                             let id = document.getElementById("edit_id").value;
 
-                            fetch(`/mortality/update`, {
+                            fetch(`/public/mortality/update`, {
                                     method: "POST", // Keep it POST for FormData, but spoof method
                                     headers: {
                                         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
@@ -1547,7 +1547,7 @@
 
                                     // Confirm action
                                     confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-                                        fetch(`/mortality/delete/${dataId}`, {
+                                        fetch(`/public/mortality/delete/${dataId}`, {
                                                 method: "DELETE",
                                                 headers: {
                                                     "X-CSRF-TOKEN": document.querySelector(
