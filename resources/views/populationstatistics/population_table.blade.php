@@ -290,7 +290,7 @@ $barangayCoordinates = [
                     <tbody style="background-color: white;">
                         @foreach($data as $row)
                             <tr>
-                                <td>{{ $row->id }}</td>
+                                <td>{{ $row->date }}</td>
                                 <td>{{ $row->location }}</td>
                                 <td>
                                     {{ $barangayCoordinates[ucwords(strtolower($row->location))]['lat'] ?? 'N/A' }}
