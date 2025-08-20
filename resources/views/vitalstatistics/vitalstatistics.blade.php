@@ -1266,8 +1266,8 @@
                     <script>
                         feather.replace();
                     </script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+ <script>
+                    document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form[action='{{ route('vital_statistics.store') }}']");
 
     form.addEventListener("submit", function (e) {
@@ -1286,30 +1286,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             if (data.success) {
                 showModernAlert("✅ Success", data.message);
-
-                // ✅ Add new row dynamically
-                const tbody = document.querySelector("#vitalTable tbody");
-                const row = document.createElement("tr");
-                row.style.animation = "fadeIn 0.5s ease-out";
-
-                row.innerHTML = `
-                    <td>${data.data.year}</td>
-                    <td>${data.data.total_population}</td>
-                    <td>${data.data.total_live_births}</td>
-                    <td>${data.data.total_deaths}</td>
-                    <td>${data.data.infant_deaths}</td>
-                    <td>${data.data.maternal_deaths}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning">✏️ Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="confirmDelete(${data.data.id}, this.closest('tr'))">🗑 Delete</button>
-                    </td>
-                `;
-
-                tbody.prepend(row); // add new row on top (or use appendChild to bottom)
-
-                // ✅ Reset and close modal
-                form.reset();
-                document.getElementById("customModal").style.display = "none";
+                form.reset(); // clear form
+                document.getElementById("customModal").style.display = "none"; // close modal
             } else {
                 showModernAlert("❌ Error", data.message);
             }
@@ -1320,8 +1298,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-</script>
-
+ </script>
 
 
                     <script>
