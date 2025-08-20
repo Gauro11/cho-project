@@ -1443,40 +1443,47 @@
     confirmOverlay.remove();
 });
 
-fetch(`${window.location.origin}/immunization/delete/${dataId}`, {
-    method: "DELETE",
-    headers: {
-        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-        "Content-Type": "application/json"
-    }
-})
+// Get the CSRF token from meta tag
+const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
+// Function to delete an immunization record
+function deleteImmunization(dataId, tableRow) {
+    fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json"
+        }
+    })
     .then(async response => {
-        confirmOverlay.remove();
-
         if (!response.ok) {
             const text = await response.text();
             console.error("Server response:", text);
             showModernAlert("❌ Error", "Failed to delete data.");
-            return;
+            return null;
         }
-
         return response.json();
     })
     .then(data => {
         if (data && data.success) {
-            tableRow.remove();
+            tableRow.remove(); // Remove row from table
             showModernAlert("✅ Success", "Data deleted successfully!");
-        } else if(data) {
+        } else if (data) {
             showModernAlert("❌ Error", "Failed to delete data.");
         }
     })
     .catch(error => {
-        confirmOverlay.remove();
         console.error("Fetch error:", error);
         showModernAlert("❌ Error", "Something went wrong.");
     });
+}
+
+// Example: click handler for confirm button
+confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
+    deleteImmunization(dataId, tableRow);
+    confirmOverlay.remove();
 });
+
 
 
                                
