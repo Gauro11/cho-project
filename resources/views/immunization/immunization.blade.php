@@ -1443,18 +1443,15 @@
     confirmOverlay.remove();
 });
 
-// Get the CSRF token from meta tag
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-// Function to delete an immunization record
-fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
-    method: "DELETE",
-    headers: {
-        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-        "Content-Type": "application/json"
-    }
-})
-
+function deleteImmunization(dataId, tableRow) {
+    fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "application/json"
+        }
     })
     .then(async response => {
         if (!response.ok) {
@@ -1467,7 +1464,7 @@ fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
     })
     .then(data => {
         if (data && data.success) {
-            tableRow.remove(); // Remove row from table
+            tableRow.remove();
             showModernAlert("✅ Success", "Data deleted successfully!");
         } else if (data) {
             showModernAlert("❌ Error", "Failed to delete data.");
@@ -1479,7 +1476,7 @@ fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
     });
 }
 
-// Example: click handler for confirm button
+// Example click handler
 confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
     deleteImmunization(dataId, tableRow);
     confirmOverlay.remove();
