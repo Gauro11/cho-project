@@ -357,7 +357,7 @@
         <h1 class="section-title pulse-animation">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
 
         <div class="map-container-modern">
-            <img src="https://tools.paintmaps.com/og_image/map_cropping/4-1108697425-3.jpeg"
+            <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
                  alt="Dagupan City Map"
                  class="map-image-modern">
 
@@ -379,7 +379,7 @@
         })
         .catch(() => {
             document.getElementById("population-text").innerHTML =
-                "🚩 City of Dagupan Mapssss / Population unavailable";
+                "🚩 City of Dagupan Map / Population unavailable";
         });
 </script>
 
