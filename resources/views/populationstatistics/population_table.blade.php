@@ -279,7 +279,7 @@ $barangayCoordinates = [
                 <table class="table table-hover my-0">
                     <thead>
                         <tr style="color: white;">
-                            <th>ID</th>
+                            <th>date</th>
                             <th>Barangay Name</th>
                             <th>Latitude</th>
                             <th>Longitude</th>
