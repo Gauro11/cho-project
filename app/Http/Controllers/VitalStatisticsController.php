@@ -62,6 +62,13 @@ public function store_vitalstatiscs(Request $request)
         'maternal_deaths' => 'required|integer|min:0',
     ]);
 
+    // Check if the same month_year already exists
+    $exists = VitalStatisticsManagement::where('year', $request->month_year)->exists();
+
+    if ($exists) {
+        return redirect()->back()->with('error', 'A record for this year already exists.');
+    }
+
     // Store the data
     VitalStatisticsManagement::create([
         'year' => $request->month_year, // Fix: Use month_year instead of year
@@ -75,6 +82,7 @@ public function store_vitalstatiscs(Request $request)
     // Redirect with success message
     return redirect()->back()->with('success', 'Vital statistics record added successfully.');
 }
+
 
     public function show_vital_statistics()
     {
