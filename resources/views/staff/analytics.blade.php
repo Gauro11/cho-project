@@ -177,14 +177,16 @@
             box-shadow: 0 25px 50px rgba(31, 38, 135, 0.6);
         }
 
-        .map-image-modern {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            display: block;
-            transition: all 0.4s ease;
-            filter: brightness(1.1) contrast(1.1);
-        }
+       .map-image-modern {
+    width: 100%;
+    height: 400px;
+    object-fit: contain; /* show the whole map */
+    display: block;
+    transition: all 0.4s ease;
+    filter: brightness(1.1) contrast(1.1);
+    background: #fff; /* optional: add background so transparent edges are visible */
+}
+
 
         .map-title-modern {
             padding: 1.5rem;
