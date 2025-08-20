@@ -1439,50 +1439,37 @@
                                         confirmOverlay.remove();
                                     });
 
-                                    confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
-    confirmOverlay.remove();
-});
-
-const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-function deleteImmunization(dataId, tableRow) {
-    fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            "Content-Type": "application/json"
-        }
-    })
-    .then(async response => {
-        if (!response.ok) {
-            const text = await response.text();
-            console.error("Server response:", text);
-            showModernAlert("❌ Error", "Failed to delete data.");
-            return null;
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data && data.success) {
-            tableRow.remove();
-            showModernAlert("✅ Success", "Data deleted successfully!");
-        } else if (data) {
-            showModernAlert("❌ Error", "Failed to delete data.");
-        }
-    })
-    .catch(error => {
-        console.error("Fetch error:", error);
-        showModernAlert("❌ Error", "Something went wrong.");
-    });
-}
-
-// Example click handler
-confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-    deleteImmunization(dataId, tableRow);
-    confirmOverlay.remove();
-});
-
-
+                                     // Confirm action
+                                    confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
+                                        fetch(`/public/immunization/delete/${dataId}`, {
+                                                method: "DELETE",
+                                                headers: {
+                                                    "X-CSRF-TOKEN": document.querySelector(
+                                                        'meta[name="csrf-token"]').content,
+                                                    "Content-Type": "application/json"
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                confirmOverlay.remove();
+                                                if (data.success) {
+                                                    // Remove the row from the table without reloading
+                                                    tableRow.remove();
+                                                    showModernAlert("✅ Success",
+                                                        "Data deleted successfully!");
+                                                } else {
+                                                    showModernAlert("❌ Error",
+                                                        "Failed to delete data.");
+                                                }
+                                            })
+                                            .catch(error => {
+                                                confirmOverlay.remove();
+                                                console.error("Error:", error);
+                                                showModernAlert("❌ Error", "Something went wrong.");
+                                            });
+                                    });
+                                });
+                            });
 
                                
 
@@ -1606,7 +1593,7 @@ confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
                                 let formData = new FormData(this);
                                 formData.append('_method', 'PUT');
 
-                                fetch(`/immunization/update`, {
+                                fetch(`/public/immunization/update`, {
                                         method: "POST",
                                         headers: {
                                             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
