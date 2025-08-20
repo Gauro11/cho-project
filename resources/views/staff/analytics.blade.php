@@ -362,7 +362,7 @@
                  class="map-image-modern">
 
             <div class="map-title-modern">
-                <h4 id="population-text">🚩 City of Dagupan Map / Loading population...</h4>
+                <h4 id="population-text">🚩 City of Dagupan Mapssss / Loading population...</h4>
             </div>
         </div>
     </div>
@@ -379,7 +379,7 @@
         })
         .catch(() => {
             document.getElementById("population-text").innerHTML =
-                "🚩 City of Dagupan Map / Population unavailable";
+                "🚩 City of Dagupan Mapssss / Population unavailable";
         });
 </script>
 
