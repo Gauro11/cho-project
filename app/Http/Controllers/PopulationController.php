@@ -48,7 +48,7 @@ class PopulationController extends Controller
        
     }
     
-    public function store_population(Request $request)
+   public function store_population(Request $request)
 {
     // Validate the request data
     $request->validate([
@@ -57,6 +57,16 @@ class PopulationController extends Controller
         'population' => 'required|integer|min:0',
     ]);
 
+    // Check for duplicate location
+    $exists = PopulationStatisticsManagement::where('location', $request->location)->exists();
+
+    if ($exists) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Population data for this location already exists!',
+        ]);
+    }
+
     // Store the data in the database
     PopulationStatisticsManagement::create([
         'location' => $request->location,
@@ -64,8 +74,10 @@ class PopulationController extends Controller
         'population' => $request->population,
     ]);
 
-    // Redirect back with a success message
-    return redirect()->back()->with('success', 'Population data added successfully!');
+    return response()->json([
+        'success' => true,
+        'message' => 'Population data added successfully!',
+    ]);
 }
 
 public function show_population()

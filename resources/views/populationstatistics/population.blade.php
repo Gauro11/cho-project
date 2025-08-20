@@ -1168,6 +1168,72 @@
                     </div>
 
                     <!-- JavaScript Section -->
+
+                    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('customModal');
+    const cancelBtn = document.getElementById('cancelCustomModal'); // cancel button
+    const topCloseBtn = document.getElementById('closeCustomModalTop'); // X button
+    const form = document.querySelector("form[action='{{ route('population.store') }}']");
+
+    // Form submit (AJAX)
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+
+        fetch(form.action, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: formData,
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showModernAlert("✅ Success", data.message || "Population data added successfully!");
+                setTimeout(() => {
+                    form.reset();
+                    closeModal();
+                    location.reload();
+                }, 1400);
+            } else {
+                // highlight location field if duplicate
+                const locationInput = form.querySelector("[name='location']");
+                if (data.message && data.message.includes('location')) {
+                    locationInput.classList.add("input-error"); // add red border CSS class
+                }
+                showModernAlert("❌ Error", data.message || "Failed to save.");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showModernAlert("❌ Error", "An error occurred while saving.");
+        });
+    });
+
+    // Close modal function
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    cancelBtn && cancelBtn.addEventListener('click', closeModal);
+    topCloseBtn && topCloseBtn.addEventListener('click', closeModal);
+
+    window.addEventListener('click', function(ev) {
+        if (ev.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Escape' || ev.key === 'Esc') {
+            if (getComputedStyle(modal).display !== 'none') closeModal();
+        }
+    });
+});
+</script>
+
+
                     <script>
                         document.addEventListener("DOMContentLoaded", function() {
                             // Add New Record Modal
