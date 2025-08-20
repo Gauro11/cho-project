@@ -1447,13 +1447,14 @@
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
 // Function to delete an immunization record
-function deleteImmunization(dataId, tableRow) {
-    fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
-        method: "DELETE",
-        headers: {
-            "X-CSRF-TOKEN": csrfToken,
-            "Content-Type": "application/json"
-        }
+fetch(`${window.location.origin}/public/immunization/delete/${dataId}`, {
+    method: "DELETE",
+    headers: {
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+        "Content-Type": "application/json"
+    }
+})
+
     })
     .then(async response => {
         if (!response.ok) {
