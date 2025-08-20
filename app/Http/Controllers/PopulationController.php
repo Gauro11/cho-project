@@ -124,7 +124,7 @@ public function getDagupanPopulation()
             'region'     => $data['region']['name'] ?? null,
             'province'   => $data['province']['name'] ?? null,
             'population' => $population,
-            'year'       => $year
+          
         ]);
     } catch (\Exception $e) {
         return response()->json([
