@@ -1267,38 +1267,69 @@
                         feather.replace();
                     </script>
  <script>
-                    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('customModal');
+    const cancelBtn = document.getElementById('cancelCustomModal'); // your cancel button
+    const topCloseBtn = document.getElementById('closeCustomModalTop'); // the X
     const form = document.querySelector("form[action='{{ route('vital_statistics.store') }}']");
 
-    form.addEventListener("submit", function (e) {
-        e.preventDefault(); // prevent page reload
-
-        const formData = new FormData(form);
+    // Form submit (AJAX)
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formData = new FormData(this);
 
         fetch(form.action, {
             method: "POST",
             headers: {
                 "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "X-Requested-With": "XMLHttpRequest",
             },
-            body: formData
+            body: formData,
         })
-        .then(res => res.json())
+        .then(r => r.json())
         .then(data => {
             if (data.success) {
-                showModernAlert("✅ Success", data.message);
-                form.reset(); // clear form
-                document.getElementById("customModal").style.display = "none"; // close modal
+                showModernAlert("✅ Success", data.message || "Record saved successfully!");
+                setTimeout(() => {
+                    form.reset();
+                    closeModal();
+                    location.reload(); // reload page if you want
+                }, 1400);
             } else {
-                showModernAlert("❌ Error", data.message);
+                showModernAlert("❌ Error", data.message || "Failed to save.");
             }
         })
         .catch(err => {
-            console.error("Error:", err);
-            showModernAlert("❌ Error", "Something went wrong.");
+            console.error(err);
+            showModernAlert("❌ Error", "An error occurred while saving.");
         });
     });
+
+    // Close modal function
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    // Cancel button
+    cancelBtn && cancelBtn.addEventListener('click', closeModal);
+
+    // Top close button (X)
+    topCloseBtn && topCloseBtn.addEventListener('click', closeModal);
+
+    // Close when clicking outside modal content
+    window.addEventListener('click', function(ev) {
+        if (ev.target === modal) closeModal();
+    });
+
+    // Close on ESC key
+    document.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Escape' || ev.key === 'Esc') {
+            if (getComputedStyle(modal).display !== 'none') closeModal();
+        }
+    });
 });
- </script>
+</script>
+
 
 
                     <script>
