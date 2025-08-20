@@ -881,16 +881,8 @@
                                     <button class="modern-btn btn-success btn-sm" id="openModal">
                                         ➕ Add New Record
                                     </button>
-
-                                    <span class="separator">|</span>
-
-                                    <div class="modern-input-group input-group" style="width: 300px;">
-                                        <span class="input-group-text bg-transparent"><i
-                                                data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search"
-                                            class="form-control modern-form-control" placeholder="Search records..."
-                                            style="border-left: none;">
-                                    </div>
+                                    
+                                    
                                     <button class="modern-btn btn-danger btn-sm" id="deleteAllBtn">
     <i data-feather="trash-2"></i> Delete All
 </button>
@@ -1041,14 +1033,14 @@ document.addEventListener("DOMContentLoaded", function() {
             cancelBtn.disabled = true;
 
             // Make the delete all request
-            fetch('/immunization/delete-all', {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
+           fetch("{{ url('/immunization/delete-all') }}", {
+    method: "DELETE",
+    headers: {
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+})
             .then(response => response.json())
             .then(data => {
                 confirmOverlay.remove();
@@ -1119,6 +1111,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+                                    
+
+                                    <span class="separator">|</span>
+
+                                    <div class="modern-input-group input-group" style="width: 300px;">
+                                        <span class="input-group-text bg-transparent"><i
+                                                data-feather="search"></i></span>
+                                        <input type="text" id="searchInput" name="search"
+                                            class="form-control modern-form-control" placeholder="Search records..."
+                                            style="border-left: none;">
+                                    </div>
 
                                     <span class="separator">|</span>
                                 </div>
