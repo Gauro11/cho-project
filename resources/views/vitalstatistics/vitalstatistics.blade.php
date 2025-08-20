@@ -1266,6 +1266,39 @@
                     <script>
                         feather.replace();
                     </script>
+ <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form[action='{{ route('vital_statistics.store') }}']");
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault(); // prevent page reload
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showModernAlert("✅ Success", data.message);
+                form.reset(); // clear form
+                document.getElementById("customModal").style.display = "none"; // close modal
+            } else {
+                showModernAlert("❌ Error", data.message);
+            }
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            showModernAlert("❌ Error", "Something went wrong.");
+        });
+    });
+});
+ </script>
 
 
                     <script>

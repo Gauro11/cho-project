@@ -52,7 +52,6 @@ class VitalStatisticsController extends Controller
 }
 public function store_vitalstatiscs(Request $request)
 {
-    // Validate the incoming request
     $request->validate([
         'month_year' => 'required|string',
         'total_population' => 'required|integer|min:0',
@@ -62,16 +61,18 @@ public function store_vitalstatiscs(Request $request)
         'maternal_deaths' => 'required|integer|min:0',
     ]);
 
-    // Check if the same month_year already exists
+    // Check if year already exists
     $exists = VitalStatisticsManagement::where('year', $request->month_year)->exists();
 
     if ($exists) {
-        return redirect()->back()->with('error', 'A record for this year already exists.');
+        return response()->json([
+            'success' => false,
+            'message' => 'A record for this year already exists.',
+        ]);
     }
 
-    // Store the data
     VitalStatisticsManagement::create([
-        'year' => $request->month_year, // Fix: Use month_year instead of year
+        'year' => $request->month_year,
         'total_population' => $request->total_population,
         'total_live_births' => $request->total_live_births,
         'total_deaths' => $request->total_deaths,
@@ -79,9 +80,14 @@ public function store_vitalstatiscs(Request $request)
         'maternal_deaths' => $request->maternal_deaths,
     ]);
 
-    // Redirect with success message
-    return redirect()->back()->with('success', 'Vital statistics record added successfully.');
+    return response()->json([
+        'success' => true,
+        'message' => 'Vital statistics record added successfully.',
+    ]);
 }
+
+
+
 
 
     public function show_vital_statistics()
