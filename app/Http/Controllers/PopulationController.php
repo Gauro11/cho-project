@@ -111,9 +111,9 @@ public function getDagupanPopulation()
 
         $data = $response->json();
 
-       
+        // Hardcode population since PSGC Cloud doesn't provide it
         $population = 174302;
-        
+        $year       = 2020;
 
         return response()->json([
             'success'    => 1,
@@ -124,7 +124,7 @@ public function getDagupanPopulation()
             'region'     => $data['region']['name'] ?? null,
             'province'   => $data['province']['name'] ?? null,
             'population' => $population,
-            
+            'year'       => $year
         ]);
     } catch (\Exception $e) {
         return response()->json([
