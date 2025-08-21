@@ -519,7 +519,7 @@
             left: 100%;
         }
 
-       
+
 
         .modern-download-btn:focus {
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
@@ -693,7 +693,7 @@
             margin-bottom: 2rem;
         }
 
-       
+
         .dropdown-menu.show {
             z-index: 9999 !important;
             position: absolute !important;
@@ -712,7 +712,7 @@
             overflow: visible !important;
         }
 
-       
+
 
         /* Fix for dropdown appearing behind table */
         .dropdown {
@@ -739,7 +739,7 @@
         /* Fix glass card overflow issues */
         .glass-card {
             overflow: visible !important;
-           
+
             position: relative;
             z-index: 1;
         }
@@ -749,7 +749,7 @@
             position: relative;
         }
 
-      
+
         .table-responsive {
             overflow: visible !important;
             /* Allow dropdown to show outside table */
@@ -757,7 +757,7 @@
 
         .table-container {
             overflow-x: auto;
-           
+
             overflow-y: visible;
             /* Allow vertical overflow for dropdowns */
         }
@@ -768,7 +768,7 @@
             z-index: 1;
         }
 
-      
+
         .content {
             position: relative;
             z-index: auto;
@@ -881,68 +881,75 @@
                                     <button class="modern-btn btn-success btn-sm" id="openModal">
                                         ➕ Add New Record
                                     </button>
-                                    
-                                    
+
+
                                     <button class="modern-btn btn-danger btn-sm" id="deleteAllBtn">
-    <i data-feather="trash-2"></i> Delete All
-</button>
+                                        <i data-feather="trash-2"></i> Delete All
+                                    </button>
 
-<span class="separator">|</span>
+                                    <span class="separator">|</span>
 
-<!-- 2. ADD THIS CSS TO YOUR EXISTING STYLE SECTION -->
-<style>
-/* Add this to your existing CSS */
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
+                                    <!-- 2. ADD THIS CSS TO YOUR EXISTING STYLE SECTION -->
+                                    <style>
+                                        /* Add this to your existing CSS */
+                                        @keyframes pulse {
 
-.modern-alert {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    border-radius: 15px;
-    padding: 1rem 1.5rem;
-    color: var(--text-primary);
-    box-shadow: var(--shadow-glow);
-    z-index: 10001;
-    animation: fadeIn 0.3s ease-out;
-    max-width: 400px;
-}
+                                            0%,
+                                            100% {
+                                                transform: scale(1);
+                                            }
 
-.modern-alert.success {
-    border-left: 4px solid #10b981;
-}
+                                            50% {
+                                                transform: scale(1.05);
+                                            }
+                                        }
 
-.modern-alert.error {
-    border-left: 4px solid #ef4444;
-}
+                                        .modern-alert {
+                                            position: fixed;
+                                            top: 20px;
+                                            right: 20px;
+                                            background: var(--card-bg);
+                                            backdrop-filter: blur(16px);
+                                            border: 1px solid var(--glass-border);
+                                            border-radius: 15px;
+                                            padding: 1rem 1.5rem;
+                                            color: var(--text-primary);
+                                            box-shadow: var(--shadow-glow);
+                                            z-index: 10001;
+                                            animation: fadeIn 0.3s ease-out;
+                                            max-width: 400px;
+                                        }
 
-.modern-alert.warning {
-    border-left: 4px solid #f59e0b;
-}
-</style>
+                                        .modern-alert.success {
+                                            border-left: 4px solid #10b981;
+                                        }
 
-<!-- 3. ADD THIS JAVASCRIPT AT THE END OF YOUR DOCUMENT (before closing </body> tag) -->
-<script>
-// Delete All Functionality - Add this to your existing JavaScript
-document.addEventListener("DOMContentLoaded", function() {
-    // Delete All Button Event Listener
-    document.getElementById('deleteAllBtn').addEventListener('click', function() {
-        const tableBody = document.querySelector('#dataTable tbody');
-        const rowCount = tableBody ? tableBody.children.length : 0;
+                                        .modern-alert.error {
+                                            border-left: 4px solid #ef4444;
+                                        }
 
-        if (rowCount === 0) {
-            showModernAlert("⚠️ Warning", "No data to delete.", "warning");
-            return;
-        }
+                                        .modern-alert.warning {
+                                            border-left: 4px solid #f59e0b;
+                                        }
+                                    </style>
 
-        // Create modern confirmation modal
-        const confirmOverlay = document.createElement('div');
-        confirmOverlay.style.cssText = `
+                                    <!-- 3. ADD THIS JAVASCRIPT AT THE END OF YOUR DOCUMENT (before closing </body> tag) -->
+                                    <script>
+                                        // Delete All Functionality - Add this to your existing JavaScript
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            // Delete All Button Event Listener
+                                            document.getElementById('deleteAllBtn').addEventListener('click', function() {
+                                                const tableBody = document.querySelector('#dataTable tbody');
+                                                const rowCount = tableBody ? tableBody.children.length : 0;
+
+                                                if (rowCount === 0) {
+                                                    showModernAlert("⚠️ Warning", "No data to delete.", "warning");
+                                                    return;
+                                                }
+
+                                                // Create modern confirmation modal
+                                                const confirmOverlay = document.createElement('div');
+                                                confirmOverlay.style.cssText = `
             position: fixed;
             top: 0;
             left: 0;
@@ -957,8 +964,8 @@ document.addEventListener("DOMContentLoaded", function() {
             animation: fadeIn 0.3s ease-out;
         `;
 
-        const confirmBox = document.createElement('div');
-        confirmBox.style.cssText = `
+                                                const confirmBox = document.createElement('div');
+                                                confirmBox.style.cssText = `
             background: linear-gradient(135deg, #1e1e2f, #2a2a3e);
             border-radius: 25px;
             padding: 2.5rem;
@@ -971,7 +978,7 @@ document.addEventListener("DOMContentLoaded", function() {
             border: 1px solid rgba(255, 255, 255, 0.1);
         `;
 
-        confirmBox.innerHTML = `
+                                                confirmBox.innerHTML = `
             <div style="margin-bottom: 1.5rem;">
                 <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #ff4757, #ff3838); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; animation: pulse 2s infinite;">
                     🗑️
@@ -993,125 +1000,133 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
         `;
 
-        confirmOverlay.appendChild(confirmBox);
-        document.body.appendChild(confirmOverlay);
+                                                confirmOverlay.appendChild(confirmBox);
+                                                document.body.appendChild(confirmOverlay);
 
-        // Add hover effects
-        const cancelBtn = confirmBox.querySelector("#cancelDeleteAll");
-        const confirmBtn = confirmBox.querySelector("#confirmDeleteAll");
+                                                // Add hover effects
+                                                const cancelBtn = confirmBox.querySelector("#cancelDeleteAll");
+                                                const confirmBtn = confirmBox.querySelector("#confirmDeleteAll");
 
-        cancelBtn.addEventListener('mouseover', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 6px 20px rgba(108, 117, 125, 0.4)';
-        });
+                                                cancelBtn.addEventListener('mouseover', function() {
+                                                    this.style.transform = 'translateY(-2px)';
+                                                    this.style.boxShadow = '0 6px 20px rgba(108, 117, 125, 0.4)';
+                                                });
 
-        cancelBtn.addEventListener('mouseout', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = 'none';
-        });
+                                                cancelBtn.addEventListener('mouseout', function() {
+                                                    this.style.transform = 'translateY(0)';
+                                                    this.style.boxShadow = 'none';
+                                                });
 
-        confirmBtn.addEventListener('mouseover', function() {
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 8px 25px rgba(255, 71, 87, 0.5)';
-        });
+                                                confirmBtn.addEventListener('mouseover', function() {
+                                                    this.style.transform = 'translateY(-2px)';
+                                                    this.style.boxShadow = '0 8px 25px rgba(255, 71, 87, 0.5)';
+                                                });
 
-        confirmBtn.addEventListener('mouseout', function() {
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '0 4px 15px rgba(255, 71, 87, 0.3)';
-        });
+                                                confirmBtn.addEventListener('mouseout', function() {
+                                                    this.style.transform = 'translateY(0)';
+                                                    this.style.boxShadow = '0 4px 15px rgba(255, 71, 87, 0.3)';
+                                                });
 
-        // Cancel action
-        cancelBtn.addEventListener("click", () => {
-            confirmOverlay.remove();
-        });
+                                                // Cancel action
+                                                cancelBtn.addEventListener("click", () => {
+                                                    confirmOverlay.remove();
+                                                });
 
-        // Confirm action - Delete all records
-        confirmBtn.addEventListener("click", () => {
-            // Show loading state
-            confirmBtn.innerHTML = '<span>⏳</span> Deleting...';
-            confirmBtn.disabled = true;
-            cancelBtn.disabled = true;
+                                                // Confirm action - Delete all records
+                                                confirmBtn.addEventListener("click", () => {
+                                                    // Show loading state
+                                                    confirmBtn.innerHTML = '<span>⏳</span> Deleting...';
+                                                    confirmBtn.disabled = true;
+                                                    cancelBtn.disabled = true;
 
-            // Make the delete all request
-           fetch("{{ url('/immunization/delete-all') }}", {
-    method: "DELETE",
-    headers: {
-        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-    }
-})
-            .then(response => response.json())
-            .then(data => {
-                confirmOverlay.remove();
-                if (data.success) {
-                    // Clear the table body
-                    tableBody.innerHTML = '';
-                    
-                    // Update pagination info
-                    const paginationInfo = document.querySelector('.pagination-container p');
-                    if (paginationInfo) {
-                        paginationInfo.textContent = 'Showing 0 to 0 of 0 results';
-                    }
-                    
-                    // Hide pagination
-                    const pagination = document.querySelector('.pagination');
-                    if (pagination) {
-                        pagination.style.display = 'none';
-                    }
-                    
-                    // Show no data message
-                    const tableContainer = document.querySelector('#dataTable .card');
-                    if (tableContainer && rowCount > 0) {
-                        tableContainer.innerHTML = `
+                                                    // Make the delete all request
+                                                    fetch("{{ url('/immunization/delete-all') }}", {
+                                                            method: "DELETE",
+                                                            headers: {
+                                                                "X-CSRF-TOKEN": document.querySelector(
+                                                                    'meta[name="csrf-token"]').content,
+                                                                "Accept": "application/json",
+                                                                "Content-Type": "application/json"
+                                                            }
+                                                        })
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            confirmOverlay.remove();
+                                                            if (data.success) {
+                                                                // Clear the table body
+                                                                tableBody.innerHTML = '';
+
+                                                                // Update pagination info
+                                                                const paginationInfo = document.querySelector(
+                                                                    '.pagination-container p');
+                                                                if (paginationInfo) {
+                                                                    paginationInfo.textContent = 'Showing 0 to 0 of 0 results';
+                                                                }
+
+                                                                // Hide pagination
+                                                                const pagination = document.querySelector('.pagination');
+                                                                if (pagination) {
+                                                                    pagination.style.display = 'none';
+                                                                }
+
+                                                                // Show no data message
+                                                                const tableContainer = document.querySelector(
+                                                                    '#dataTable .card');
+                                                                if (tableContainer && rowCount > 0) {
+                                                                    tableContainer.innerHTML = `
                             <div class="no-data-message" style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
                                 <p style="color: #374151; font-size: 18px; margin: 0; font-weight: 500;">No immunization data available.</p>
                             </div>
                         `;
-                    }
-                    
-                    showModernAlert("✅ Success", `Successfully deleted all ${data.deleted_count} records!`, "success");
-                } else {
-                    showModernAlert("❌ Error", data.message || "Failed to delete records.", "error");
-                }
-            })
-            .catch(error => {
-                confirmOverlay.remove();
-                console.error("Error:", error);
-                showModernAlert("❌ Error", "Something went wrong while deleting records.", "error");
-            });
-        });
+                                                                }
 
-        // Close on outside click
-        confirmOverlay.addEventListener('click', function(e) {
-            if (e.target === confirmOverlay) {
-                confirmOverlay.remove();
-            }
-        });
-    });
+                                                                showModernAlert("✅ Success",
+                                                                    `Successfully deleted all ${data.deleted_count} records!`,
+                                                                    "success");
+                                                            } else {
+                                                                showModernAlert("❌ Error", data.message ||
+                                                                    "Failed to delete records.", "error");
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            confirmOverlay.remove();
+                                                            console.error("Error:", error);
+                                                            showModernAlert("❌ Error",
+                                                                "Something went wrong while deleting records.", "error");
+                                                        });
+                                                });
 
-    // Enhanced showModernAlert function (if not already exists)
-    if (typeof window.showModernAlert === 'undefined') {
-        window.showModernAlert = function(title, message, type = 'success') {
-            const alertBox = document.createElement('div');
-            alertBox.className = `modern-alert ${type}`;
-            alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
-            document.body.appendChild(alertBox);
-            
-            setTimeout(() => {
-                alertBox.style.opacity = "0";
-                alertBox.style.transform = "translateX(100%)";
-                setTimeout(() => {
-                    if (alertBox.parentNode) {
-                        alertBox.remove();
-                    }
-                }, 500);
-            }, 3000);
-        };
-    }
-});
-</script>
-                                    
+                                                // Close on outside click
+                                                confirmOverlay.addEventListener('click', function(e) {
+                                                    if (e.target === confirmOverlay) {
+                                                        confirmOverlay.remove();
+                                                    }
+                                                });
+                                            });
+
+                                            // Enhanced showModernAlert function (if not already exists)
+                                            if (typeof window.showModernAlert === 'undefined') {
+                                                window.showModernAlert = function(title, message, type = 'success') {
+                                                    const alertBox = document.createElement('div');
+                                                    alertBox.className = `modern-alert ${type}`;
+                                                    alertBox.innerHTML =
+                                                        `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+                                                    document.body.appendChild(alertBox);
+
+                                                    setTimeout(() => {
+                                                        alertBox.style.opacity = "0";
+                                                        alertBox.style.transform = "translateX(100%)";
+                                                        setTimeout(() => {
+                                                            if (alertBox.parentNode) {
+                                                                alertBox.remove();
+                                                            }
+                                                        }, 500);
+                                                    }, 3000);
+                                                };
+                                            }
+                                        });
+                                    </script>
+
 
                                     <span class="separator">|</span>
 
@@ -1122,6 +1137,175 @@ document.addEventListener("DOMContentLoaded", function() {
                                             class="form-control modern-form-control" placeholder="Search records..."
                                             style="border-left: none;">
                                     </div>
+
+                                    <!--SORT BUTTON odlest to latest -->
+                                    <div class="dropdown">
+                                        <button class="modern-btn btn-sort btn-sm dropdown-toggle" id="sortDropdownBtn">
+                                            <i class="fas fa-sort"></i> Sort Options
+                                        </button>
+                                        <div class="dropdown-menu" id="sortDropdownMenu">
+                                            <button class="dropdown-item" data-sort="date-oldest">📅 Year: Oldest
+                                                First</button>
+                                            <button class="dropdown-item" data-sort="date-newest">📅 Year: Newest
+                                                First</button>
+                                            <button class="dropdown-item" data-sort="az">🔤 A-Z</button>
+                                            <button class="dropdown-item" data-sort="za">🔤 Z-A</button>
+                                        </div>
+                                    </div>
+
+                                    <style>
+                                        /* Dropdown container */
+                                        .dropdown {
+                                            position: relative;
+                                            display: inline-block;
+                                        }
+
+                                        /* Dropdown button */
+                                        .modern-btn.btn-sort.dropdown-toggle {
+                                            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+                                            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+                                        }
+
+                                        .modern-btn.btn-sort.dropdown-toggle:hover {
+                                            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+                                        }
+
+                                       
+                                        .dropdown-menu {
+                                            display: none;
+                                            position: absolute;
+                                            background: black;
+                                            min-width: 180px;
+                                            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+                                            border-radius: 12px;
+                                            margin-top: 5px;
+                                            z-index: 1000;
+                                        }
+
+                                        .dropdown-menu.show {
+                                            display: block;
+                                        }
+
+                                        .dropdown-item {
+                                            padding: 10px 16px;
+                                            display: block;
+                                            width: 100%;
+                                            text-align: left;
+                                            background: none;
+                                            border: none;
+                                            cursor: pointer;
+                                            font-size: 14px;
+                                        }
+                                        .dropdown-item:hover {
+                                            background: #000;
+                                            color: #7c3aed;
+                                        }
+                                    </style>
+
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            setTimeout(function() {
+                                                const sortDropdownBtn = document.getElementById('sortDropdownBtn');
+                                                const sortDropdownMenu = document.getElementById('sortDropdownMenu');
+                                                const tableBody = document.querySelector('#dataTable tbody');
+
+                                                if (!sortDropdownBtn || !sortDropdownMenu || !tableBody) {
+                                                    console.log("Dropdown sort elements not found");
+                                                    return;
+                                                }
+
+                                                // Toggle dropdown
+                                                sortDropdownBtn.addEventListener("click", function() {
+                                                    sortDropdownMenu.classList.toggle("show");
+                                                });
+
+                                                // Close dropdown if clicked outside
+                                                document.addEventListener("click", function(e) {
+                                                    if (!sortDropdownBtn.contains(e.target) && !sortDropdownMenu.contains(e
+                                                        .target)) {
+                                                        sortDropdownMenu.classList.remove("show");
+                                                    }
+                                                });
+
+                                                // Sorting logic
+                                                function getRows() {
+                                                    return Array.from(tableBody.querySelectorAll("tr"));
+                                                }
+
+                                                function updateTable(rows) {
+                                                    tableBody.innerHTML = "";
+                                                    rows.forEach(r => tableBody.appendChild(r));
+                                                }
+
+                                                const sortFunctions = {
+                                                    "date-oldest": () => getRows().sort((a, b) => new Date(a.cells[0].textContent
+                                                    .trim()) - new Date(b.cells[0].textContent.trim())),
+                                                    "date-newest": () => getRows().sort((a, b) => new Date(b.cells[0].textContent
+                                                    .trim()) - new Date(a.cells[0].textContent.trim())),
+                                                    "az": () => getRows().sort((a, b) => a.cells[1].textContent.trim().localeCompare(b
+                                                        .cells[1].textContent.trim())),
+                                                    "za": () => getRows().sort((a, b) => b.cells[1].textContent.trim().localeCompare(a
+                                                        .cells[1].textContent.trim()))
+                                                };
+
+                                                // Handle click on dropdown items
+                                                sortDropdownMenu.querySelectorAll(".dropdown-item").forEach(item => {
+                                                    item.addEventListener("click", function() {
+                                                        const sortType = this.dataset.sort;
+                                                        if (sortFunctions[sortType]) {
+                                                            const sortedRows = sortFunctions[sortType]();
+                                                            updateTable(sortedRows);
+                                                            showSortingFeedback(this.textContent);
+                                                        }
+                                                        sortDropdownMenu.classList.remove("show");
+                                                    });
+                                                });
+
+                                                // Feedback
+                                                function showSortingFeedback(message) {
+                                                    if (typeof window.showModernAlert === "function") {
+                                                        window.showModernAlert("✨ Sorting Applied", message, "success");
+                                                    } else {
+                                                        const note = document.createElement("div");
+                                                        note.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+                    z-index: 10001;
+                    font-weight: 600;
+                    animation: slideInRight 0.3s ease-out;
+                `;
+                                                        note.innerHTML = message;
+                                                        document.body.appendChild(note);
+                                                        setTimeout(() => {
+                                                            note.style.opacity = "0";
+                                                            note.style.transform = "translateX(100%)";
+                                                            setTimeout(() => note.remove(), 300);
+                                                        }, 2000);
+                                                    }
+                                                }
+
+                                                // Animation for feedback
+                                                if (!document.querySelector('#sortingNotificationCSS')) {
+                                                    const style = document.createElement('style');
+                                                    style.id = 'sortingNotificationCSS';
+                                                    style.textContent = `
+                @keyframes slideInRight {
+                    from {opacity: 0; transform: translateX(100%);}
+                    to {opacity: 1; transform: translateX(0);}
+                }
+            `;
+                                                    document.head.appendChild(style);
+                                                }
+                                            }, 500);
+                                        });
+                                    </script>
+
 
                                     <span class="separator">|</span>
                                 </div>
@@ -1670,7 +1854,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         confirmOverlay.remove();
                                     });
 
-                                     // Confirm action
+                                    // Confirm action
                                     confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
                                         fetch(`/public/immunization/delete/${dataId}`, {
                                                 method: "DELETE",
@@ -1702,7 +1886,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 });
                             });
 
-                               
+
 
 
                             // Simple modern alert
