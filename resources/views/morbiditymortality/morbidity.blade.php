@@ -1574,7 +1574,7 @@
                                 <!-- Pagination + Download Icon on the Right -->
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <!-- Import Button Added Here -->
-                                    <button class="modern-bt btn-secondary btn-sm" id="openImportModal">
+                                    <button class="modern-btn btn-secondary btn-sm" id="openImportModal">
                                         <i data-feather="upload"></i> Import
                                     </button>
 
