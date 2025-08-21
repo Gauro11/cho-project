@@ -887,17 +887,6 @@
                                     <button class="modern-btn btn-success btn-sm" id="openModal">
                                         ➕ Add New Record
                                     </button>
-                                    <!-- <i id="openModal" data-feather="plus" style="color: white; cursor: pointer;"></i> -->
-
-                                    <!-- Vertical Bar Separator -->
-                                    <span class="separator">|</span>
-                                    <div class="modern-input-group input-group" style="width: 300px;">
-                                        <span class="input-group-text bg-transparent"><i
-                                                data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search"
-                                            class="form-control modern-form-control" placeholder="Search records..."
-                                            style="border-left: none;">
-                                    </div>
 
                                      <button class="modern-btn btn-danger btn-sm" id="deleteAllBtn">
     <i data-feather="trash-2"></i> Delete All
@@ -1127,7 +1116,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+                                    
 
+                                    <!-- Vertical Bar Separator -->
+                                    <span class="separator">|</span>
+                                    <div class="modern-input-group input-group" style="width: 300px;">
+                                        <span class="input-group-text bg-transparent"><i
+                                                data-feather="search"></i></span>
+                                        <input type="text" id="searchInput" name="search"
+                                            class="form-control modern-form-control" placeholder="Search records..."
+                                            style="border-left: none;">
+                                    </div>
                                     <span class="separator">|</span>
 
                                    
