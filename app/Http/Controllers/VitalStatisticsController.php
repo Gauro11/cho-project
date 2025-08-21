@@ -106,5 +106,24 @@ public function store_vitalstatiscs(Request $request)
 
     return back()->with('success', 'Population data imported successfully.');
 }
+public function deleteAll()
+{
+    try {
+        $deletedCount = VitalStatisticsManagement::count(); // Get count before deletion
+        VitalStatisticsManagement::truncate(); // Deletes all records
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'All records deleted successfully',
+            'deleted_count' => $deletedCount
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete records: ' . $e->getMessage()
+        ], 500);
+    }
+}
     
+
 }
