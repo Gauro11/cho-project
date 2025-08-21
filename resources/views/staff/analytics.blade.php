@@ -159,36 +159,33 @@
         }
 
         .map-container-modern {
-    width: 100%;
-    max-width: 800px;
-    margin: 2rem auto;
-    border-radius: 20px;
-    overflow: hidden;
-    background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-glow);
-    transition: all 0.3s ease;
-    animation: slideInUp 1s ease-out;
-}
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-glow);
+            transition: all 0.3s ease;
+            animation: slideInUp 1s ease-out;
+        }
 
-.map-container-modern:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 25px 50px rgba(31, 38, 135, 0.6);
-}
+        .map-container-modern:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(31, 38, 135, 0.6);
+        }
 
-.map-image-modern {
+       .map-image-modern {
     width: 100%;
-    height: 100%; /* fill the container height */
-    max-height: 400px; /* optional: limit height */
-    object-fit: cover;  /* fill the container without distortion */
-    object-position: center; /* center the image */
+    height: 400px;
+    object-fit: contain; /* show the whole map */
     display: block;
     transition: all 0.4s ease;
     filter: brightness(1.1) contrast(1.1);
-    background: #fff; /* optional: background for transparent areas */
+    background: #fff; /* optional: add background so transparent edges are visible */
 }
-
 
 
         .map-title-modern {
