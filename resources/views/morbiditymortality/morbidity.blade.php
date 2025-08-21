@@ -1108,6 +1108,18 @@
         .btn-group .dropdown-menu {
             z-index: 1055 !important;
         }
+        /* Add to your CSS file or <style> section */
+.btn-gray {
+    background-color: #6c757d; /* Bootstrap secondary gray */
+    color: #fff;               /* Text color */
+    border: 1px solid #6c757d; /* Optional: match border */
+}
+
+.btn-gray:hover {
+    background-color: #5a6268; /* Darker on hover */
+    border-color: #5a6268;
+}
+
     </style>
 </head>
 
@@ -1460,7 +1472,6 @@
                                     </style>
 
                                     <script>
-                                        
                                         document.addEventListener("DOMContentLoaded", function() {
                                             setTimeout(function() {
                                                 const sortDropdownBtn = document.getElementById('sortDropdownBtn');
@@ -1574,9 +1585,10 @@
                                 <!-- Pagination + Download Icon on the Right -->
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <!-- Import Button Added Here -->
-                                    <button class="btn btn-secondary btn-sm" id="openImportModal">
+                                    <button class="btn btn-sm btn-gray" id="openImportModal">
                                         <i data-feather="upload"></i> Import
                                     </button>
+
 
                                     <button id="printTable" class="btn btn-primary btn-sm">
                                         <i data-feather="printer"></i> Print
@@ -1684,9 +1696,9 @@
                                         onclick="document.getElementById('fileInput').click()">
                                         📂 Choose File
                                     </button>
-                                     <a href="{{ route('morbidity.template') }}" class="modern-btn btn-primary">
-                                   ⬇️ Download Templatee
-                                     </a>
+                                    <a href="{{ route('morbidity.template') }}" class="modern-btn btn-primary">
+                                        ⬇️ Download Templatee
+                                    </a>
                                 </div>
 
                                 <div class="file-info" id="fileInfo">
