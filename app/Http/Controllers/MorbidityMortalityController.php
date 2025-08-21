@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Imports\MortalityImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\MorbidityImport;
-
+use App\Exports\MorbidityMortalityTemplateExport;
 
 
 
@@ -192,6 +192,11 @@ public function update_morbidity(Request $request)
 
    return back()->with('success', 'Morbidity records imported successfully.');
 
+}
+
+public function morbidityTemplate()
+{
+    return Excel::download(new MorbidityMortalityTemplateExport, 'morbidity_template.xlsx');
 }
 
 public function deleteAllMorbidity()
