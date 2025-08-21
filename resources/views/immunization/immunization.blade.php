@@ -31,8 +31,6 @@
             color: var(--text-primary);
         }
 
-
-
         .content {
             padding: 2rem;
         }
@@ -71,12 +69,9 @@
             border-radius: 30px;
             box-shadow: var(--shadow-glow);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: visible !important;
-            /* Changed this line */
+            overflow: hidden;
             position: relative;
             margin-bottom: 2rem;
-            z-index: 1;
-            /* Added this */
         }
 
         .glass-card::before {
@@ -117,6 +112,10 @@
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .modern-btn::before {
@@ -137,6 +136,8 @@
         .modern-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            color: white;
+            text-decoration: none;
         }
 
         .modern-btn.btn-success {
@@ -412,6 +413,262 @@
             color: var(--text-secondary);
             font-weight: bold;
             margin: 0 10px;
+        }
+
+        /* Override original styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            box-shadow: var(--shadow-glow);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .modal-content h2 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: var(--secondary-gradient);
+            transform: rotate(90deg);
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 12px 20px;
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            color: var(--text-primary);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .input-group {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .input-group .input-group-text {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+        }
+
+        /* Style the original button classes to match modern design */
+        .btn {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 15px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.5);
+        }
+
+        /* Additional animations for modern alerts */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /*  delete confirmation styles */
+        .modern-confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modern-confirm-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-glow);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .modern-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-glow);
+            z-index: 10001;
+            animation: slideInRight 0.3s ease-out;
+            max-width: 300px;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+        }
+
+        @media print {
+
+            .no-print,
+            .pagination {
+                display: none !important;
+            }
+        }
+
+        /* Original CSS preserved */
+        .half-width {
+            width: 48%;
+        }
+
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 4%;
+        }
+
+        .save-button {
+            margin-top: 20px;
         }
 
         /* File Upload Styling */
@@ -853,6 +1110,11 @@
         .btn-group .dropdown-menu {
             z-index: 1055 !important;
         }
+        .wrapper {
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: 125%;
+}
     </style>
 </head>
 
