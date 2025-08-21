@@ -368,7 +368,7 @@ public function exportImmunization($type = 'csv')
 
 
 
-   public function exportPopulation($type = 'csv')
+  public function exportPopulation($type = 'csv')
 {
     $data = PopulationStatisticsManagement::all();
 
@@ -376,37 +376,11 @@ public function exportImmunization($type = 'csv')
         'Bacayao Norte' => ['lat' => 16.037346, 'lng' => 120.346786],
         'Bacayao Sur' => ['lat' => 16.030672, 'lng' => 120.341251],
         'Barangay I' => ['lat' => 16.044844, 'lng' => 120.335835],
-        'Barangay II' => ['lat' => 16.041909, 'lng' => 120.336434],
-        'Barangay IV' => ['lat' => 16.041994, 'lng' => 120.335449],
-        'Bolosan' => ['lat' => 16.050444, 'lng' => 120.364059],
-        'Bonuan Binloc' => ['lat' => 16.101930, 'lng' => 120.379703],
-        'Bonuan Boquig' => ['lat' => 16.077498, 'lng' => 120.358025],
-        'Bonuan Gueset' => ['lat' => 16.075381, 'lng' => 120.343179],
-        'Calmay' => ['lat' => 16.045288, 'lng' => 120.325569],
-        'Carael' => ['lat' => 16.031396, 'lng' => 120.313649],
-        'Caranglaan' => ['lat' => 16.030648, 'lng' => 120.349915],
-        'Herrero-Perez' => ['lat' => 16.043930, 'lng' => 120.342263],
-        'Lasip Chico' => ['lat' => 16.021638, 'lng' => 120.340272],
-        'Lasip Grande' => ['lat' => 16.028621, 'lng' => 120.343201],
-        'Lomboy' => ['lat' => 16.054649, 'lng' => 120.323475],
-        'Lucao' => ['lat' => 16.020486, 'lng' => 120.322627],
-        'Malued' => ['lat' => 16.029291, 'lng' => 120.335123],
-        'Mamalingling' => ['lat' => 16.056642, 'lng' => 120.362212],
-        'Mangin' => ['lat' => 16.038877, 'lng' => 120.367335],
-        'Mayombo' => ['lat' => 16.041841, 'lng' => 120.346308],
-        'Pantal' => ['lat' => 16.046174, 'lng' => 120.338746],
-        'Poblacion Oeste' => ['lat' => 16.042353, 'lng' => 120.330374],
-        'Pogo Chico' => ['lat' => 16.038643, 'lng' => 120.337509],
-        'Pogo Grande' => ['lat' => 16.032503, 'lng' => 120.336519],
-        'Salapingao' => ['lat' => 16.057873, 'lng' => 120.319872],
-        'Salisay' => ['lat' => 16.041955, 'lng' => 120.371284],
-        'Tambac' => ['lat' => 16.046036, 'lng' => 120.356319],
-        'Tapuac' => ['lat' => 16.032397, 'lng' => 120.330215],
-        'Tebeng' => ['lat' => 16.032023, 'lng' => 120.358877],
+        // ... (keep the rest of your coordinates)
     ];
 
     if ($type === 'pdf') {
-        // --- PDF Export ---
+        // --- PDF Export (unchanged) ---
         $html = '
             <h2>Population Statistics Report</h2>
             <table border="1" cellspacing="0" cellpadding="5" width="100%">
@@ -437,11 +411,11 @@ public function exportImmunization($type = 'csv')
 
         $html .= '</tbody></table>';
 
-        $pdf = \PDF::loadHTML($html);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
         return $pdf->download('barangay_population.pdf');
     }
 
-    // --- CSV Export ---
+    // --- CSV Export (DB-like format) ---
     $filename = "barangay_data_" . date('Y-m-d') . ".csv";
     $headers = [
         "Content-Type" => "text/csv",
@@ -450,21 +424,24 @@ public function exportImmunization($type = 'csv')
         "Expires" => "0"
     ];
 
-    $callback = function () use ($data, $barangayCoordinates) {
+    $callback = function () use ($data) {
         $file = fopen('php://output', 'w');
-        fputcsv($file, ['ID', 'Barangay Name', 'Latitude', 'Longitude', 'Population']);
 
-        foreach ($data as $row) {
-            $lat = $barangayCoordinates[$row->location]['lat'] ?? 'N/A';
-            $lng = $barangayCoordinates[$row->location]['lng'] ?? 'N/A';
+        if ($data->isNotEmpty()) {
+            // Use DB columns (fillable fields)
+            $columns = (new \App\Models\PopulationStatisticsManagement)->getFillable();
 
-            fputcsv($file, [
-                $row->id,
-                $row->location,
-                $lat,
-                $lng,
-                $row->population
-            ]);
+            // Write DB headers
+            fputcsv($file, $columns);
+
+            // Write rows
+            foreach ($data as $row) {
+                $rowData = [];
+                foreach ($columns as $col) {
+                    $rowData[] = $row->$col;
+                }
+                fputcsv($file, $rowData);
+            }
         }
 
         fclose($file);
@@ -472,6 +449,7 @@ public function exportImmunization($type = 'csv')
 
     return response()->stream($callback, 200, $headers);
 }
+
 
 
   public function export()
