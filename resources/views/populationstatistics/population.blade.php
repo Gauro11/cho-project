@@ -1494,21 +1494,6 @@
 
 </div>
 
-<script>
-function downloadTemplate() {
-
-    // Create a downloadable blob
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", "population_template.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-</script>
-
 
                                 <div class="file-info" id="fileInfo">
                                     <strong>Selected File:</strong>
