@@ -101,11 +101,29 @@ public function import(Request $request)
 
 
 
-public function downloadTemplate()
+public function downloadTemplate($type = 'xlsx')
 {
+    if ($type === 'csv') {
+        $headers = ["date", "location", "population"];
+        $filename = "population_template.csv";
+
+        return response()->streamDownload(function () use ($headers) {
+            $file = fopen('php://output', 'w');
+            // UTF-8 BOM for Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            // Write headers only
+            fputcsv($file, $headers);
+            fclose($file);
+        }, $filename, [
+            "Content-Type" => "text/csv; charset=UTF-8",
+            "Pragma" => "no-cache",
+            "Expires" => "0"
+        ]);
+    }
+
+    // Default to XLSX
     return Excel::download(new PopulationTemplateExport, 'population_template.xlsx');
 }
-
 
 
 
