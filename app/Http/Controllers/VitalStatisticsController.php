@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\VitalStatistic; // your model
 use Maatwebsite\Excel\Facades\Excel; // if you're using Laravel Excel
 use App\Imports\VitalStatisticsImport; // your import class
+use App\Exports\VitalStatisticTemplateExport;
 
 
 
