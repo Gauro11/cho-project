@@ -185,6 +185,9 @@
     transition: all 0.4s ease;
     filter: brightness(1.1) contrast(1.1);
     background: #fff; /* optional: add background so transparent edges are visible */
+
+      /* Rotate image 90 degrees clockwise */
+    transform: rotate(90deg);
 }
 
 
