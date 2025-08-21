@@ -5,7 +5,7 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class ImmunizationTemplate implements FromArray, WithHeadings
+class ImmunizationTemplateExport implements FromArray, WithHeadings
 {
     /**
      * Return an empty array so no dummy row is added
