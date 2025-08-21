@@ -153,7 +153,7 @@
         }
 
         .modern-btn.btn-primary {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            background: var(--primary-gradient);
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
@@ -1574,7 +1574,7 @@
                                 <!-- Pagination + Download Icon on the Right -->
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <!-- Import Button Added Here -->
-                                    <button class="btn btn-secondary btn-sm" id="openImportModal">
+                                    <button class="modern-bt btn-secondary btn-sm" id="openImportModal">
                                         <i data-feather="upload"></i> Import
                                     </button>
 
