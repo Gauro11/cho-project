@@ -106,13 +106,12 @@ public function downloadTemplate()
 
     return response()->streamDownload(function () use ($headers) {
         $file = fopen('php://output', 'w');
-
-        // Add UTF-8 BOM for Excel to read CSV correctly
+        // UTF-8 BOM
         fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-
         // Write headers
         fputcsv($file, $headers);
-
+        // Add empty dummy row
+        fputcsv($file, ['', '', '']);
         fclose($file);
     }, $filename, [
         "Content-Type" => "text/csv; charset=UTF-8",
@@ -120,6 +119,7 @@ public function downloadTemplate()
         "Expires" => "0"
     ]);
 }
+
 
 
 
