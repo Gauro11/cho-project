@@ -102,7 +102,7 @@ public function import(Request $request)
 public function downloadTemplate()
 {
     $headers = ["date", "location", "population"];
-    $filename = "population_template.csv";
+    $filename = "population_template.xlsx";
 
     return response()->streamDownload(function () use ($headers) {
         $file = fopen('php://output', 'w');
@@ -112,7 +112,7 @@ public function downloadTemplate()
         fputcsv($file, $headers);
         fclose($file);
     }, $filename, [
-        "Content-Type" => "text/csv; charset=UTF-8",
+        "Content-Type" => "text/xlsx; charset=UTF-8",
         "Pragma" => "no-cache",
         "Expires" => "0"
     ]);
