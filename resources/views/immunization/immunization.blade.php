@@ -1421,7 +1421,7 @@
                                         onclick="document.getElementById('fileInput').click()">
                                         📂 Choose File
                                     </button>
-                                     <a href="{{ route('population.template') }}" class="modern-btn btn-primary">
+                                     <a href="{{ route('immunization.template') }}" class="modern-btn btn-primary">
                                    ⬇️ Download Template
                                      </a>
                                 </div>
