@@ -99,6 +99,20 @@ public function import(Request $request)
     return back()->with('success', 'Population data imported successfully.');
 }
 
+// Controller
+public function downloadPopulationTemplate()
+{
+    $headers = ['date', 'location', 'population'];
+
+    return \Maatwebsite\Excel\Facades\Excel::download(
+        new class($headers) implements \Maatwebsite\Excel\Concerns\FromArray {
+            protected $headers;
+            public function __construct($headers) { $this->headers = $headers; }
+            public function array(): array { return [$this->headers]; }
+        },
+        'population_template.xlsx'
+    );
+}
 
 
 

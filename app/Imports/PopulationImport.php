@@ -11,6 +11,8 @@ class PopulationImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
+          // Normalize keys
+        $row = array_change_key_case(array_map('trim', $row), CASE_LOWER);
         return new Population([
             'location'   => $row['location'],
             'date'       => $this->transformDate($row['date']),
