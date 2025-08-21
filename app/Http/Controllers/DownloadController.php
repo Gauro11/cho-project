@@ -295,13 +295,12 @@ public function exportImmunization($type = 'csv')
     $estimatedPopulation = 180000;
 
     if ($type === 'pdf') {
-        // Build HTML table directly (like CSV loop)
+        // --- PDF export (unchanged) ---
         $html = '
             <h2>Immunization Report</h2>
             <table border="1" cellspacing="0" cellpadding="5" width="100%">
                 <thead>
                     <tr>
-                       
                         <th>Year</th>
                         <th>Vaccine Name</th>
                         <th>Male Vaccinated</th>
@@ -320,7 +319,6 @@ public function exportImmunization($type = 'csv')
 
             $html .= '
                 <tr>
-                    
                     <td>' . date('Y', strtotime($row->date)) . '</td>
                     <td>' . $row->vaccine_name . '</td>
                     <td>' . $row->male_vaccinated . '</td>
@@ -334,12 +332,11 @@ public function exportImmunization($type = 'csv')
                 </tbody>
             </table>';
 
-        // Generate PDF
-        $pdf = Pdf::loadHTML($html);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
         return $pdf->download('immunization_data.pdf');
     }
 
-    // --- CSV export (unchanged) ---
+    // --- CSV export (DB-like format) ---
     $filename = "immunization_data.csv";
     $headers = [
         "Content-Type" => "text/csv",
@@ -348,23 +345,24 @@ public function exportImmunization($type = 'csv')
         "Expires" => "0"
     ];
 
-    $callback = function () use ($data, $estimatedPopulation) {
+    $callback = function () use ($data) {
         $file = fopen('php://output', 'w');
-        fputcsv($file, [ 'Year', 'Vaccine Name', 'Male Vaccinated', 'Female Vaccinated', 'Total Vaccinated', 'Coverage']);
 
-        foreach ($data as $row) {
-            $totalVaccinated = $row->male_vaccinated + $row->female_vaccinated;
-            $coveragePercentage = $estimatedPopulation > 0 ? ($totalVaccinated / $estimatedPopulation) * 100 : 0;
+        if ($data->isNotEmpty()) {
+            // Use model fillable as the column list
+            $columns = (new \App\Models\ImmunizationManagement)->getFillable();
 
-            fputcsv($file, [
-                
-                date('Y', strtotime($row->date)),
-                $row->vaccine_name,
-                $row->male_vaccinated,
-                $row->female_vaccinated,
-                $totalVaccinated,
-                number_format($coveragePercentage, 2) . '%'
-            ]);
+            // Write column headers
+            fputcsv($file, $columns);
+
+            // Write each row
+            foreach ($data as $row) {
+                $rowData = [];
+                foreach ($columns as $col) {
+                    $rowData[] = $row->$col;
+                }
+                fputcsv($file, $rowData);
+            }
         }
 
         fclose($file);
@@ -372,6 +370,7 @@ public function exportImmunization($type = 'csv')
 
     return response()->stream($callback, 200, $headers);
 }
+
 
 
 
