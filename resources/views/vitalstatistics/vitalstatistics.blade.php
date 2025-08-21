@@ -1126,6 +1126,184 @@ document.addEventListener("DOMContentLoaded", function() {
                                             class="form-control modern-form-control" placeholder="Search records..."
                                             style="border-left: none;">
                                     </div>
+
+                                     <div class="modern-input-group input-group" style="width: 300px;">
+                                        <span class="input-group-text bg-transparent"><i
+                                                data-feather="search"></i></span>
+                                        <input type="text" id="searchInput" name="search"
+                                            class="form-control modern-form-control" placeholder="Search records..."
+                                            style="border-left: none;">
+                                    </div>
+
+                                    <!--SORT BUTTON odlest to latest -->
+                                    <div class="dropdown">
+                                        <button class="modern-btn btn-sort btn-sm dropdown-toggle" id="sortDropdownBtn">
+                                            <i class="fas fa-sort"></i> Sort Options
+                                        </button>
+                                        <div class="dropdown-menu" id="sortDropdownMenu">
+                                            <button class="dropdown-item" data-sort="date-oldest">📅 Year: Oldest
+                                                First</button>
+                                            <button class="dropdown-item" data-sort="date-newest">📅 Year: Newest
+                                                First</button>
+                                           
+                                        </div>
+                                    </div>
+
+                                    <style>
+                                        /* Dropdown container */
+                                        .dropdown {
+                                            position: relative;
+                                            display: inline-block;
+                                        }
+
+                                        
+                                        .modern-btn.btn-sort.dropdown-toggle {
+                                            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+                                            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+                                        }
+
+                                        .modern-btn.btn-sort.dropdown-toggle:hover {
+                                            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+                                        }
+
+                                       
+                                        .dropdown-menu {
+                                            display: none;
+                                            position: absolute;
+                                            background: black;
+                                            min-width: 180px;
+                                            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+                                            border-radius: 12px;
+                                            margin-top: 5px;
+                                            z-index: 1000;
+                                        }
+
+                                        .dropdown-menu.show {
+                                            display: block;
+                                        }
+
+                                        .dropdown-item {
+                                            padding: 10px 16px;
+                                            display: block;
+                                            width: 100%;
+                                            text-align: left;
+                                            background: none;
+                                            border: none;
+                                            cursor: pointer;
+                                            font-size: 14px;
+                                             color: white;
+                                        }
+                                        .dropdown-item:hover {
+                                            background: #000;
+                                            color: #7c3aed;
+                                        }
+                                    </style>
+
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            setTimeout(function() {
+                                                const sortDropdownBtn = document.getElementById('sortDropdownBtn');
+                                                const sortDropdownMenu = document.getElementById('sortDropdownMenu');
+                                                const tableBody = document.querySelector('#dataTable tbody');
+
+                                                if (!sortDropdownBtn || !sortDropdownMenu || !tableBody) {
+                                                    console.log("Dropdown sort elements not found");
+                                                    return;
+                                                }
+
+                                                // Toggle dropdown
+                                                sortDropdownBtn.addEventListener("click", function() {
+                                                    sortDropdownMenu.classList.toggle("show");
+                                                });
+
+                                                // Close dropdown if clicked outside
+                                                document.addEventListener("click", function(e) {
+                                                    if (!sortDropdownBtn.contains(e.target) && !sortDropdownMenu.contains(e
+                                                        .target)) {
+                                                        sortDropdownMenu.classList.remove("show");
+                                                    }
+                                                });
+
+                                                // Sorting logic
+                                                function getRows() {
+                                                    return Array.from(tableBody.querySelectorAll("tr"));
+                                                }
+
+                                                function updateTable(rows) {
+                                                    tableBody.innerHTML = "";
+                                                    rows.forEach(r => tableBody.appendChild(r));
+                                                }
+
+                                                const sortFunctions = {
+                                                    "date-oldest": () => getRows().sort((a, b) => new Date(a.cells[0].textContent
+                                                    .trim()) - new Date(b.cells[0].textContent.trim())),
+                                                    "date-newest": () => getRows().sort((a, b) => new Date(b.cells[0].textContent
+                                                    .trim()) - new Date(a.cells[0].textContent.trim())),
+                                                    "az": () => getRows().sort((a, b) => a.cells[1].textContent.trim().localeCompare(b
+                                                        .cells[1].textContent.trim())),
+                                                    "za": () => getRows().sort((a, b) => b.cells[1].textContent.trim().localeCompare(a
+                                                        .cells[1].textContent.trim()))
+                                                };
+
+                                                // Handle click on dropdown items
+                                                sortDropdownMenu.querySelectorAll(".dropdown-item").forEach(item => {
+                                                    item.addEventListener("click", function() {
+                                                        const sortType = this.dataset.sort;
+                                                        if (sortFunctions[sortType]) {
+                                                            const sortedRows = sortFunctions[sortType]();
+                                                            updateTable(sortedRows);
+                                                            showSortingFeedback(this.textContent);
+                                                        }
+                                                        sortDropdownMenu.classList.remove("show");
+                                                    });
+                                                });
+
+                                                // Feedback
+                                                function showSortingFeedback(message) {
+                                                    if (typeof window.showModernAlert === "function") {
+                                                        window.showModernAlert("✨ Sorting Applied", message, "success");
+                                                    } else {
+                                                        const note = document.createElement("div");
+                                                        note.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+                    z-index: 10001;
+                    font-weight: 600;
+                    animation: slideInRight 0.3s ease-out;
+                `;
+                                                        note.innerHTML = message;
+                                                        document.body.appendChild(note);
+                                                        setTimeout(() => {
+                                                            note.style.opacity = "0";
+                                                            note.style.transform = "translateX(100%)";
+                                                            setTimeout(() => note.remove(), 300);
+                                                        }, 2000);
+                                                    }
+                                                }
+
+                                                // Animation for feedback
+                                                if (!document.querySelector('#sortingNotificationCSS')) {
+                                                    const style = document.createElement('style');
+                                                    style.id = 'sortingNotificationCSS';
+                                                    style.textContent = `
+                @keyframes slideInRight {
+                    from {opacity: 0; transform: translateX(100%);}
+                    to {opacity: 1; transform: translateX(0);}
+                }
+            `;
+                                                    document.head.appendChild(style);
+                                                }
+                                            }, 500);
+                                        });
+                                    </script>
+
+
                                     <span class="separator">|</span>
 
                                    
