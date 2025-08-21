@@ -193,4 +193,27 @@ public function update_morbidity(Request $request)
    return back()->with('success', 'Morbidity records imported successfully.');
 
 }
+
+public function deleteAllMorbidity()
+{
+    try {
+        // Replace 'type' with the actual column name that stores morbidity
+        $deletedCount = MorbidityMortalityManagement::where('category', 'morbidity')->count();
+
+        // Delete only morbidity records
+        MorbidityMortalityManagement::where('category', 'morbidity')->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All morbidity records deleted successfully',
+            'deleted_count' => $deletedCount
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete morbidity records: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 }

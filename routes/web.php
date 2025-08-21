@@ -99,9 +99,11 @@ Route::post('store/mortality', [MorbidityMortalityController::class, 'store_mort
 Route::put('/mortality/update', [MorbidityMortalityController::class, 'update_mortality'])->name('mortality.update');
 Route::delete('/mortality/delete/{id}', [MorbidityMortalityController::class, 'delete_mortality'])->name('mortality.delete');
 
+
 Route::post('store/morbidity', [MorbidityMortalityController::class, 'store_morbidity'])->name('morbidity.store');
 Route::put('/morbidity/update', [MorbidityMortalityController::class, 'update_morbidity'])->name('morbidity.update');
 Route::delete('/morbidity/delete/{id}', [MorbidityMortalityController::class, 'delete_morbidity'])->name('morbidity.delete');
+Route::delete('/morbidity/delete-all', [MorbidityMortalityController::class, 'deleteAll'])->name('morbidity.deleteAll');
 
 // Vital Statistics
 Route::post('store/vitalStatiscs', [VitalStatisticsController::class, 'store_vitalstatiscs'])->name('vital_statistics.store');
