@@ -124,6 +124,8 @@ Route::post('store/population', [PopulationController::class, 'store_population'
 Route::put('/population/update', [PopulationController::class, 'update_population'])->name('population.update');
 Route::delete('/population/delete/{id}', [PopulationController::class, 'delete_population'])->name('population.delete');
 Route::delete('/population/delete-all', [PopulationController::class, 'deleteAll'])->name('population.deleteAll');
+Route::get('/population/template', [PopulationController::class, 'downloadTemplate'])->name('population.template');
+
 
 // Export & Download
 Route::get('/download-csv', [DownloadController::class, 'exportPopulation'])->name('download.csv');

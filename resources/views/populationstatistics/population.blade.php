@@ -1489,9 +1489,11 @@
     </button>
 
     <!-- Download Template Button -->
-    <button type="button" class="modern-btn btn-primary btn-sm" onclick="downloadTemplate()">
-        ⬇️ Download Template
-    </button>
+    <!-- Download Template Button -->
+<a href="{{ route('population.template') }}" class="modern-btn btn-primary btn-sm">
+    ⬇️ Download Template
+</a>
+
 </div>
 
 <script>
