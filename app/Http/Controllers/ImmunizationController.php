@@ -10,7 +10,7 @@ use App\Imports\ImmunizationImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Exports\VitalStatisticTemplateExport;
+use App\Exports\ImmunizationTemplateExport;
 
 
 
