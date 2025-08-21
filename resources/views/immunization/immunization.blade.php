@@ -1197,7 +1197,7 @@
                                             font-size: 14px;
                                         }
                                         .dropdown-item:hover {
-                                            background: #000;
+                                            background: white;
                                             color: #7c3aed;
                                         }
                                     </style>
