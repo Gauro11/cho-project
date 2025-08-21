@@ -118,6 +118,7 @@ Route::put('/immunization/update', [ImmunizationController::class, 'update_immun
 Route::delete('/immunization/delete/{id}', [ImmunizationController::class, 'delete_immunization'])->name('immunization.delete');
 Route::post('/immunization/import', [ImmunizationController::class, 'import'])->name('immunization.import');
 Route::delete('/immunization/delete-all', [ImmunizationController::class, 'deleteAll'])->name('immunization.deleteAll');
+Route::get('/immunization/template', [ImmunizationController::class, 'immunizationTemplate'])->name('immunization.template');
 
 
 // Population

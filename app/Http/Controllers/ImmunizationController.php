@@ -10,6 +10,7 @@ use App\Imports\ImmunizationImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\VitalStatisticTemplateExport;
 
 
 
@@ -94,6 +95,11 @@ public function import(Request $request)
     Excel::import(new ImmunizationImport, $request->file('file'));
 
     return back()->with('success', 'Immunization records imported successfully.');
+}
+
+public function immunizationTemplate()
+{
+    return Excel::download(new ImmunizationTemplateExport, 'immunization_template.xlsx');
 }
 
 public function deleteAll()

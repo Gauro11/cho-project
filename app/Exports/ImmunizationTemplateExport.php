@@ -2,16 +2,29 @@
 
 namespace App\Exports;
 
-use App\Models\ImmunizationManagement;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class ImmunizationTemplateExport implements FromCollection
+class ImmunizationTemplate implements FromArray, WithHeadings
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
-    public function collection()
+     * Return an empty array so no dummy row is added
+     */
+    public function array(): array
     {
-        return ImmunizationManagement::all();
+        return []; // no dummy row needed
+    }
+
+    /**
+     * Set headings for the template
+     */
+    public function headings(): array
+    {
+        return [
+            'date',
+        'vaccine_name',
+        'male_vaccinated',
+        'female_vaccinated',
+        ];
     }
 }
