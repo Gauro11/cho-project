@@ -1490,25 +1490,12 @@
             📂 Choose File
         </button>
 
-        <!-- Download Template Button -->
-        <button type="button" class="modern-btn btn-primary btn-sm" onclick="downloadTemplate()">
-            ⬇️ Download Template
-        </button>
+        <a href="{{ route('population.template') }}" class="modern-btn btn-primary">
+        ⬇️ Download Template
+    </a>
     </div>
 </div>
 
-<script>
-function downloadTemplate() {
-    const headers = ["date", "location", "population"];
-    const rows = [["", "", ""]]; // add one dummy row
-    const csvContent = "\uFEFF" + [headers, ...rows].map(r => r.join(",")).join("\r\n");
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "population_template.csv";
-    link.click();
-}
-</script>
 
 
 
