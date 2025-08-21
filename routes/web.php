@@ -107,7 +107,7 @@ Route::delete('/morbidity/delete/{id}', [MorbidityMortalityController::class, 'd
 Route::post('store/vitalStatiscs', [VitalStatisticsController::class, 'store_vitalstatiscs'])->name('vital_statistics.store');
 Route::put('/vital-statistics/update', [VitalStatisticsController::class, 'update_vitalstatiscs'])->name('vital_statistics.update');
 Route::delete('/vitalstatistics/delete/{id}', [VitalStatisticsController::class, 'delete_vitalstatistics'])->name('vital_statistics.delete');
-Route::delete('/vitalstatistics/delete-all', [ImmunizationController::class, 'deleteAll'])->name('vitalstatistics.deleteAll');
+Route::delete('/vitalstatistics/delete-all', [VitalStatisticsController::class, 'deleteAll'])->name('vitalstatistics.deleteAll');
 
 // Immunization
 Route::post('store/immunization', [ImmunizationController::class, 'store_immunization'])->name('immunization.store');
