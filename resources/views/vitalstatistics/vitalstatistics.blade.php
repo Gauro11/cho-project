@@ -1328,7 +1328,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <a class="dropdown-item modern-dropdown-item"
                                                     href="{{ route('exportVitalStatistics', 'csv') }}">
                                                     <i class="fas fa-file-csv download-icon file-csv"></i>
-                                                    Download CSV
+                                                    Download Template
                                                 </a>
                                             </li>
                                             <li>

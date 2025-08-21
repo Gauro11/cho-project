@@ -185,12 +185,12 @@ public function exportMorbidity($type = 'csv')
 
 
 
-    public function exportVitalStatistics($type = 'csv')
+  public function exportVitalStatistics($type = 'csv')
 {
     $data = VitalStatisticsManagement::all();
 
     if ($type === 'pdf') {
-        // Build HTML table directly (similar to Immunization)
+        // --- PDF export (unchanged) ---
         $html = '
             <h2>Vital Statistics Report</h2>
             <table border="1" cellspacing="0" cellpadding="5" width="100%">
@@ -235,12 +235,11 @@ public function exportMorbidity($type = 'csv')
                 </tbody>
             </table>';
 
-        // Generate PDF
-        $pdf = Pdf::loadHTML($html);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
         return $pdf->download('vital_statistics_data.pdf');
     }
 
-    // --- CSV export ---
+    // --- CSV export (DB-like format) ---
     $filename = "vital_statistics_" . date('Y-m-d') . ".csv";
     $headers = [
         "Content-Type" => "text/csv",
@@ -251,30 +250,22 @@ public function exportMorbidity($type = 'csv')
 
     $callback = function () use ($data) {
         $file = fopen('php://output', 'w');
-        fputcsv($file, [
-            'Year', 'Population', 'Total Live Births', 'Crude Birth Rate',
-            'Total Deaths', 'Crude Death Rate', 'Infant Deaths',
-            'Infant Mortality Rate', 'Maternal Deaths', 'Maternal Mortality Rate'
-        ]);
 
-        foreach ($data as $row) {
-            $crudeBirthRate = $row->total_population > 0 ? ($row->total_live_births / $row->total_population) * 1000 : 0;
-            $crudeDeathRate = $row->total_population > 0 ? ($row->total_deaths / $row->total_population) * 1000 : 0;
-            $infantMortalityRate = $row->total_live_births > 0 ? ($row->infant_deaths / $row->total_live_births) * 1000 : 0;
-            $maternalMortalityRate = $row->total_live_births > 0 ? ($row->maternal_deaths / $row->total_live_births) * 100000 : 0;
+        if ($data->isNotEmpty()) {
+            // Use the model fillable fields as headers
+            $columns = (new \App\Models\VitalStatisticsManagement)->getFillable();
 
-            fputcsv($file, [
-                $row->year,
-                $row->total_population,
-                $row->total_live_births,
-                number_format($crudeBirthRate, 2),
-                $row->total_deaths,
-                number_format($crudeDeathRate, 2),
-                $row->infant_deaths,
-                number_format($infantMortalityRate, 2),
-                $row->maternal_deaths,
-                number_format($maternalMortalityRate, 2)
-            ]);
+            // Write DB-like headers
+            fputcsv($file, $columns);
+
+            // Write rows
+            foreach ($data as $row) {
+                $rowData = [];
+                foreach ($columns as $col) {
+                    $rowData[] = $row->$col;
+                }
+                fputcsv($file, $rowData);
+            }
         }
 
         fclose($file);
@@ -282,6 +273,7 @@ public function exportMorbidity($type = 'csv')
 
     return response()->stream($callback, 200, $headers);
 }
+
 
 
 
