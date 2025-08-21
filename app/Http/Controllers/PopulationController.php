@@ -102,18 +102,11 @@ public function import(Request $request)
 public function downloadTemplate()
 {
     $headers = ["date", "location", "population"];
-
     $filename = "population_template.csv";
-    $handle = fopen('php://output', 'w');
-
-    // Write only headers
-    fputcsv($handle, $headers);
-
-    fclose($handle);
 
     return response()->streamDownload(function () use ($headers) {
         $file = fopen('php://output', 'w');
-        fputcsv($file, $headers);
+        fputcsv($file, $headers); // write headers once
         fclose($file);
     }, $filename, [
         "Content-Type" => "text/csv",
