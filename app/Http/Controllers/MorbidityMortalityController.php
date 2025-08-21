@@ -194,12 +194,20 @@ public function update_morbidity(Request $request)
 
 }
 
-public function deleteAllMorbidity()
+public function deleteAllByCategory(Request $request)
 {
     try {
-        // Use a transaction for safety
-        return DB::transaction(function () {
-            $query = MorbidityMortalityManagement::where('category', 'morbidity');
+        $category = strtolower($request->input('category')); // morbidity or mortality
+
+        if (!in_array($category, ['morbidity', 'mortality'])) {
+            return response()->json([
+                'success' => 0,
+                'message' => 'Invalid category. Allowed values: morbidity, mortality'
+            ], 400);
+        }
+
+        return DB::transaction(function () use ($category) {
+            $query = MorbidityMortalityManagement::where('category', $category);
 
             $deletedCount = $query->count();
 
@@ -210,18 +218,20 @@ public function deleteAllMorbidity()
             return response()->json([
                 'success' => 1,
                 'message' => $deletedCount > 0 
-                    ? 'All morbidity records deleted successfully' 
-                    : 'No morbidity records found',
-                'deleted_count' => $deletedCount
+                    ? "All {$category} records deleted successfully" 
+                    : "No {$category} records found",
+                'deleted_count' => $deletedCount,
+                'category' => $category
             ]);
         });
     } catch (\Exception $e) {
         return response()->json([
             'success' => 0,
-            'message' => 'Failed to delete morbidity records: ' . $e->getMessage()
+            'message' => 'Failed to delete records: ' . $e->getMessage()
         ], 500);
     }
 }
+
 
 
 }
