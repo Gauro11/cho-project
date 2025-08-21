@@ -1139,8 +1139,6 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 First</button>
                                             <button class="dropdown-item" data-sort="date-newest">📅 Year: Newest
                                                 First</button>
-                                            <button class="dropdown-item" data-sort="az">🔤 A-Z</button>
-                                            <button class="dropdown-item" data-sort="za">🔤 Z-A</button>
                                         </div>
                                     </div>
 
