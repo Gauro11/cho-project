@@ -1285,8 +1285,7 @@ document.addEventListener("DOMContentLoaded", function() {
           
                                   
 
-                                    <!-- Vertical Bar Separator -->
-                                    <span class="separator">|</span>
+                                    
                                     <div class="input-group" style="width: 300px;">
                                         <span class="input-group-text bg-transparent"><i
                                                 data-feather="search"></i></span>

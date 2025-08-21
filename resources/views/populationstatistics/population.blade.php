@@ -1142,8 +1142,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
           
 
-                                    <!-- Vertical Bar Separator -->
-                                    <span class="separator">|</span>
+                                    
 
                                     <!-- Search Input -->
                                     <div class="modern-input-group input-group" style="width: 300px;">

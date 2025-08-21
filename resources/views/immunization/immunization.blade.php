@@ -887,9 +887,7 @@
                                         <i data-feather="trash-2"></i> Delete All
                                     </button>
 
-                                    <span class="separator">|</span>
-
-                                    <!-- 2. ADD THIS CSS TO YOUR EXISTING STYLE SECTION -->
+                                    
                                     <style>
                                         /* Add this to your existing CSS */
                                         @keyframes pulse {
