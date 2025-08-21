@@ -5,12 +5,12 @@
                     <table class="table table-hover my-0">
                         <thead>
                             <tr style="color: white;">
+                                 <th>DATE</th>
                                 <th>CASES</th>
                                 <th>MALE COUNT</th>
                                 <th>FEMALE COUNT</th>
                                 <th>TOTAL COUNT</th>
                                 <th>PERCENTAGE</th>
-                                <th>DATE</th>
                                 <th>ACTIONS</th>
                             </tr>
                         </thead>
