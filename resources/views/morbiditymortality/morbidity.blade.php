@@ -1585,7 +1585,7 @@
                     <div id="importModal" class="modern-modal modal">
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close" id="closeImportModal">&times;</span>
-                            <h2>Import morbidity Records</h2>
+                            <h2>Import Morbidity Records</h2>
                             <form action="{{ route('morbidity.import') }}" method="POST"
                                 enctype="multipart/form-data" id="importForm">
                                 @csrf
@@ -1601,11 +1601,9 @@
                                         onclick="document.getElementById('fileInput').click()">
                                         📂 Choose File
                                     </button>
-
                                      <a href="{{ route('morbidity.template') }}" class="modern-btn btn-primary">
-                                   ⬇️ Download Template
+                                   ⬇️ Download Templatee
                                      </a>
-                                     
                                 </div>
 
                                 <div class="file-info" id="fileInfo">
