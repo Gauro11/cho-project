@@ -100,6 +100,7 @@ Route::put('/mortality/update', [MorbidityMortalityController::class, 'update_mo
 Route::delete('/mortality/delete/{id}', [MorbidityMortalityController::class, 'delete_mortality'])->name('mortality.delete');
 Route::delete('/mortality/delete-all', [MorbidityMortalityController::class, 'deleteAllMortality'])->name('mortality.deleteAll');
 Route::get('/morbidity/template', [MorbidityMortalityController::class, 'morbidityTemplate'])->name('morbidity.template');
+Route::get('/mortality/template', [MorbidityMortalityController::class, 'mortalityTemplate'])->name('mortality.template');
 
 Route::post('store/morbidity', [MorbidityMortalityController::class, 'store_morbidity'])->name('morbidity.store');
 Route::put('/morbidity/update', [MorbidityMortalityController::class, 'update_morbidity'])->name('morbidity.update');

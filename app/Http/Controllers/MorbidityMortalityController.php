@@ -199,6 +199,11 @@ public function morbidityTemplate()
     return Excel::download(new MorbidityMortalityTemplateExport, 'morbidity_template.xlsx');
 }
 
+public function mortalityTemplate()
+{
+    return Excel::download(new MorbidityMortalityTemplateExport, 'mortality_template.xlsx');
+}
+
 public function deleteAllMorbidity()
 {
     try {
