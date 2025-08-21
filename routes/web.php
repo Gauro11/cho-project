@@ -121,6 +121,7 @@ Route::delete('/immunization/delete-all', [ImmunizationController::class, 'delet
 Route::post('store/population', [PopulationController::class, 'store_population'])->name('population.store');
 Route::put('/population/update', [PopulationController::class, 'update_population'])->name('population.update');
 Route::delete('/population/delete/{id}', [PopulationController::class, 'delete_population'])->name('population.delete');
+Route::delete('/population/delete-all', [PopulationController::class, 'deleteAll'])->name('population.deleteAll');
 
 // Export & Download
 Route::get('/download-csv', [DownloadController::class, 'exportPopulation'])->name('download.csv');

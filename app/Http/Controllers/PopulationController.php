@@ -147,6 +147,24 @@ public function getDagupanPopulation()
     }
 }
 
+public function deleteAll()
+{
+    try {
+        $deletedCount = PopulationStatisticsManagement::count(); // Get count before deletion
+        PopulationStatisticsManagement::truncate(); // Deletes all records
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'All records deleted successfully',
+            'deleted_count' => $deletedCount
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete records: ' . $e->getMessage()
+        ], 500);
+    }
+}
 
 
 
