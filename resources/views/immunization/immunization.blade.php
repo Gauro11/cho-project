@@ -1195,9 +1195,10 @@
                                             border: none;
                                             cursor: pointer;
                                             font-size: 14px;
+                                             color: white;
                                         }
                                         .dropdown-item:hover {
-                                            background: white;
+                                            background: #000;
                                             color: #7c3aed;
                                         }
                                     </style>
