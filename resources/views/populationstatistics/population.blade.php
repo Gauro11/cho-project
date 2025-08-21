@@ -1369,7 +1369,7 @@
                                                 <a class="dropdown-item modern-dropdown-item"
                                                     href="{{ route('population.export', 'csv') }}">
                                                     <i class="fas fa-file-csv download-icon file-csv"></i>
-                                                    Download Template
+                                                    Download CSV
                                                 </a>
                                             </li>
                                             <li>

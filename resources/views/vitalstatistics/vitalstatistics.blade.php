@@ -1328,7 +1328,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <a class="dropdown-item modern-dropdown-item"
                                                     href="{{ route('exportVitalStatistics', 'csv') }}">
                                                     <i class="fas fa-file-csv download-icon file-csv"></i>
-                                                    Download Template
+                                                    Download CSV
                                                 </a>
                                             </li>
                                             <li>
@@ -1370,18 +1370,44 @@ document.addEventListener("DOMContentLoaded", function() {
                                 enctype="multipart/form-data" id="importForm">
                                 @csrf
                                 <div class="file-upload-area" id="fileUploadArea">
-                                    <div class="file-upload-icon">📁</div>
-                                    <div class="file-upload-text">
-                                        <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
-                                    </div>
-                                    <input type="file" name="file" id="fileInput"
-                                        class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
-                                        style="display: none;">
-                                    <button type="button" class="modern-btn btn-secondary btn-sm"
-                                        onclick="document.getElementById('fileInput').click()">
-                                        📂 Choose File
-                                    </button>
-                                </div>
+    <div class="file-upload-icon">📁</div>
+    <div class="file-upload-text">
+        <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
+    </div>
+    <input type="file" name="file" id="fileInput"
+        class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
+        style="display: none;">
+
+    <!-- Choose file button -->
+    <button type="button" class="modern-btn btn-secondary btn-sm"
+        onclick="document.getElementById('fileInput').click()">
+        📂 Choose File
+    </button>
+
+    <!-- Download Template Button -->
+    <button type="button" class="modern-btn btn-primary btn-sm" onclick="downloadTemplate()">
+        ⬇️ Download Template
+    </button>
+</div>
+
+<script>
+function downloadTemplate() {
+    // Define only the headers you want
+    const headers = ["year", "total_population", "total_live_births", "total_deaths", "infant_deaths", "maternal_deaths"];
+    const csvContent = headers.join(",") + "\n";
+
+    // Create a downloadable blob
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "vitalstatistic_template.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+
 
                                 <div class="file-info" id="fileInfo">
                                     <strong>Selected File:</strong>
