@@ -1482,17 +1482,21 @@
         class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
         style="display: none;">
 
-    <!-- Choose file button -->
-    <button type="button" class="modern-btn btn-secondary btn-sm"
-        onclick="document.getElementById('fileInput').click()">
-        📂 Choose File
-    </button>
+    <!-- Buttons Row -->
+    <div class="d-flex gap-2 mt-2">
+        <!-- Choose file button -->
+        <button type="button" class="modern-btn btn-secondary btn-sm"
+            onclick="document.getElementById('fileInput').click()">
+            📂 Choose File
+        </button>
 
-<a href="{{ route('population.template') }}" class="modern-btn btn-primary btn-sm">
-    ⬇️ Download Template
-</a>
-
+        <!-- Download Template Button -->
+        <a href="{{ route('population.template') }}" class="modern-btn btn-primary btn-sm">
+            ⬇️ Download Template
+        </a>
+    </div>
 </div>
+
 
 
                                 <div class="file-info" id="fileInfo">
