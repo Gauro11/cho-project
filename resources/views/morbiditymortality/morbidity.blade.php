@@ -110,6 +110,10 @@
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .modern-btn::before {
@@ -130,6 +134,8 @@
         .modern-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            color: white;
+            text-decoration: none;
         }
 
         .modern-btn.btn-success {
@@ -516,12 +522,67 @@
             color: var(--text-primary);
         }
 
+        /* Style the original button classes to match modern design */
+        .btn {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 15px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
+        .btn-success {
+            background: var(--success-gradient);
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+        }
 
+        .btn-primary {
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
 
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            color: white;
+            text-decoration: none;
+        }
 
+        .btn-success:hover {
+            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.5);
+        }
 
+        /* Additional animations for modern alerts */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
 
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
 
         /*  delete confirmation styles */
         .modern-confirm-overlay {
@@ -569,7 +630,29 @@
             max-width: 300px;
         }
 
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
 
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+        }
+
+        @media print {
+
+            .no-print,
+            .pagination {
+                display: none !important;
+            }
+        }
 
         /* Original CSS preserved */
         .half-width {
