@@ -1488,11 +1488,9 @@
         📂 Choose File
     </button>
 
-    <!-- Download Template Button -->
-    <!-- Download Template Button -->
-<button href="{{ route('population.template') }}" class="modern-btn btn-primary btn-sm">
+<a href="{{ route('population.template') }}" class="modern-btn btn-primary btn-sm">
     ⬇️ Download Template
-</button>
+</a>
 
 </div>
 
