@@ -1127,13 +1127,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                             style="border-left: none;">
                                     </div>
 
-                                     <div class="modern-input-group input-group" style="width: 300px;">
-                                        <span class="input-group-text bg-transparent"><i
-                                                data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search"
-                                            class="form-control modern-form-control" placeholder="Search records..."
-                                            style="border-left: none;">
-                                    </div>
+                                    
 
                                     <!--SORT BUTTON odlest to latest -->
                                     <div class="dropdown">
@@ -1145,7 +1139,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 First</button>
                                             <button class="dropdown-item" data-sort="date-newest">📅 Year: Newest
                                                 First</button>
-                                           
+                                            <button class="dropdown-item" data-sort="az">🔤 A-Z</button>
+                                            <button class="dropdown-item" data-sort="za">🔤 Z-A</button>
                                         </div>
                                     </div>
 
@@ -1156,7 +1151,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                             display: inline-block;
                                         }
 
-                                        
+                                        /* Dropdown button */
                                         .modern-btn.btn-sort.dropdown-toggle {
                                             background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
                                             box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
