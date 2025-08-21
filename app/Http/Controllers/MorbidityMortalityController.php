@@ -223,5 +223,34 @@ public function deleteAllMorbidity()
     }
 }
 
+public function deleteAllMortality()
+{
+    try {
+        // Use a transaction for safety
+        return DB::transaction(function () {
+            $query = MorbidityMortalityManagement::where('category', 'mortality');
+
+            $deletedCount = $query->count();
+
+            if ($deletedCount > 0) {
+                $query->delete();
+            }
+
+            return response()->json([
+                'success' => 1,
+                'message' => $deletedCount > 0 
+                    ? 'All mortality records deleted successfully' 
+                    : 'No mortality records found',
+                'deleted_count' => $deletedCount
+            ]);
+        });
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => 0,
+            'message' => 'Failed to delete moratlity records: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 
 }
