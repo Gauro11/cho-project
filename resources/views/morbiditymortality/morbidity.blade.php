@@ -1204,7 +1204,7 @@ document.addEventListener("DOMContentLoaded", function() {
             cancelBtn.disabled = true;
 
             // Make the delete all request
-         fetch("{{ url('/records/delete-all/morbidity') }}", {
+           fetch("{{ url('/morbidity/delete-all') }}", {
     method: "DELETE",
     headers: {
         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
@@ -1212,15 +1212,6 @@ document.addEventListener("DOMContentLoaded", function() {
         "Content-Type": "application/json"
     }
 })
-.then(response => response.json())
-.then(data => {
-    console.log("Delete Response:", data);
-})
-.catch(error => {
-    console.error("Error:", error);
-});
-
-
             .then(response => response.json())
             .then(data => {
                 confirmOverlay.remove();
