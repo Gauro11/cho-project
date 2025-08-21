@@ -1378,35 +1378,19 @@ document.addEventListener("DOMContentLoaded", function() {
         class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
         style="display: none;">
 
-    <!-- Choose file button -->
-    <button type="button" class="modern-btn btn-secondary btn-sm"
-        onclick="document.getElementById('fileInput').click()">
-        📂 Choose File
-    </button>
+    <!-- Buttons Row -->
+    <div class="d-flex gap-2 mt-2">
+        <!-- Choose file button -->
+        <button type="button" class="modern-btn btn-secondary btn-sm"
+            onclick="document.getElementById('fileInput').click()">
+            📂 Choose File
+        </button>
 
-    <!-- Download Template Button -->
-    <button type="button" class="modern-btn btn-primary btn-sm" onclick="downloadTemplate()">
+        <a href="{{ route('vitalstatistic.template') }}" class="modern-btn btn-primary">
         ⬇️ Download Template
-    </button>
+    </a>
+    </div>
 </div>
-
-<script>
-function downloadTemplate() {
-    // Define only the headers you want
-    const headers = ["year", "total_population", "total_live_births", "total_deaths", "infant_deaths", "maternal_deaths"];
-   
-
-    // Create a downloadable blob
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", "vitalstatistic_template.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-</script>
 
 
                                 <div class="file-info" id="fileInfo">

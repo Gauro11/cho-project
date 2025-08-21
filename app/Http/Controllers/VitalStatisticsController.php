@@ -106,6 +106,12 @@ public function store_vitalstatiscs(Request $request)
 
     return back()->with('success', 'Population data imported successfully.');
 }
+
+public function downloadTemplate()
+{
+    return Excel::download(new VitalStatisticExport, 'vitalstatistic_template.xlsx');
+}
+
 public function deleteAll()
 {
     try {

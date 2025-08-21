@@ -99,6 +99,7 @@ public function import(Request $request)
     return back()->with('success', 'Population data imported successfully.');
 }
 
+
 public function downloadTemplate()
 {
     return Excel::download(new PopulationTemplateExport, 'population_template.xlsx');
