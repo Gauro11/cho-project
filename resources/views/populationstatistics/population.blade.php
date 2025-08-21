@@ -1490,17 +1490,14 @@
 
     <!-- Download Template Button -->
     <!-- Download Template Button -->
-<a href="{{ route('population.template') }}" class="modern-btn btn-primary btn-sm">
+<button href="{{ route('population.template') }}" class="modern-btn btn-primary btn-sm">
     ⬇️ Download Template
-</a>
+</button>
 
 </div>
 
 <script>
 function downloadTemplate() {
-    // Define only the headers you want
-    const headers = ["date", "location", "population"];
-    const csvContent = headers.join(",") + "\n";
 
     // Create a downloadable blob
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
