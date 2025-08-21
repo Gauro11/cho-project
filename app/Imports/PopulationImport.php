@@ -11,6 +11,8 @@ class PopulationImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
+         // Remove extra spaces from keys
+        $row = array_map('trim', $row);
         
         return new Population([
             'location'   => $row['location'],

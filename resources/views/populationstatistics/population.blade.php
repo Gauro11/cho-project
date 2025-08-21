@@ -1499,24 +1499,14 @@
 
 <script>
 function downloadTemplate() {
-    // Define headers
     const headers = ["date", "location", "population"];
-    
-    // Convert to CSV string
-    const csvContent = headers.join(",") + "\r\n"; // only headers
-
-    // Create a blob
+    const rows = [["", "", ""]]; // add one dummy row
+    const csvContent = "\uFEFF" + [headers, ...rows].map(r => r.join(",")).join("\r\n");
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-
-    // Create a download link
     const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", "population_template.csv");
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
+    link.href = URL.createObjectURL(blob);
+    link.download = "population_template.csv";
     link.click();
-    document.body.removeChild(link);
 }
 </script>
 
