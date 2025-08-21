@@ -17,12 +17,13 @@
                         <tbody style="background-color: white;">
                             @foreach($data as $row)
                                                             <tr>
+                                                                <td>{{ \Carbon\Carbon::parse($row->date)->format('m-d-Y') }}</td>
                                                                 <td>{{strtoupper($row->case_name) }}</td>
                                                                 <td>{{ $row->male_count }}</td>
                                                                 <td>{{ $row->female_count }}</td>
                                                                 <td>{{ $row->male_count + $row->female_count }}</td>
                                                                 <td class="percentage-cell" data-total="{{ $row->male_count + $row->female_count }}">0%</td>
-                                                                <td>{{ \Carbon\Carbon::parse($row->date)->format('m-d-Y') }}</td>
+                                                                
                                                                 <td>
                                                                     <button class="btn btn-warning btn-sm edit-button"
                                                                         data-id="{{ $row->id }}" 
