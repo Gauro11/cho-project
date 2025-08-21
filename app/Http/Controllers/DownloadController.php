@@ -453,7 +453,7 @@ public function exportImmunization($type = 'csv')
     $callback = function () use ($data) {
         $file = fopen('php://output', 'w');
         // Only Date, Location, Population
-        fputcsv($file, ['Date', 'Location', 'Population']);
+        fputcsv($file, ['date', 'location', 'population']);
 
         foreach ($data as $row) {
             fputcsv($file, [
