@@ -109,7 +109,7 @@ public function store_vitalstatiscs(Request $request)
 
 public function downloadTemplate()
 {
-    return Excel::download(new VitalStatisticExport, 'vitalstatistic_template.xlsx');
+    return Excel::download(new VitalStatisticTemplateExport, 'vitalstatistic_template.xlsx');
 }
 
 public function deleteAll()
