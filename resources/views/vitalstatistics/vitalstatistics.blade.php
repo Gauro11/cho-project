@@ -1394,7 +1394,7 @@ document.addEventListener("DOMContentLoaded", function() {
 function downloadTemplate() {
     // Define only the headers you want
     const headers = ["year", "total_population", "total_live_births", "total_deaths", "infant_deaths", "maternal_deaths"];
-    const csvContent = headers.join(",") + "\n";
+   
 
     // Create a downloadable blob
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
