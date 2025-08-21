@@ -1377,6 +1377,53 @@
                                     </style>
 
                                     <script>
+                                        // Add this script temporarily to debug your table structure
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() {
+        const tableBody = document.querySelector('#dataTable tbody');
+        const table = document.querySelector('#dataTable');
+        
+        console.log("=== MORBIDITY TABLE DEBUG ===");
+        console.log("Table found:", !!table);
+        console.log("Table body found:", !!tableBody);
+        
+        if (tableBody) {
+            const rows = tableBody.querySelectorAll('tr');
+            console.log("Number of rows:", rows.length);
+            
+            if (rows.length > 0) {
+                const firstRow = rows[0];
+                console.log("First row cells count:", firstRow.cells.length);
+                
+                // Log each cell content and index
+                for (let i = 0; i < firstRow.cells.length; i++) {
+                    const cellContent = firstRow.cells[i].textContent.trim();
+                    console.log(`Cell ${i}: "${cellContent}"`);
+                }
+                
+                // Check if there are any date patterns
+                for (let i = 0; i < firstRow.cells.length; i++) {
+                    const cellContent = firstRow.cells[i].textContent.trim();
+                    const datePattern = /^\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|\d{1,2}-\d{1,2}-\d{4}/;
+                    if (datePattern.test(cellContent)) {
+                        console.log(`📅 Date found in column ${i}: "${cellContent}"`);
+                    }
+                }
+            }
+        }
+        
+        // Also check table headers to understand structure
+        const headers = document.querySelectorAll('#dataTable thead th');
+        if (headers.length > 0) {
+            console.log("Table headers:");
+            headers.forEach((header, index) => {
+                console.log(`Header ${index}: "${header.textContent.trim()}"`);
+            });
+        }
+        
+        console.log("=== END DEBUG ===");
+    }, 1000);
+});
                                         document.addEventListener("DOMContentLoaded", function() {
                                             setTimeout(function() {
                                                 const sortDropdownBtn = document.getElementById('sortDropdownBtn');
