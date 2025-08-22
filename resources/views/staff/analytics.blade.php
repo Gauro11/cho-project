@@ -358,131 +358,96 @@
     </div>
 
  <div class="">
-  <div class="container-fluid py-4">
-    <h1 class="section-title pulse-animation text-center mb-4">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
+    <div class="container-fluid py-4">
+        <h1 class="section-title pulse-animation">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
 
-    <div class="map-container-modern shadow-lg rounded-4 overflow-hidden" id="map-container" style="cursor: pointer; max-width: 900px; margin: auto;">
-      <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
-           alt="Dagupan City Map"
-           class="map-image-modern w-100">
+        <div class="map-container-modern" id="map-container" style="cursor: pointer;">
+            <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
+                 alt="Dagupan City Map"
+                 class="map-image-modern">
 
-      <div class="map-title-modern bg-gradient position-absolute bottom-0 w-100 text-center py-3 text-white fw-semibold"
-           style="background: linear-gradient(90deg, #007bff, #00bcd4);">
-        <h4 id="population-text" class="m-0">🚩 City of Dagupan Map / Loading population...</h4>
-      </div>
+            <div class="map-title-modern">
+                <h4 id="population-text">🚩 City of Dagupan Map / Loading population...</h4>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Modal -->
 <div class="modal fade" id="barangayModal" tabindex="-1" aria-labelledby="barangayModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
-    <div class="modal-content border-0 shadow-lg rounded-4">
-      
-      <!-- Modal Header -->
-      <div class="modal-header border-0 text-white rounded-top-4" 
-           style="background: linear-gradient(90deg, #0062ff, #00c6ff);">
-        <h5 class="modal-title fw-bold" id="barangayModalLabel">
-          <i class="bi bi-bar-chart-fill me-2"></i> Barangay Population Statistics
-        </h5>
+    <div class="modal-content shadow-lg border-0 rounded-4">
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title fw-bold" id="barangayModalLabel">Barangay Population Statistics</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
-      <!-- Modal Body -->
       <div class="modal-body p-4">
         <div class="table-responsive">
-          <table class="table align-middle text-center table-hover shadow-sm rounded-3 overflow-hidden" id="population-table">
-            <thead class="table-light">
-              <tr class="bg-primary text-white">
-                <th scope="col">Barangay</th>
-                <th scope="col">Population</th>
-                <th scope="col">Date</th>
-              </tr>
-            </thead>
-            <tbody class="table-group-divider">
-              <!-- Filled dynamically -->
-            </tbody>
-          </table>
+            <table class="table table-hover align-middle text-center" id="population-table">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Barangay</th>
+                        <th>Population</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filled dynamically -->
+                </tbody>
+            </table>
         </div>
       </div>
-      
-      <!-- Modal Footer -->
       <div class="modal-footer border-0">
-        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Custom CSS Enhancements -->
-<style>
-/* Animate modal appearance */
-.modal-content {
-  animation: slideUp 0.35s ease;
-}
-@keyframes slideUp {
-  from { transform: translateY(50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* Table row hover effect */
-#population-table tbody tr:hover {
-  background: #f1faff !important;
-  transition: 0.2s ease;
-}
-
-/* Modern text shadow for map title */
-.map-title-modern h4 {
-  text-shadow: 0px 2px 5px rgba(0,0,0,0.4);
-}
-</style>
-
-<!-- Script -->
 <script>
-  // Load city-wide summary on page load
-  fetch("{{ url('/dagupan-population') }}")
-      .then(res => res.json())
-      .then(data => {
-          if (data.success) {
-              document.getElementById("population-text").innerHTML =
-                  `🚩 ${data.city} Map / Population <strong>${data.population.toLocaleString()}</strong> (${data.year})`;
-          }
-      })
-      .catch(() => {
-          document.getElementById("population-text").innerHTML =
-              "🚩 City of Dagupan Map / Population unavailable";
-      });
+    // Load city-wide summary on page load
+    fetch("{{ url('/dagupan-population') }}")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("population-text").innerHTML =
+                    `🚩 ${data.city} Map / Population ${data.population.toLocaleString()} (${data.year})`;
+            }
+        })
+        .catch(() => {
+            document.getElementById("population-text").innerHTML =
+                "🚩 City of Dagupan Map / Population unavailable";
+        });
 
-  // Click map container to load barangay population
-  document.getElementById("map-container").addEventListener("click", function () {
-      fetch("{{ route('dagupan.barangays') }}")
-          .then(res => res.json())
-          .then(data => {
-              if (data.success) {
-                  const tbody = document.querySelector("#population-table tbody");
-                  tbody.innerHTML = "";
+    // Click map container to load barangay population
+    document.getElementById("map-container").addEventListener("click", function () {
+        fetch("{{ route('dagupan.barangays') }}")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const tbody = document.querySelector("#population-table tbody");
+                    tbody.innerHTML = "";
 
-                  data.barangays.forEach((row, index) => {
-                      tbody.innerHTML += `
-                          <tr>
-                              <td class="fw-semibold text-primary">${row.location}</td>
-                              <td class="fw-bold">${row.population.toLocaleString()}</td>
-                              <td><span class="badge bg-light text-dark">${new Date(row.date).toLocaleDateString()}</span></td>
-                          </tr>
-                      `;
-                  });
+                    data.barangays.forEach(row => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="fw-semibold">${row.location}</td>
+                                <td>${row.population.toLocaleString()}</td>
+                                <td>${new Date(row.date).toLocaleDateString()}</td>
+                            </tr>
+                        `;
+                    });
 
-                  // Show modal
-                  new bootstrap.Modal(document.getElementById("barangayModal")).show();
-              }
-          })
-          .catch(err => {
-              console.error(err);
-              alert("Unable to load barangay population data.");
-          });
-  });
+                    // Show modal
+                    new bootstrap.Modal(document.getElementById("barangayModal")).show();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Unable to load barangay population data.");
+            });
+    });
 </script>
-
 
 
 
