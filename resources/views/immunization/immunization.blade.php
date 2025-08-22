@@ -1110,11 +1110,7 @@
         .btn-group .dropdown-menu {
             z-index: 1055 !important;
         }
-        .wrapper {
-    transform: scale(0.8);
-    transform-origin: top left;
-    width: 125%;
-}
+       
     </style>
 </head>
 
@@ -1592,7 +1588,7 @@
                                                 <a class="dropdown-item modern-dropdown-item"
                                                     href="{{ route('immunization.export', 'csv') }}">
                                                     <i class="fas fa-file-csv download-icon file-csv"></i>
-                                                    Download Template
+                                                    Download CSV
                                                 </a>
                                             </li>
                                             <li>

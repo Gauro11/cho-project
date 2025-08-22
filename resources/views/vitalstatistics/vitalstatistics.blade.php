@@ -859,11 +859,7 @@
         .btn-group .dropdown-menu {
             z-index: 1055 !important;
         }
-        .wrapper {
-    transform: scale(0.8);
-    transform-origin: top left;
-    width: 125%;
-}
+        
     </style>
 </head>
 
