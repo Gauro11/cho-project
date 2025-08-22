@@ -367,11 +367,58 @@
                  class="map-image-modern">
 
             <div class="map-title-modern">
-                <h4 id="population-text">🚩 City of Dagupan Mapssss / Loading population...</h4>
+                <h4 id="population-text">🚩 City of Dagupan Map / Loading population...</h4>
             </div>
+        </div>
+
+        <!-- Hidden population table -->
+        <div id="population-table-container" style="display:none; margin-top:20px;">
+            <h3>Barangay Population Statistics</h3>
+            <table border="1" cellpadding="8" cellspacing="0" width="100%" id="population-table">
+                <thead>
+                    <tr>
+                        <th>Barangay</th>
+                        <th>Population</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filled dynamically -->
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
+<script>
+    fetch("{{ route('dagupan.barangays') }}")
+    .then(res => res.json())
+    .then(data => {
+        console.log("Barangay data:", data);
+        if (data.success) {
+            const tbody = document.querySelector("#population-table tbody");
+            tbody.innerHTML = "";
+
+            data.barangays.forEach(row => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${row.location}</td>
+                        <td>${row.population.toLocaleString()}</td>
+                        <td>${new Date(row.date).toLocaleDateString()}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("population-table-container").style.display = "block";
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Unable to load barangay population data.");
+    });
+
+</script>
+
 
 <script>
     fetch("{{ url('/dagupan-population') }}")

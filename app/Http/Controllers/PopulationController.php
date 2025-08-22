@@ -99,6 +99,26 @@ public function import(Request $request)
     return back()->with('success', 'Population data imported successfully.');
 }
 
+ public function getBarangays()
+    {
+        try {
+            $data = PopulationStatisticsManagement::select('location', 'population', 'date')
+                ->orderBy('location', 'asc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'barangays' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching barangay population data',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
 public function downloadTemplate()
 {

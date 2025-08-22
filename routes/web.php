@@ -161,3 +161,7 @@ Route::middleware('auth:staff')->group(function () {
 
 
 Route::get('/dagupan-population', [PopulationController::class, 'getDagupanPopulation']);
+
+
+Route::get('/dagupan-population-barangays', [PopulationController::class, 'getBarangays'])
+     ->name('dagupan.barangays');
