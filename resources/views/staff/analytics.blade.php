@@ -357,11 +357,11 @@
         <div class="floating-circle"></div>
     </div>
 
-   <div class="">
+  <div class="">
     <div class="container-fluid py-4">
         <h1 class="section-title pulse-animation">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
 
-        <div class="map-container-modern">
+        <div class="map-container-modern" id="map-container">
             <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
                  alt="Dagupan City Map"
                  class="map-image-modern">
@@ -391,38 +391,8 @@
 </div>
 
 <script>
-    fetch("{{ route('dagupan.barangays') }}")
-    .then(res => res.json())
-    .then(data => {
-        console.log("Barangay data:", data);
-        if (data.success) {
-            const tbody = document.querySelector("#population-table tbody");
-            tbody.innerHTML = "";
-
-            data.barangays.forEach(row => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${row.location}</td>
-                        <td>${row.population.toLocaleString()}</td>
-                        <td>${new Date(row.date).toLocaleDateString()}</td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById("population-table-container").style.display = "block";
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Unable to load barangay population data.");
-    });
-
-</script>
-
-
-<script>
-    // Load city-wide total population (summary)
-    fetch("{{ route('dagupan.population') }}")
+    // Load city-wide summary on page load
+    fetch("{{ url('/dagupan-population') }}")
         .then(res => res.json())
         .then(data => {
             if (data.success) {
@@ -435,11 +405,12 @@
                 "🚩 City of Dagupan Map / Population unavailable";
         });
 
-    // Click the WHOLE container, not just the image
-    document.querySelector(".map-container-modern").addEventListener("click", function () {
+    // Click container to load barangay population
+    document.getElementById("map-container").addEventListener("click", function () {
         fetch("{{ route('dagupan.barangays') }}")
             .then(res => res.json())
             .then(data => {
+                console.log("Barangay data:", data);
                 if (data.success) {
                     const tbody = document.querySelector("#population-table tbody");
                     tbody.innerHTML = "";
