@@ -357,11 +357,11 @@
         <div class="floating-circle"></div>
     </div>
 
-  <div class="">
+ <div class="">
     <div class="container-fluid py-4">
         <h1 class="section-title pulse-animation">CITY HEALTH OFFICE STAFF OVERVIEW</h1>
 
-        <div class="map-container-modern" id="map-container">
+        <div class="map-container-modern" id="map-container" style="cursor: pointer;">
             <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
                  alt="Dagupan City Map"
                  class="map-image-modern">
@@ -370,12 +370,21 @@
                 <h4 id="population-text">🚩 City of Dagupan Map / Loading population...</h4>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Hidden population table -->
-        <div id="population-table-container" style="display:none; margin-top:20px;">
-            <h3>Barangay Population Statistics</h3>
-            <table border="1" cellpadding="8" cellspacing="0" width="100%" id="population-table">
-                <thead>
+<!-- Modal -->
+<div class="modal fade" id="barangayModal" tabindex="-1" aria-labelledby="barangayModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content shadow-lg border-0 rounded-4">
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title fw-bold" id="barangayModalLabel">Barangay Population Statistics</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle text-center" id="population-table">
+                <thead class="table-primary">
                     <tr>
                         <th>Barangay</th>
                         <th>Population</th>
@@ -387,7 +396,12 @@
                 </tbody>
             </table>
         </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
@@ -405,12 +419,11 @@
                 "🚩 City of Dagupan Map / Population unavailable";
         });
 
-    // Click container to load barangay population
+    // Click map container to load barangay population
     document.getElementById("map-container").addEventListener("click", function () {
         fetch("{{ route('dagupan.barangays') }}")
             .then(res => res.json())
             .then(data => {
-                console.log("Barangay data:", data);
                 if (data.success) {
                     const tbody = document.querySelector("#population-table tbody");
                     tbody.innerHTML = "";
@@ -418,14 +431,15 @@
                     data.barangays.forEach(row => {
                         tbody.innerHTML += `
                             <tr>
-                                <td>${row.location}</td>
+                                <td class="fw-semibold">${row.location}</td>
                                 <td>${row.population.toLocaleString()}</td>
                                 <td>${new Date(row.date).toLocaleDateString()}</td>
                             </tr>
                         `;
                     });
 
-                    document.getElementById("population-table-container").style.display = "block";
+                    // Show modal
+                    new bootstrap.Modal(document.getElementById("barangayModal")).show();
                 }
             })
             .catch(err => {
@@ -434,6 +448,7 @@
             });
     });
 </script>
+
 
 
             <h1 class="section-title">VITAL STATISTICS OVERVIEW</h1>
