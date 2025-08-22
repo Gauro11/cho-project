@@ -421,7 +421,8 @@
 
 
 <script>
-    fetch("{{ url('/dagupan-population') }}")
+    // Load city-wide total population (summary)
+    fetch("{{ route('dagupan.population') }}")
         .then(res => res.json())
         .then(data => {
             if (data.success) {
@@ -433,7 +434,36 @@
             document.getElementById("population-text").innerHTML =
                 "🚩 City of Dagupan Map / Population unavailable";
         });
+
+    // Click the WHOLE container, not just the image
+    document.querySelector(".map-container-modern").addEventListener("click", function () {
+        fetch("{{ route('dagupan.barangays') }}")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const tbody = document.querySelector("#population-table tbody");
+                    tbody.innerHTML = "";
+
+                    data.barangays.forEach(row => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${row.location}</td>
+                                <td>${row.population.toLocaleString()}</td>
+                                <td>${new Date(row.date).toLocaleDateString()}</td>
+                            </tr>
+                        `;
+                    });
+
+                    document.getElementById("population-table-container").style.display = "block";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Unable to load barangay population data.");
+            });
+    });
 </script>
+
 
             <h1 class="section-title">VITAL STATISTICS OVERVIEW</h1>
 
