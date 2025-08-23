@@ -402,12 +402,11 @@
             const predictionInfo = document.getElementById("predictionInfo");
 
             // Define case types for morbidity/mortality
-            <script>
-    const caseTypes = {
-        morbidity: @json($morbidityCases ?? []),
-        mortality: @json($mortalityCases ?? [])
-    };
-</script>
+            // ✅ Fetch case types dynamically from DB
+const caseTypes = {
+    morbidity: @json($morbidityCases ?? []),
+    mortality: @json($mortalityCases ?? [])
+};
 
 
             let chart;

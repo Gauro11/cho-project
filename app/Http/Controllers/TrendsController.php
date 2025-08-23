@@ -9,18 +9,20 @@ class TrendsController extends Controller
 {
     public function index()
     {
-        // Fetch distinct cases per category from your single table
-        $morbidityCases = DB::table('morbidity_mortality_management')
-            ->where('category', 'morbidity')
-            ->distinct()
-            ->pluck('case_name');
+       $morbidityCases = DB::table('morbidity_mortality_management')
+    ->where('category', 'morbidity')
+    ->distinct()
+    ->pluck('case_name')
+    ->toArray();
 
-        $mortalityCases = DB::table('morbidity_mortality_management')
-            ->where('category', 'mortality')
-            ->distinct()
-            ->pluck('case_name');
+$mortalityCases = DB::table('morbidity_mortality_management')
+    ->where('category', 'mortality')
+    ->distinct()
+    ->pluck('case_name')
+    ->toArray();
 
-        return view('staff.trends', compact('morbidityCases', 'mortalityCases'));
+return view('staff.trends', compact('morbidityCases', 'mortalityCases'));
+
     }
 
    public function getTrendData(Request $request)
