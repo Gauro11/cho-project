@@ -401,6 +401,75 @@
             const chartTitle = document.getElementById("chartTitle");
             const predictionInfo = document.getElementById("predictionInfo");
 
+            // Add this debug function to your existing JavaScript
+function debugCaseTypes() {
+    console.log("=== DEBUGGING CASE TYPES ===");
+    console.log("Available case types:", caseTypes);
+    console.log("Morbidity cases:", caseTypes.morbidity);
+    console.log("Mortality cases:", caseTypes.mortality);
+    
+    // Test if arrays are properly populated
+    if (caseTypes.morbidity && caseTypes.morbidity.length > 0) {
+        console.log("✅ Morbidity cases loaded successfully");
+    } else {
+        console.log("❌ No morbidity cases found");
+    }
+    
+    if (caseTypes.mortality && caseTypes.mortality.length > 0) {
+        console.log("✅ Mortality cases loaded successfully");
+    } else {
+        console.log("❌ No mortality cases found");
+    }
+}
+
+// Call debug function when page loads
+document.addEventListener("DOMContentLoaded", function() {
+    debugCaseTypes();
+    
+    // Rest of your existing code...
+});
+
+// Also add debugging to the loadChartData function
+async function loadChartData(category, subCategory = null) {
+    try {
+        console.log(`=== LOADING DATA ===`);
+        console.log(`Category: ${category}`);
+        console.log(`Sub Category: ${subCategory}`);
+        
+        // Show loading state
+        chartTitle.textContent = `Loading ${category} data...`;
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        chart.data.datasets[1].data = [];
+        chart.update();
+
+        // Fetch data from server
+        let url = `/public/api/trend-data/${category}`;
+        if (subCategory) {
+            url += `?sub_category=${encodeURIComponent(subCategory)}`;
+        }
+        
+        console.log(`Fetching from URL: ${url}`);
+
+        const response = await fetch(url);
+        console.log(`Response status: ${response.status}`);
+        
+        const data = await response.json();
+        console.log(`Response data:`, data);
+
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to load data');
+        }
+
+        // Rest of your existing loadChartData code...
+        
+    } catch (error) {
+        console.error("❌ Error loading chart data:", error);
+        chartTitle.textContent = "❌ Error Loading Data";
+        predictionInfo.innerHTML = `Error: ${error.message}`;
+    }
+}
+
             // Define case types for morbidity/mortality
            // ✅ Get case types directly from controller (dynamic from DB)
 const caseTypes = {
