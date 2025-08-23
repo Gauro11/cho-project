@@ -354,9 +354,10 @@
                                     </select>
 
                                     <!-- Sub-category for Morbidity/Mortality -->
-                                    <select id="subCategorySelect" class="form-select" style="display: none;">
-                                        <option value="">Select Case</option>
-                                    </select>
+                                <!-- Case Type Dropdown -->
+<select id="subCategorySelect" class="form-select" style="display: none;">
+    <option value="">-- Select Case Type --</option>
+</select>
                                 </div>
                             </div>
                         </div>
@@ -403,12 +404,33 @@
 
             // Define case types for morbidity/mortality
            // ✅ Get case types directly from controller (dynamic from DB)
+// ✅ case types already passed from controller
 const caseTypes = {
     morbidity: @json($morbidityCases ?? []),
     mortality: @json($mortalityCases ?? [])
 };
 
 console.log("Loaded caseTypes from DB:", caseTypes);
+
+const categorySelect = document.getElementById("categorySelect");
+const subCategorySelect = document.getElementById("subCategorySelect");
+
+// Show case types when selecting morbidity/mortality
+categorySelect.addEventListener("change", function () {
+    const selectedCategory = categorySelect.value;
+
+    if (selectedCategory && caseTypes[selectedCategory]) {
+        subCategorySelect.style.display = "block";
+        subCategorySelect.innerHTML = '<option value="">-- Select Case Type --</option>';
+
+        caseTypes[selectedCategory].forEach(caseName => {
+            subCategorySelect.innerHTML += `<option value="${caseName}">${caseName}</option>`;
+        });
+    } else {
+        subCategorySelect.style.display = "none";
+    }
+});
+
 
 
             let chart;
