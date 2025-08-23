@@ -545,7 +545,7 @@
                 chart.data.datasets[1].data = [];
                 chart.update();
 
-                let url = `/public/api/trend-data/${category}`;
+                let url = `/get-trend-data?categorycategory}`;
                 if (subCategory) {
                     url += `?sub_category=${encodeURIComponent(subCategory)}`;
                 }
