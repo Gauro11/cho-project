@@ -654,16 +654,31 @@
         border-spacing: 0;
     }
 
+    .table-header-row {
+        background: var(--primary-color);
+    }
+
     .table-header {
-        background: var(--gray-50);
-        color: var(--gray-800);
+        background: var(--primary-color);
+        color: white !important;
         font-weight: 600;
         font-size: 0.875rem;
         padding: 1rem 1.5rem;
-        border-bottom: 1px solid var(--gray-200);
+        border-bottom: none;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         white-space: nowrap;
+        border: none;
+    }
+
+    .table-row {
+        background: white;
+        transition: var(--transition);
+    }
+
+    .table-row:hover {
+        background: var(--gray-50) !important;
+        transform: scale(1.002);
     }
 
     .table-cell {
@@ -671,14 +686,7 @@
         border-bottom: 1px solid var(--gray-100);
         vertical-align: middle;
         color: var(--gray-700);
-    }
-
-    .table tbody tr {
-        transition: var(--transition);
-    }
-
-    .table tbody tr:hover {
-        background: var(--gray-50);
+        background: inherit;
     }
 
     .staff-id {
@@ -686,31 +694,33 @@
         font-weight: 600;
         color: var(--primary-color);
         background: rgba(26, 32, 44, 0.1);
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
         font-size: 0.875rem;
-    }
-
-    .staff-info {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
+        display: inline-block;
     }
 
     .staff-name {
-        font-weight: 600;
+        font-weight: 500;
         color: var(--gray-900);
         font-size: 0.9rem;
     }
 
-    .staff-email {
-        font-size: 0.8rem;
-        color: var(--gray-500);
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.375rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 
-    .department, .position {
-        font-size: 0.875rem;
-        color: var(--gray-700);
+    .badge-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        color: white;
+        border: 1px solid rgba(26, 32, 44, 0.2);
     }
 
     .action-buttons {
@@ -723,8 +733,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         border-radius: var(--border-radius-sm);
         border: 1px solid var(--gray-200);
         background: var(--white);
@@ -734,44 +744,32 @@
     }
 
     .btn-action:hover {
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-sm);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
     }
 
     .btn-edit:hover {
-        background: rgba(56, 161, 105, 0.1);
+        background: linear-gradient(135deg, var(--success-color), #48bb78);
         border-color: var(--success-color);
-        color: var(--success-color);
+        color: white;
     }
 
     .btn-delete:hover {
-        background: rgba(229, 62, 62, 0.1);
+        background: linear-gradient(135deg, var(--danger-color), #f56565);
         border-color: var(--danger-color);
-        color: var(--danger-color);
+        color: white;
     }
 
-    /* Empty State */
-    .empty-state {
+    /* Empty State Inline */
+    .empty-state-inline {
+        padding: 2rem;
         text-align: center;
-        padding: 4rem 2rem;
-        color: var(--gray-500);
     }
 
-    .empty-icon {
-        margin-bottom: 1.5rem;
+    .empty-state-inline i {
         opacity: 0.5;
-    }
-
-    .empty-state h3 {
-        color: var(--gray-700);
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state p {
-        margin-bottom: 2rem;
-        font-size: 0.9rem;
+        display: block;
+        margin: 0 auto 0.5rem;
     }
 
     /* Table Footer */
@@ -787,6 +785,7 @@
     .table-info {
         color: var(--gray-600);
         font-size: 0.875rem;
+        font-weight: 500;
     }
 
     /* Custom Pagination Updates */
@@ -795,6 +794,55 @@
         background: transparent;
         box-shadow: none;
         border: none;
+        padding: 0;
+    }
+
+    .custom-pagination .page-item {
+        margin: 0 3px;
+    }
+
+    .custom-pagination .page-link {
+        color: var(--gray-600);
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.875rem;
+        background: white;
+    }
+
+    .custom-pagination .page-item.active .page-link {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .custom-pagination .page-link:hover:not(.disabled) {
+        background: var(--primary-light);
+        border-color: var(--primary-light);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .custom-pagination .disabled .page-link {
+        color: var(--gray-400);
+        background: var(--gray-100);
+        border-color: var(--gray-200);
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    /* Card styling for table */
+    .card.flex-fill {
+        border: 1px solid var(--gray-200);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        background: white;
     }
 
     /* Focus styles for accessibility */
@@ -804,18 +852,6 @@
     .btn-action:focus {
         outline: 2px solid var(--accent-color);
         outline-offset: 2px;
-    }
-
-    /* No Data Message */
-    .no-data-message {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: var(--gray-500);
-    }
-
-    .no-data-message i {
-        opacity: 0.5;
-        margin-bottom: 1rem;
     }
 
     /* Loading State for Table */
@@ -897,101 +933,102 @@
                     </div>
 
                     <!-- Data Table Card -->
-                    <div class="col-12 col-lg-12">
-                        <div class="card">
-                            <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-12 col-lg-12 col-xxl-12 d-flex">
+                            <div class="card flex-fill" id="dataTable">
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="dataTable">
+                                    <table class="table table-hover my-0">
                                         <thead>
-                                            <tr>
+                                            <tr class="table-header-row">
                                                 <th class="table-header">Staff ID</th>
-                                                <th class="table-header">Full Name</th>
-                                                <th class="table-header">Department</th>
+                                                <th class="table-header">First Name</th>
+                                                <th class="table-header">Last Name</th>
                                                 <th class="table-header">Position</th>
-                                                <th class="table-header">Status</th>
                                                 <th class="table-header text-center">Actions</th>
                                             </tr>
                                         </thead>
+                                        
                                         <tbody>
-                                            <!-- Laravel will populate this with @foreach -->
-                                            <!-- Example row structure: -->
-                                            <!--
-                                            <tr>
-                                                <td class="table-cell">
-                                                    <span class="staff-id">EMP001</span>
-                                                </td>
-                                                <td class="table-cell">
-                                                    <div class="staff-info">
-                                                        <div class="staff-name">John Doe</div>
-                                                        <div class="staff-email">john.doe@company.com</div>
-                                                    </div>
-                                                </td>
-                                                <td class="table-cell">
-                                                    <span class="department">IT Department</span>
-                                                </td>
-                                                <td class="table-cell">
-                                                    <span class="position">Software Developer</span>
-                                                </td>
-                                                <td class="table-cell">
-                                                    <span class="badge badge-success">Active</span>
-                                                </td>
-                                                <td class="table-cell text-center">
-                                                    <div class="action-buttons">
-                                                        <button class="btn-action btn-edit edit-btn" 
-                                                                data-id="1" 
-                                                                data-first_name="John" 
-                                                                data-last_name="Doe"
-                                                                title="Edit Staff">
-                                                            <i data-feather="edit-2" size="16"></i>
-                                                        </button>
-                                                        <button class="btn-action btn-delete delete-btn" 
-                                                                data-id="1" 
-                                                                title="Delete Staff">
-                                                            <i data-feather="trash-2" size="16"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            -->
+                                            @forelse ($staff as $person)
+                                                <tr class="table-row">
+                                                    <td class="table-cell">
+                                                        <span class="staff-id">{{ strtoupper($person->staff_id) }}</span>
+                                                    </td>
+                                                    <td class="table-cell">
+                                                        <span class="staff-name">{{ strtoupper($person->first_name) }}</span>
+                                                    </td>
+                                                    <td class="table-cell">
+                                                        <span class="staff-name">{{ strtoupper($person->last_name) }}</span>
+                                                    </td>
+                                                    <td class="table-cell">
+                                                        <span class="badge badge-primary">{{ strtoupper($person->usertype) }}</span>
+                                                    </td>
+                                                    <td class="table-cell text-center">
+                                                        <div class="action-buttons">
+                                                            <button class="btn-action btn-edit edit-btn"
+                                                                    data-id="{{ $person->id }}"
+                                                                    data-staff_id="{{ $person->staff_id }}"
+                                                                    data-first_name="{{ $person->first_name }}"
+                                                                    data-last_name="{{ $person->last_name }}"
+                                                                    data-position="{{ $person->usertype }}"
+                                                                    title="Edit Staff">
+                                                                <i data-feather="edit-2" size="16"></i>
+                                                            </button>
+                                                            <button class="btn-action btn-delete delete-btn" 
+                                                                    data-id="{{ $person->id }}"
+                                                                    title="Delete Staff">
+                                                                <i data-feather="trash-2" size="16"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="5" class="table-cell text-center py-5">
+                                                        <div class="empty-state-inline">
+                                                            <i data-feather="users" size="32" class="text-muted mb-2"></i>
+                                                            <p class="text-muted mb-0">No staff members found.</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforelse
                                         </tbody>
                                     </table>
-                                    
-                                    <!-- Empty State -->
-                                    <div class="empty-state" style="display: none;">
-                                        <div class="empty-icon">
-                                            <i data-feather="users" size="48"></i>
-                                        </div>
-                                        <h3>No Staff Members Found</h3>
-                                        <p>Get started by adding your first staff member.</p>
-                                        <button class="btn btn-primary" onclick="document.getElementById('openModal').click()">
-                                            <i data-feather="plus" size="16"></i>
-                                            Add First Staff Member
-                                        </button>
-                                    </div>
                                 </div>
-                                
-                                <!-- Pagination -->
+
+                                <!-- Table Footer with Pagination -->
                                 <div class="table-footer">
                                     <div class="table-info">
-                                        Showing 1 to 10 of 50 entries
+                                        Showing {{ $staff->firstItem() }} to {{ $staff->lastItem() }} of {{ $staff->total() }} results
                                     </div>
-                                    <nav aria-label="Table pagination">
+                                    
+                                    <nav aria-label="Staff pagination">
                                         <ul class="custom-pagination">
-                                            <li class="page-item disabled">
-                                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                            </li>
-                                            <li class="page-item active">
-                                                <a class="page-link" href="#">1</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">2</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">3</a>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#">Next</a>
-                                            </li>
+                                            @if ($staff->onFirstPage())
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">&laquo; Previous</span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $staff->appends(['search' => request()->search])->previousPageUrl() }}" rel="prev">&laquo; Previous</a>
+                                                </li>
+                                            @endif
+
+                                            @for ($i = 1; $i <= $staff->lastPage(); $i++)
+                                                <li class="page-item {{ $i == $staff->currentPage() ? 'active' : '' }}">
+                                                    <a class="page-link" href="{{ $staff->appends(['search' => request()->search])->url($i) }}">{{ $i }}</a>
+                                                </li>
+                                            @endfor
+
+                                            @if ($staff->hasMorePages())
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $staff->appends(['search' => request()->search])->nextPageUrl() }}" rel="next">Next &raquo;</a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">Next &raquo;</span>
+                                                </li>
+                                            @endif
                                         </ul>
                                     </nav>
                                 </div>
