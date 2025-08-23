@@ -18,62 +18,48 @@ use Carbon\Carbon;
 class StaffController extends Controller
 {
     
-// public function index()
-// {
-//     if (Auth::check()) {
-//         $usertype = Auth::user()->usertype;
-
-//         if ($usertype == 'user' || $usertype == 'staff') {
-//             $barangays = DB::table('population_statistics_management')->get();
-
-//             $morbidityCases = DB::table('morbidity_mortality_management')
-//                 ->where('category', 'morbidity')
-//                 ->get();
-
-//             $mortalityCases = DB::table('morbidity_mortality_management')
-//                 ->where('category', 'mortality')
-//                 ->get();
-
-//             $vitalStatisticsData = DB::table('vital_statistics_management')->get();
-
-//             $immunizationData = DB::table('immunization_management')->get();
-
-//             return view('staff.index', compact('morbidityCases', 'barangays', 'mortalityCases', 'vitalStatisticsData', 'immunizationData'));
-//         } elseif ($usertype == 'mortality and morbidity records manager') {
-//             $morbidityCases = DB::table('morbidity_mortality_management')
-//                 ->where('category', 'morbidity')
-//                 ->get();
-
-//             $mortalityCases = DB::table('morbidity_mortality_management')
-//                 ->where('category', 'mortality')
-//                 ->get();
-
-//             return view('morbiditymortality.index', compact('morbidityCases', 'mortalityCases'));
-//         } elseif ($usertype == 'vital statistics records manager') {
-//             $vitalStatisticsData = DB::table('vital_statistics_management')->get();
-
-//             return view('vitalstatistics.index', compact('vitalStatisticsData'));
-//         } else {
-//             return redirect()->back()->withErrors(['error' => 'User type not recognized.']);
-//         }
-//     } else {
-//         return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
-//     }
-// }
-
-public function index(Request $request)
+public function index()
 {
-    $staff = Staff::query()
-        ->when($request->search, function($q, $search) {
-            $q->where('first_name', 'like', "%$search%")
-              ->orWhere('last_name', 'like', "%$search%")
-              ->orWhere('staff_id', 'like', "%$search%");
-        })
-        ->paginate(10);
+    if (Auth::check()) {
+        $usertype = Auth::user()->usertype;
 
-    return view('staff.index', compact('staff'));
+        if ($usertype == 'user' || $usertype == 'staff') {
+            $barangays = DB::table('population_statistics_management')->get();
+
+            $morbidityCases = DB::table('morbidity_mortality_management')
+                ->where('category', 'morbidity')
+                ->get();
+
+            $mortalityCases = DB::table('morbidity_mortality_management')
+                ->where('category', 'mortality')
+                ->get();
+
+            $vitalStatisticsData = DB::table('vital_statistics_management')->get();
+
+            $immunizationData = DB::table('immunization_management')->get();
+
+            return view('staff.index', compact('morbidityCases', 'barangays', 'mortalityCases', 'vitalStatisticsData', 'immunizationData'));
+        } elseif ($usertype == 'mortality and morbidity records manager') {
+            $morbidityCases = DB::table('morbidity_mortality_management')
+                ->where('category', 'morbidity')
+                ->get();
+
+            $mortalityCases = DB::table('morbidity_mortality_management')
+                ->where('category', 'mortality')
+                ->get();
+
+            return view('morbiditymortality.index', compact('morbidityCases', 'mortalityCases'));
+        } elseif ($usertype == 'vital statistics records manager') {
+            $vitalStatisticsData = DB::table('vital_statistics_management')->get();
+
+            return view('vitalstatistics.index', compact('vitalStatisticsData'));
+        } else {
+            return redirect()->back()->withErrors(['error' => 'User type not recognized.']);
+        }
+    } else {
+        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
+    }
 }
-
 
 
     
