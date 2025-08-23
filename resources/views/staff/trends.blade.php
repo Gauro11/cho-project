@@ -403,10 +403,15 @@
 
             // Define case types for morbidity/mortality
             const caseTypes = {
-    morbidity: {!! json_encode($morbidityCases) !!},
-    mortality: {!! json_encode($mortalityCases) !!}
-};
-
+                morbidity: ['Animal Bite', 'Acute Respiratory Infection', 'Hypertension', 'Skin Diseases',
+                    'Punctured/Lacerated Wound', 'Pneumonia', 'Diabetes Mellitus',
+                    'Urinary Tract Infection', 'Gastritis/GERD', 'Systemic Viral Infection'
+                ],
+                mortality: ['Myocardial Infarction', 'Pneumonia', 'Cerebrovascular Disease',
+                    'Kidney/Renal Disease', 'Cancer', 'Gastrointestinal Bleeding', 'Hypertension',
+                    'Diabetes Mellitus', 'Traumatic Brain Injury', 'Liver Cirrhosis'
+                ]
+            };
 
             let chart;
 
