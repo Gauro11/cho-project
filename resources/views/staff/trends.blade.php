@@ -402,11 +402,13 @@
             const predictionInfo = document.getElementById("predictionInfo");
 
             // Define case types for morbidity/mortality
-            // ✅ Fetch case types dynamically from DB
+           // ✅ Get case types directly from controller (dynamic from DB)
 const caseTypes = {
     morbidity: @json($morbidityCases ?? []),
     mortality: @json($mortalityCases ?? [])
 };
+
+console.log("Loaded caseTypes from DB:", caseTypes);
 
 
             let chart;
