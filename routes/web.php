@@ -49,8 +49,8 @@ Route::get('/public/routes', function() {
 
 
 
-Route::get('/trends', [TrendsController::class, 'index'])->name('trends.index');
-Route::get('/get-trend-data', [TrendsController::class, 'getTrendData'])->name('trends.data');
+Route::get('/api/case-types/{category}', [TrendsController::class, 'getCaseTypes']);
+Route::get('/api/trend-data/{category}', [TrendsController::class, 'getTrendData']);
 
 
 

@@ -8,41 +8,45 @@ use App\Models\MorbidityMortalityManagement;
 
 class TrendsController extends Controller
 {
-   public function index()
+ public function getCaseTypes($category)
 {
-   $morbidityCases = DB::table('morbidity_mortality_management')
-    ->whereRaw('LOWER(category) = ?', ['morbidity'])
-    ->distinct()
-    ->pluck('case_name')
-    ->toArray();
+    $cases = DB::table('morbidity_mortality_management')
+        ->whereRaw('LOWER(category) = ?', [strtolower($category)])
+        ->distinct()
+        ->pluck('case_name');
 
-$mortalityCases = DB::table('morbidity_mortality_management')
-    ->whereRaw('LOWER(category) = ?', ['mortality'])
-    ->distinct()
-    ->pluck('case_name')
-    ->toArray();
-
+    return response()->json([
+        'success' => true,
+        'cases' => $cases
+    ]);
 }
 
 
 
-   public function getTrendData(Request $request)
+
+  public function getTrendData(Request $request, $category)
 {
-    $category = $request->get('category'); // morbidity or mortality
-    $caseName = $request->get('case_name');
+    $caseName = $request->query('sub_category');
 
     $data = DB::table('morbidity_mortality_management')
         ->selectRaw('`date` as date, SUM(male_count + female_count) as total')
         ->where('category', $category)
-        ->where('case_name', $caseName)
+        ->when($caseName, function ($query) use ($caseName) {
+            return $query->where('case_name', $caseName);
+        })
         ->groupBy('date')
         ->orderBy('date')
         ->get();
 
     return response()->json([
-        'labels' => $data->pluck('date'),
-        'values' => $data->pluck('total'),
+        'success' => true,
+        'historical' => [
+            'labels' => $data->pluck('date'),
+            'values' => $data->pluck('total'),
+        ],
+        'prediction' => null // you can add prediction logic here later
     ]);
 }
+
 
 }
