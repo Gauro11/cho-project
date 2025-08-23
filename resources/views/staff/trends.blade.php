@@ -412,6 +412,73 @@ const caseTypes = {
 
 console.log("caseTypes from DB:", caseTypes);
 
+async function loadChartData(category, subCategory = null) {
+    try {
+        chartTitle.textContent = `Loading ${category} data...`;
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        chart.data.datasets[1].data = [];
+        chart.update();
+
+        let url = "";
+
+        // ✅ If category is population_statistics → use existing API
+        if (category === "population_statistics") {
+            url = `/public/api/trend-data/${category}`;
+        } 
+        // ✅ If morbidity or mortality → use Laravel TrendsController
+        else if (category === "morbidity" || category === "mortality") {
+            url = `/get-trend-data?category=${encodeURIComponent(category)}`;
+            if (subCategory) {
+                url += `&case_name=${encodeURIComponent(subCategory)}`;
+            }
+        } 
+        // (optional) if you later add immunization, vital stats, etc
+        else {
+            url = `/public/api/trend-data/${category}`;
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.success && !data.labels) {
+            throw new Error(data.message || "Failed to load data");
+        }
+
+        // historical
+        chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis`;
+        chart.data.labels = data.labels || data.historical?.labels || [];
+        chart.data.datasets[0].data = data.values || data.historical?.values || [];
+
+        // prediction
+        if (data.prediction) {
+            const allLabels = [
+                ...chart.data.labels,
+                ...data.prediction.labels
+            ];
+            chart.data.labels = allLabels;
+            chart.data.datasets[1].data =
+                Array(chart.data.datasets[0].data.length).fill(null).concat(data.prediction.values);
+
+            chart.options.plugins.annotation.annotations.line1.xMin = chart.data.datasets[0].data.length - 1;
+            chart.options.plugins.annotation.annotations.line1.xMax = chart.data.datasets[0].data.length - 1;
+        }
+
+        chart.update();
+
+        predictionInfo.innerHTML = data.prediction
+            ? data.prediction.labels.map((m, i) =>
+                  `📅 ${m}: ${Math.round(data.prediction.values[i])} (${data.prediction.trend} trend)<br>`
+              ).join("")
+            : "❌ No prediction available for this dataset.";
+
+    } catch (error) {
+        console.error("Error loading chart data:", error);
+        chartTitle.textContent = "❌ Error Loading Data";
+        predictionInfo.innerHTML = `Error: ${error.message}`;
+    }
+}
+
 
 
             let chart;
