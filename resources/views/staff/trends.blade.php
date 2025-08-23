@@ -534,7 +534,7 @@ document.addEventListener("DOMContentLoaded", function() {
             chart.update();
 
             let url = `/public/api/trend-data/${category}`;
-            if (subCategory) url += `?sub_category=${encodeURIComponent(subCategory)}`;
+          
 
             const response = await fetch(url);
             const data = await response.json();
