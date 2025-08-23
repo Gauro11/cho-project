@@ -392,92 +392,58 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
-
-   <script>
-document.addEventListener("DOMContentLoaded", function() {
+<script>
+   document.addEventListener("DOMContentLoaded", function() {
     const categorySelect = document.getElementById("categorySelect");
     const subCategorySelect = document.getElementById("subCategorySelect");
     const ctx = document.getElementById("trendChart").getContext("2d");
     const chartTitle = document.getElementById("chartTitle");
     const predictionInfo = document.getElementById("predictionInfo");
 
-    // Case types from backend (Blade)
+    // Case types from backend (Laravel Blade)
     const caseTypes = {
         morbidity: @json($morbidityCases ?? []),
         mortality: @json($mortalityCases ?? [])
     };
 
-    console.log("caseTypes from DB:", caseTypes);
-
     let chart;
 
-    // Initialize chart
+    // Initialize Chart
     function initChart() {
         if (chart) chart.destroy();
         chart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: [],
-                datasets: [
-                    {
-                        label: 'Historical Data',
-                        data: [],
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Prediction',
-                        data: [],
-                        borderColor: '#ff6384',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
-                        fill: false,
-                        tension: 0.4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    annotation: {
-                        annotations: {
-                            line1: {
-                                type: 'line',
-                                yMin: 0,
-                                yMax: 0,
-                                borderColor: 'rgb(255, 99, 132)',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: {
-                                    content: 'Prediction Start',
-                                    enabled: true,
-                                    position: 'right',
-                                    color: '#333'
-                                }
-                            }
-                        }
-                    }
+            data: { labels: [], datasets: [
+                {
+                    label: 'Historical Data',
+                    data: [],
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Prediction',
+                    data: [],
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
                 }
-            }
+            ]},
+            options: { responsive: true, maintainAspectRatio: false }
         });
     }
 
-    // ✅ Single loadChartData function
+    // Load Chart Data
     async function loadChartData(category, subCategory = null) {
         try {
             chartTitle.textContent = `Loading ${category} data...`;
-            chart.data.labels = [];
-            chart.data.datasets[0].data = [];
-            chart.data.datasets[1].data = [];
-            chart.update();
 
             let url = "";
-
             if (category === "population_statistics") {
                 url = `/public/api/trend-data/${category}`;
             } else if (category === "morbidity" || category === "mortality") {
@@ -490,75 +456,54 @@ document.addEventListener("DOMContentLoaded", function() {
             const response = await fetch(url);
             const data = await response.json();
 
-            if (!data.success && !data.labels) {
-                throw new Error(data.message || "Failed to load data");
-            }
+            if (!data || !data.labels) throw new Error("No data returned");
 
-            // historical
+            // Update chart
             chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis`;
-            chart.data.labels = data.labels || data.historical?.labels || [];
-            chart.data.datasets[0].data = data.values || data.historical?.values || [];
+            chart.data.labels = data.labels;
+            chart.data.datasets[0].data = data.values;
 
-            // prediction
-            if (data.prediction) {
-                const allLabels = [
-                    ...chart.data.labels,
-                    ...data.prediction.labels
-                ];
-                chart.data.labels = allLabels;
-                chart.data.datasets[1].data =
-                    Array(chart.data.datasets[0].data.length).fill(null).concat(data.prediction.values);
-
-                chart.options.plugins.annotation.annotations.line1.xMin = chart.data.datasets[0].data.length - 1;
-                chart.options.plugins.annotation.annotations.line1.xMax = chart.data.datasets[0].data.length - 1;
-            }
+            // Reset prediction (your Laravel doesn’t provide prediction yet)
+            chart.data.datasets[1].data = [];
+            predictionInfo.innerHTML = "❌ No prediction available for this dataset.";
 
             chart.update();
-
-            predictionInfo.innerHTML = data.prediction
-                ? data.prediction.labels.map((m, i) =>
-                      `📅 ${m}: ${Math.round(data.prediction.values[i])} (${data.prediction.trend} trend)<br>`
-                  ).join("")
-                : "❌ No prediction available for this dataset.";
-
-        } catch (error) {
-            console.error("Error loading chart data:", error);
+        } catch (err) {
+            console.error(err);
             chartTitle.textContent = "❌ Error Loading Data";
-            predictionInfo.innerHTML = `Error: ${error.message}`;
         }
     }
 
-    // Init chart
+    // Init
     initChart();
 
-    // Category select change
+    // Category select
     categorySelect.addEventListener("change", function() {
-        const selectedCategory = categorySelect.value;
+        const selected = this.value;
 
-        if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
+        if (selected === "morbidity" || selected === "mortality") {
             subCategorySelect.style.display = 'block';
             subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
-
-            caseTypes[selectedCategory].forEach(caseType => {
+            caseTypes[selected].forEach(caseType => {
                 subCategorySelect.innerHTML += `<option value="${caseType}">${caseType}</option>`;
             });
         } else {
             subCategorySelect.style.display = 'none';
-            loadChartData(selectedCategory);
+            loadChartData(selected);
         }
     });
 
-    // Sub-category change
+    // Sub-category select
     subCategorySelect.addEventListener("change", function() {
-        const selectedCategory = categorySelect.value;
-        const selectedSubCategory = subCategorySelect.value;
-        if (selectedSubCategory) {
-            loadChartData(selectedCategory, selectedSubCategory);
-        }
+        const category = categorySelect.value;
+        const subCat = this.value;
+        if (subCat) loadChartData(category, subCat);
     });
+
+    // Default load population stats
+    loadChartData("population_statistics");
 });
 </script>
-
 
 </body>
 
