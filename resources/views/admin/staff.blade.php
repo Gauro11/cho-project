@@ -9,81 +9,92 @@
 
 <style>
     :root {
-        --primary-color: #667eea;
-        --primary-dark: #5a67d8;
-        --secondary-color: #764ba2;
-        --accent-color: #f093fb;
-        --success-color: #48bb78;
-        --warning-color: #ed8936;
-        --danger-color: #f56565;
-        --dark-color: #2d3748;
-        --light-gray: #f7fafc;
-        --border-color: #e2e8f0;
-        --text-primary: #2d3748;
-        --text-secondary: #718096;
-        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --primary-color: #1a202c;
+        --primary-light: #2d3748;
+        --secondary-color: #4a5568;
+        --accent-color: #ed8936;
+        --accent-light: #fbb040;
+        --success-color: #38a169;
+        --warning-color: #d69e2e;
+        --danger-color: #e53e3e;
+        --info-color: #3182ce;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f7fafc;
+        --gray-200: #edf2f7;
+        --gray-300: #e2e8f0;
+        --gray-400: #cbd5e0;
+        --gray-500: #a0aec0;
+        --gray-600: #718096;
+        --gray-700: #4a5568;
+        --gray-800: #2d3748;
+        --gray-900: #1a202c;
+        --border-radius: 16px;
+        --border-radius-sm: 8px;
+        --border-radius-lg: 24px;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     * {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: var(--transition);
     }
 
     body {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        line-height: 1.6;
     }
 
     .highlight {
-        background: var(--gradient-accent);
+        background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
         color: white;
-        padding: 2px 6px;
-        border-radius: 4px;
+        padding: 3px 8px;
+        border-radius: 6px;
         font-weight: 600;
+        box-shadow: var(--shadow-sm);
     }
 
     .custom-pagination {
         display: flex;
         list-style: none;
         padding: 0;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 8px 12px;
-        box-shadow: var(--shadow-sm);
+        border-radius: var(--border-radius);
+        background: var(--white);
+        padding: 6px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--gray-200);
     }
 
     .custom-pagination .page-item {
-        margin: 0 3px;
+        margin: 0 2px;
     }
 
     .custom-pagination .page-link {
-        color: var(--primary-color);
-        padding: 10px 14px;
-        border: 2px solid transparent;
-        border-radius: 8px;
-        transition: all 0.3s ease;
+        color: var(--gray-600);
+        padding: 8px 12px;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
         text-decoration: none;
         font-weight: 500;
-        background: rgba(255, 255, 255, 0.7);
+        font-size: 0.875rem;
     }
 
     .custom-pagination .page-item.active .page-link,
     .custom-pagination .page-link:hover {
-        background: var(--gradient-primary);
+        background: var(--primary-color);
         color: white;
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        box-shadow: var(--shadow-sm);
     }
 
     .custom-pagination .disabled .page-link {
-        color: var(--text-secondary);
+        color: var(--gray-400);
         pointer-events: none;
-        opacity: 0.5;
+        opacity: 0.6;
     }
 
     .half-width {
@@ -100,12 +111,14 @@
         margin-top: 20px;
     }
 
-    /* Modern Page Header */
+    /* Clean Header Design */
     .page-header {
-        background: var(--gradient-primary);
-        padding: 2rem 0;
-        margin: -1rem -1rem 2rem -1rem;
-        border-radius: 0 0 24px 24px;
+        background: var(--white);
+        padding: 2.5rem 0;
+        margin-bottom: 2rem;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--gray-200);
         position: relative;
         overflow: hidden;
     }
@@ -116,130 +129,152 @@
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.1"><circle cx="30" cy="30" r="4"/></g></svg>');
-        opacity: 0.3;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
     }
 
     .page-header h1 {
-        color: white !important;
-        font-weight: 700;
-        font-size: 2.5rem;
+        color: var(--gray-900) !important;
+        font-weight: 800;
+        font-size: 2.25rem;
         margin: 0;
-        position: relative;
-        z-index: 1;
+        letter-spacing: -0.025em;
     }
 
-    /* Modern Card Design */
+    .page-subtitle {
+        color: var(--gray-600);
+        font-size: 1.125rem;
+        margin-top: 0.5rem;
+        font-weight: 400;
+    }
+
+    /* Sleek Card Design */
     .card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--border-radius-lg);
         box-shadow: var(--shadow-xl);
         overflow: hidden;
-        position: relative;
-    }
-
-    .card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--gradient-primary);
+        backdrop-filter: blur(10px);
     }
 
     .card-body {
         padding: 2rem;
-        background: var(--gradient-primary);
-        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
     }
 
     /* Modern Toolbar */
-    .toolbar-section {
+    .toolbar-left, .toolbar-right {
         display: flex;
         align-items: center;
         gap: 1rem;
     }
 
-    .toolbar-divider {
-        width: 2px;
-        height: 30px;
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 2px;
+    .toolbar-group {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--gray-200);
     }
 
-    .icon-button {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+    .action-button {
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--border-radius-sm);
+        background: var(--gray-100);
+        border: 1px solid var(--gray-200);
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: var(--transition);
+        color: var(--gray-600);
     }
 
-    .icon-button:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
+    .action-button:hover {
+        background: var(--gray-200);
+        color: var(--gray-800);
+        transform: translateY(-1px);
         box-shadow: var(--shadow-md);
     }
 
-    .icon-button i {
-        color: white !important;
+    .action-button.primary {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
     }
 
-    /* Modern Search Input */
-    .modern-search {
+    .action-button.primary:hover {
+        background: var(--primary-light);
+        border-color: var(--primary-light);
+    }
+
+    .action-button.accent {
+        background: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+    }
+
+    .action-button.accent:hover {
+        background: var(--accent-light);
+        border-color: var(--accent-light);
+    }
+
+    /* Enhanced Search */
+    .search-container {
         position: relative;
-        min-width: 300px;
+        min-width: 320px;
     }
 
-    .modern-search .input-group {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 14px;
+    .search-container .input-group {
+        background: var(--white);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--border-radius);
         overflow: hidden;
-        box-shadow: var(--shadow-sm);
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        transition: var(--transition);
     }
 
-    .modern-search .input-group:focus-within {
-        border-color: rgba(255, 255, 255, 0.5);
-        box-shadow: var(--shadow-md);
+    .search-container .input-group:focus-within {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgb(237 137 54 / 0.1);
     }
 
-    .modern-search .input-group-text {
+    .search-container .input-group-text {
         background: transparent;
         border: none;
-        color: var(--text-secondary);
-        padding: 0.75rem 1rem;
+        color: var(--gray-500);
+        padding: 0.875rem 1rem;
     }
 
-    .modern-search .form-control {
+    .search-container .form-control {
         border: none;
         background: transparent;
-        color: var(--text-primary);
+        color: var(--gray-900);
         font-weight: 500;
-        padding: 0.75rem 1rem;
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
     }
 
-    .modern-search .form-control:focus {
+    .search-container .form-control:focus {
         box-shadow: none;
-        background: transparent;
+        outline: none;
     }
 
-    .modern-search .form-control::placeholder {
-        color: var(--text-secondary);
+    .search-container .form-control::placeholder {
+        color: var(--gray-500);
         font-weight: 400;
     }
 
-    /* Modal Updates */
+    /* Refined Modal */
     .modal {
         display: none;
         position: fixed;
@@ -248,40 +283,33 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(8px);
+        background: rgba(26, 32, 44, 0.75);
+        backdrop-filter: blur(12px);
         justify-content: center;
         align-items: center;
-        animation: fadeIn 0.3s ease;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideIn {
-        from { 
-            opacity: 0;
-            transform: translateY(-50px) scale(0.9);
-        }
-        to { 
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+    .modal.show {
+        opacity: 1;
     }
 
     .modal-content {
-        background: white;
-        padding: 2rem;
-        width: 500px;
+        background: var(--white);
+        padding: 2.5rem;
+        width: 480px;
         max-width: 90vw;
-        border-radius: 24px;
-        text-align: left;
+        border-radius: var(--border-radius-lg);
         position: relative;
         box-shadow: var(--shadow-xl);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        animation: slideIn 0.3s ease;
+        border: 1px solid var(--gray-200);
+        transform: scale(0.95) translateY(-20px);
+        transition: transform 0.3s ease;
+    }
+
+    .modal.show .modal-content {
+        transform: scale(1) translateY(0);
     }
 
     .modal-content::before {
@@ -290,85 +318,97 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 6px;
-        background: var(--gradient-primary);
-        border-radius: 24px 24px 0 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
     }
 
     .modal-content h2 {
-        color: var(--text-primary);
+        color: var(--gray-900);
         font-weight: 700;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         font-size: 1.5rem;
+        letter-spacing: -0.025em;
     }
 
     .close {
         position: absolute;
-        top: 1rem;
-        right: 1.5rem;
-        width: 32px;
-        height: 32px;
+        top: 1.25rem;
+        right: 1.25rem;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        background: rgba(248, 113, 113, 0.1);
-        color: var(--danger-color);
-        border: none;
+        background: var(--gray-100);
+        color: var(--gray-600);
+        border: 1px solid var(--gray-200);
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        font-size: 18px;
-        transition: all 0.3s ease;
+        font-size: 16px;
+        transition: var(--transition);
     }
 
     .close:hover {
         background: var(--danger-color);
         color: white;
-        transform: scale(1.1);
+        border-color: var(--danger-color);
+        transform: scale(1.05);
     }
 
-    /* Modern Form Elements */
+    /* Clean Form Design */
     .form-label {
         font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 0.5rem;
+        color: var(--gray-800);
+        margin-bottom: 0.75rem;
         font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        display: block;
     }
 
     .form-control {
-        border: 2px solid var(--border-color);
-        border-radius: 12px;
-        padding: 0.75rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--border-radius-sm);
+        padding: 0.875rem 1rem;
         font-weight: 500;
-        transition: all 0.3s ease;
-        background: rgba(247, 250, 252, 0.5);
+        transition: var(--transition);
+        background: var(--gray-50);
+        width: 100%;
+        font-size: 0.9rem;
+        color: var(--gray-900);
     }
 
     .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        background: white;
-        transform: translateY(-1px);
+        border-color: var(--accent-color);
+        background: var(--white);
+        box-shadow: 0 0 0 3px rgb(237 137 54 / 0.1);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--gray-500);
     }
 
     .modal-footer {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         margin-top: 2rem;
         gap: 1rem;
     }
 
-    /* Modern Buttons */
+    /* Sophisticated Buttons */
     .btn {
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1.5rem;
         font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
         font-size: 0.875rem;
-        transition: all 0.3s ease;
-        border: none;
+        transition: var(--transition);
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
         position: relative;
         overflow: hidden;
     }
@@ -380,8 +420,8 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.4s ease;
     }
 
     .btn:hover::before {
@@ -389,72 +429,201 @@
     }
 
     .btn-primary {
-        background: var(--gradient-primary);
+        background: var(--primary-color);
         color: white;
-        box-shadow: var(--shadow-md);
+        border-color: var(--primary-color);
     }
 
     .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
+        background: var(--primary-light);
+        border-color: var(--primary-light);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+        background: var(--gray-100);
+        color: var(--gray-700);
+        border-color: var(--gray-200);
+    }
+
+    .btn-secondary:hover {
+        background: var(--gray-200);
+        color: var(--gray-800);
     }
 
     .btn-success {
-        background: linear-gradient(135deg, #48bb78, #38a169);
+        background: var(--success-color);
         color: white;
+        border-color: var(--success-color);
     }
 
     .btn-warning {
-        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        background: var(--warning-color);
         color: white;
+        border-color: var(--warning-color);
     }
 
     .btn-danger {
-        background: linear-gradient(135deg, #f56565, #e53e3e);
+        background: var(--danger-color);
         color: white;
+        border-color: var(--danger-color);
+    }
+
+    /* Badge System */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .badge-primary {
+        background: rgba(26, 32, 44, 0.1);
+        color: var(--primary-color);
+    }
+
+    .badge-success {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--success-color);
+    }
+
+    .badge-warning {
+        background: rgba(214, 158, 46, 0.1);
+        color: var(--warning-color);
     }
 
     /* Responsive Design */
     @media (max-width: 768px) {
-        .toolbar-section {
-            flex-wrap: wrap;
-            gap: 0.5rem;
+        .card-body {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1.5rem;
         }
         
-        .modern-search {
-            min-width: 250px;
-            order: 3;
-            width: 100%;
+        .toolbar-left, .toolbar-right {
+            justify-content: center;
+        }
+        
+        .search-container {
+            min-width: 100%;
         }
         
         .modal-content {
             width: 95vw;
-            padding: 1.5rem;
-        }
-        
-        .card-body {
-            padding: 1rem;
+            padding: 2rem;
         }
         
         .page-header h1 {
-            font-size: 2rem;
+            font-size: 1.875rem;
+        }
+
+        .toolbar-group {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .table-footer {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .table-header,
+        .table-cell {
+            padding: 0.75rem 1rem;
+        }
+
+        .action-buttons {
+            gap: 0.25rem;
+        }
+
+        .btn-action {
+            width: 28px;
+            height: 28px;
+        }
+
+        .staff-info {
+            gap: 0.125rem;
+        }
+
+        .staff-name {
+            font-size: 0.85rem;
+        }
+
+        .staff-email {
+            font-size: 0.75rem;
         }
     }
 
-    /* Animation for icons */
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+    @media (max-width: 480px) {
+        .page-header {
+            padding: 2rem 1rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-content {
+            padding: 1.5rem;
+        }
+
+        .table-header,
+        .table-cell {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .staff-id {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.375rem;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            padding: 0.125rem 0.5rem;
+        }
+
+        .toolbar-group {
+            padding: 0.375rem 0.75rem;
+        }
+
+        .action-button {
+            width: 36px;
+            height: 36px;
+        }
     }
 
-    .icon-button:hover i {
-        animation: pulse 0.6s ease-in-out;
+    /* Smooth Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    /* Loading states */
+    .card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .page-header {
+        animation: fadeInUp 0.4s ease-out;
+    }
+
+    /* Loading State */
     .btn.loading {
         pointer-events: none;
         opacity: 0.7;
+        position: relative;
     }
 
     .btn.loading::after {
@@ -462,7 +631,6 @@
         position: absolute;
         width: 16px;
         height: 16px;
-        margin: auto;
         border: 2px solid transparent;
         border-top-color: currentColor;
         border-radius: 50%;
@@ -472,6 +640,201 @@
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+
+    /* Data Table Styles */
+    .table-responsive {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    .table {
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-header {
+        background: var(--gray-50);
+        color: var(--gray-800);
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-200);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+    }
+
+    .table-cell {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+        vertical-align: middle;
+        color: var(--gray-700);
+    }
+
+    .table tbody tr {
+        transition: var(--transition);
+    }
+
+    .table tbody tr:hover {
+        background: var(--gray-50);
+    }
+
+    .staff-id {
+        font-family: 'SF Mono', Monaco, monospace;
+        font-weight: 600;
+        color: var(--primary-color);
+        background: rgba(26, 32, 44, 0.1);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+    }
+
+    .staff-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .staff-name {
+        font-weight: 600;
+        color: var(--gray-900);
+        font-size: 0.9rem;
+    }
+
+    .staff-email {
+        font-size: 0.8rem;
+        color: var(--gray-500);
+    }
+
+    .department, .position {
+        font-size: 0.875rem;
+        color: var(--gray-700);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .btn-action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--gray-200);
+        background: var(--white);
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--gray-600);
+    }
+
+    .btn-action:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .btn-edit:hover {
+        background: rgba(56, 161, 105, 0.1);
+        border-color: var(--success-color);
+        color: var(--success-color);
+    }
+
+    .btn-delete:hover {
+        background: rgba(229, 62, 62, 0.1);
+        border-color: var(--danger-color);
+        color: var(--danger-color);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--gray-500);
+    }
+
+    .empty-icon {
+        margin-bottom: 1.5rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        color: var(--gray-700);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+    }
+
+    /* Table Footer */
+    .table-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        background: var(--gray-50);
+        border-top: 1px solid var(--gray-200);
+    }
+
+    .table-info {
+        color: var(--gray-600);
+        font-size: 0.875rem;
+    }
+
+    /* Custom Pagination Updates */
+    .custom-pagination {
+        margin: 0;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    /* Focus styles for accessibility */
+    .action-button:focus,
+    .btn:focus,
+    .form-control:focus,
+    .btn-action:focus {
+        outline: 2px solid var(--accent-color);
+        outline-offset: 2px;
+    }
+
+    /* No Data Message */
+    .no-data-message {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--gray-500);
+    }
+
+    .no-data-message i {
+        opacity: 0.5;
+        margin-bottom: 1rem;
+    }
+
+    /* Loading State for Table */
+    .table-loading {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--gray-500);
+    }
+
+    .table-loading::after {
+        content: '';
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--gray-300);
+        border-top-color: var(--accent-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 0.5rem;
     }
 </style>
 </head>
@@ -487,51 +850,150 @@
 
                     <div class="page-header">
                         <div class="container-fluid">
-                            <h1 class="h3 mb-0">Staff Management</h1>
+                            <h1>Staff Management</h1>
+                            <p class="page-subtitle">Manage your team members and their information</p>
                         </div>
                     </div>
 
-                    <div class="col-12 col-lg-12">
+                    <!-- Toolbar Card -->
+                    <div class="col-12 col-lg-12 mb-4">
                         <div class="card">
                             <div class="card-body">
-                                <div class="toolbar-section">
-                                    <!-- Add Staff Button -->
-                                    <div class="icon-button" id="openModal" title="Add New Staff">
-                                        <i data-feather="plus"></i>
+                                <!-- Left Toolbar -->
+                                <div class="toolbar-left">
+                                    <div class="toolbar-group">
+                                        <div class="action-button primary" id="openModal" title="Add New Staff">
+                                            <i data-feather="plus" size="18"></i>
+                                        </div>
                                     </div>
 
-                                    <div class="toolbar-divider"></div>
-
-                                    <!-- Search Field -->
-                                    <div class="modern-search">
+                                    <div class="search-container">
                                         <div class="input-group">
-                                            <span class="input-group-text"><i data-feather="search"></i></span>
+                                            <span class="input-group-text">
+                                                <i data-feather="search" size="18"></i>
+                                            </span>
                                             <input type="text" id="searchInput" name="search" class="form-control"
                                                 placeholder="Search staff members...">
                                         </div>
                                     </div>
-
-                                    <div class="toolbar-divider"></div>
                                 </div>
 
-                                <!-- Action Buttons on the Right -->
-                                <div class="toolbar-section">
-                                    <!-- Print Button -->
-                                    <div class="icon-button" title="Print">
-                                        <i data-feather="printer"></i>
+                                <!-- Right Toolbar -->
+                                <div class="toolbar-right">
+                                    <div class="toolbar-group">
+                                        <div class="action-button" title="Print Report">
+                                            <i data-feather="printer" size="18"></i>
+                                        </div>
+                                        <div class="action-button" title="Export Data">
+                                            <i data-feather="download" size="18"></i>
+                                        </div>
+                                        <div class="action-button" title="Full Screen">
+                                            <i data-feather="maximize-2" size="18"></i>
+                                        </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                    <!-- Download Button -->
-                                    <div class="icon-button" title="Download">
-                                        <i data-feather="download"></i>
+                    <!-- Data Table Card -->
+                    <div class="col-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="dataTable">
+                                        <thead>
+                                            <tr>
+                                                <th class="table-header">Staff ID</th>
+                                                <th class="table-header">Full Name</th>
+                                                <th class="table-header">Department</th>
+                                                <th class="table-header">Position</th>
+                                                <th class="table-header">Status</th>
+                                                <th class="table-header text-center">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Laravel will populate this with @foreach -->
+                                            <!-- Example row structure: -->
+                                            <!--
+                                            <tr>
+                                                <td class="table-cell">
+                                                    <span class="staff-id">EMP001</span>
+                                                </td>
+                                                <td class="table-cell">
+                                                    <div class="staff-info">
+                                                        <div class="staff-name">John Doe</div>
+                                                        <div class="staff-email">john.doe@company.com</div>
+                                                    </div>
+                                                </td>
+                                                <td class="table-cell">
+                                                    <span class="department">IT Department</span>
+                                                </td>
+                                                <td class="table-cell">
+                                                    <span class="position">Software Developer</span>
+                                                </td>
+                                                <td class="table-cell">
+                                                    <span class="badge badge-success">Active</span>
+                                                </td>
+                                                <td class="table-cell text-center">
+                                                    <div class="action-buttons">
+                                                        <button class="btn-action btn-edit edit-btn" 
+                                                                data-id="1" 
+                                                                data-first_name="John" 
+                                                                data-last_name="Doe"
+                                                                title="Edit Staff">
+                                                            <i data-feather="edit-2" size="16"></i>
+                                                        </button>
+                                                        <button class="btn-action btn-delete delete-btn" 
+                                                                data-id="1" 
+                                                                title="Delete Staff">
+                                                            <i data-feather="trash-2" size="16"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            -->
+                                        </tbody>
+                                    </table>
+                                    
+                                    <!-- Empty State -->
+                                    <div class="empty-state" style="display: none;">
+                                        <div class="empty-icon">
+                                            <i data-feather="users" size="48"></i>
+                                        </div>
+                                        <h3>No Staff Members Found</h3>
+                                        <p>Get started by adding your first staff member.</p>
+                                        <button class="btn btn-primary" onclick="document.getElementById('openModal').click()">
+                                            <i data-feather="plus" size="16"></i>
+                                            Add First Staff Member
+                                        </button>
                                     </div>
-
-                                    <div class="toolbar-divider"></div>
-
-                                    <!-- Expand Button -->
-                                    <div class="icon-button" title="Full Screen">
-                                        <i data-feather="maximize-2"></i>
+                                </div>
+                                
+                                <!-- Pagination -->
+                                <div class="table-footer">
+                                    <div class="table-info">
+                                        Showing 1 to 10 of 50 entries
                                     </div>
+                                    <nav aria-label="Table pagination">
+                                        <ul class="custom-pagination">
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                            </li>
+                                            <li class="page-item active">
+                                                <a class="page-link" href="#">1</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#">2</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#">3</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#">Next</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </div>
@@ -545,7 +1007,7 @@
                     <!-- Modal for Adding Staff -->
                     <div id="customModal" class="modal">
                         <div class="modal-content">
-                            <span class="close">&times;</span>
+                            <button class="close" type="button">&times;</button>
                             <h2>Add New Staff Member</h2>
                             <form action="{{ route('staff.store') }}" method="POST">
                                 @csrf
@@ -553,19 +1015,28 @@
 
                                 <div class="mb-3">
                                     <label for="staff_id" class="form-label">Staff ID</label>
-                                    <input type="text" class="form-control" id="staff_id" name="staff_id" required>
+                                    <input type="text" class="form-control" id="staff_id" name="staff_id" 
+                                           placeholder="Enter staff ID" required>
                                 </div>
+                                
                                 <div class="mb-3">
                                     <label for="first_name" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" 
+                                           placeholder="Enter first name" required>
                                 </div>
+                                
                                 <div class="mb-3">
                                     <label for="last_name" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" 
+                                           placeholder="Enter last name" required>
                                 </div>
 
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Add Staff Member</button>
+                                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i data-feather="plus" size="16"></i>
+                                        Add Staff Member
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -574,23 +1045,31 @@
                     <!-- Update Staff Modal -->
                     <div id="editModal" class="modal">
                         <div class="modal-content">
-                            <span class="close" id="closeModal">&times;</span>
+                            <button class="close" id="closeModal" type="button">&times;</button>
                             <h2>Edit Staff Member</h2>
                             <form id="editStaffForm" method="POST" action="">
                             @csrf
                                 @method('PUT')
                                 <input type="hidden" id="edit_staff_id" name="id">
+                                
                                 <div class="mb-3">
                                     <label class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="edit_first_name" name="first_name" required>
+                                    <input type="text" class="form-control" id="edit_first_name" name="first_name" 
+                                           placeholder="Enter first name" required>
                                 </div>
+                                
                                 <div class="mb-3">
                                     <label class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="edit_last_name" name="last_name" required>
+                                    <input type="text" class="form-control" id="edit_last_name" name="last_name" 
+                                           placeholder="Enter last name" required>
                                 </div>
                                
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Update Staff</button>
+                                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i data-feather="save" size="16"></i>
+                                        Update Staff
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -600,22 +1079,27 @@
                         document.addEventListener("DOMContentLoaded", function () {
                             var modal = document.getElementById("customModal");
                             var openModalBtn = document.getElementById("openModal");
-                            var closeModalBtn = document.querySelector(".close");
+                            var closeModalBtns = document.querySelectorAll(".close, .close-modal");
 
-                            // Open Modal
+                            // Open Modal with smooth animation
                             openModalBtn.addEventListener("click", function () {
                                 modal.style.display = "flex";
+                                setTimeout(() => modal.classList.add("show"), 10);
                             });
 
-                            // Close Modal
-                            closeModalBtn.addEventListener("click", function () {
-                                modal.style.display = "none";
+                            // Close Modal with smooth animation
+                            closeModalBtns.forEach(btn => {
+                                btn.addEventListener("click", function () {
+                                    modal.classList.remove("show");
+                                    setTimeout(() => modal.style.display = "none", 300);
+                                });
                             });
 
                             // Close if clicked outside the modal
                             window.addEventListener("click", function (event) {
                                 if (event.target === modal) {
-                                    modal.style.display = "none";
+                                    modal.classList.remove("show");
+                                    setTimeout(() => modal.style.display = "none", 300);
                                 }
                             });
                         });
@@ -652,21 +1136,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // ✅ Show the modal
-            document.getElementById("editModal").style.display = "flex";
+            // ✅ Show the modal with animation
+            let editModal = document.getElementById("editModal");
+            editModal.style.display = "flex";
+            setTimeout(() => editModal.classList.add("show"), 10);
         });
     });
 
     // ✅ Close button event listener
-    document.getElementById("closeModal").addEventListener("click", function () {
-        document.getElementById("editModal").style.display = "none";
+    document.querySelectorAll("#editModal .close, #editModal .close-modal").forEach(btn => {
+        btn.addEventListener("click", function () {
+            let editModal = document.getElementById("editModal");
+            editModal.classList.remove("show");
+            setTimeout(() => editModal.style.display = "none", 300);
+        });
     });
 
     // ✅ Close modal when clicking outside of it
     window.addEventListener("click", function (event) {
         let modal = document.getElementById("editModal");
         if (event.target === modal) {
-            modal.style.display = "none";
+            modal.classList.remove("show");
+            setTimeout(() => modal.style.display = "none", 300);
         }
     });
 });
