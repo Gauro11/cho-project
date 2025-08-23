@@ -400,14 +400,34 @@
             const ctx = document.getElementById("trendChart").getContext("2d");
             const chartTitle = document.getElementById("chartTitle");
             const predictionInfo = document.getElementById("predictionInfo");
+            categorySelect.addEventListener("change", function() {
+    const selectedCategory = categorySelect.value;
+
+    if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
+        subCategorySelect.style.display = 'block';
+        subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
+
+        caseTypes[selectedCategory].forEach(caseType => {
+            subCategorySelect.innerHTML +=
+                `<option value="${caseType}">${caseType}</option>`;
+        });
+    } else {
+        subCategorySelect.style.display = 'none';
+        loadChartData(selectedCategory);
+    }
+});
+
 
             // Define case types for morbidity/mortality
            // ✅ Get case types directly from controller (dynamic from DB)
 
 const caseTypes = {
-    category: @json($morbidityCases ?? []),
-    category: @json($mortalityCases ?? [])
+    morbidity: @json($morbidityCases ?? []),
+    mortality: @json($mortalityCases ?? [])
 };
+
+console.log("caseTypes from DB:", caseTypes);
+
 
 
             let chart;
