@@ -403,151 +403,120 @@
 
             // Define case types for morbidity/mortality
            // ✅ Get case types directly from controller (dynamic from DB)
-const caseTypes = {
-    morbidity: @json($morbidityCases ?? []),
-    mortality: @json($mortalityCases ?? [])
-};
+console.log("Trends script loaded...");
 
-console.log("Loaded caseTypes from DB:", caseTypes);
+let chart;
 
+// Initialize the chart
+function initChart() {
+    if (chart) {
+        chart.destroy();
+    }
 
-            let chart;
-
-            // Initialize the chart
-            function initChart() {
-                if (chart) {
-                    chart.destroy();
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Historical Data',
+                    data: [],
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    color: 'white',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Prediction',
+                    data: [],
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
                 }
-
-                chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets: [{
-                                label: 'Historical Data',
-                                data: [],
-                                borderColor: '#007bff',
-                                backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                                color: 'white',
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.4
-                            },
-                            {
-                                label: 'Prediction',
-                                data: [],
-                                borderColor: '#ff6384',
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                fill: false,
-                                tension: 0.4
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#333' },
+                    title: { display: true, text: 'Count', color: '#333' }
+                },
+                x: {
+                    ticks: { color: '#333' },
+                    title: { display: true, text: 'Time Period', color: '#333' }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#333',
+                        font: { size: 14, weight: 'bold' }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y;
                             }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: '#333' // ✅ Change Y-axis values to dark
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Count',
-                                    color: '#333'
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    color: '#333' // ✅ Change X-axis values to dark
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Time Period',
-                                    color: '#333'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: {
-                                    color: '#333', // Changes the font color of "Historical Data" and "Prediction"
-                                    font: {
-                                        size: 14, // Adjust font size if needed
-                                        weight: 'bold' // Makes text bold if required
-                                    }
-                                }
-                            },
-                            annotation: {
-                                annotations: {
-                                    line1: {
-                                        type: 'line',
-                                        yMin: 0,
-                                        yMax: 0,
-                                        borderColor: 'rgb(255, 99, 132)',
-                                        borderWidth: 2,
-                                        borderDash: [5, 5],
-                                        label: {
-                                            content: 'Prediction Start',
-                                            enabled: true,
-                                            position: 'right',
-                                            color: '#333'
-                                        }
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.y !== null) {
-                                            label += context.parsed.y;
-                                        }
-                                        return label;
-                                    }
-                                }
-                            }
+                            return label;
                         }
                     }
-                });
+                }
             }
+        }
+    });
+}
 
-            // Initialize the chart on page load
-            initChart();
+// Initialize chart on page load
+initChart();
 
-            // Show/hide sub-category based on main category
-            categorySelect.addEventListener("change", function() {
-                const selectedCategory = categorySelect.value;
+// 📌 Populate sub-category dynamically
+categorySelect.addEventListener("change", function () {
+    const selectedCategory = categorySelect.value;
 
-                if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
-                    subCategorySelect.style.display = 'block';
-                    subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
+    if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
+        subCategorySelect.style.display = 'block';
+        subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
 
-                    caseTypes[selectedCategory].forEach(caseType => {
-                        subCategorySelect.innerHTML +=
-                            `<option value="${caseType}">${caseType}</option>`;
-                    });
-                } else {
-                    subCategorySelect.style.display = 'none';
-                    loadChartData(selectedCategory);
-                }
-            });
+        // 🔹 Fetch from Laravel API instead of static JS
+        fetch(`/trends/cases/${selectedCategory}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("Fetched case types:", data);
 
-            // Handle sub-category selection
-            subCategorySelect.addEventListener("change", function() {
-                const selectedCategory = categorySelect.value;
-                const selectedSubCategory = subCategorySelect.value;
+                data.forEach(caseType => {
+                    subCategorySelect.innerHTML +=
+                        `<option value="${caseType}">${caseType}</option>`;
+                });
+            })
+            .catch(err => console.error("Error fetching case types:", err));
+    } else {
+        subCategorySelect.style.display = 'none';
+        loadChartData(selectedCategory);
+    }
+});
 
-                if (selectedSubCategory) {
-                    loadChartData(selectedCategory, selectedSubCategory);
-                }
-            });
+// Handle sub-category selection
+subCategorySelect.addEventListener("change", function () {
+    const selectedCategory = categorySelect.value;
+    const selectedSubCategory = subCategorySelect.value;
+
+    if (selectedSubCategory) {
+        loadChartData(selectedCategory, selectedSubCategory);
+    }
+});
+
 
             // Function to load chart data based on category
             async function loadChartData(category, subCategory = null) {
@@ -560,7 +529,7 @@ console.log("Loaded caseTypes from DB:", caseTypes);
                     chart.update();
 
                     // Fetch data from server
-                    let url = `trends.data${category}`;
+                    let url = `/public/api/trend-data/${category}`;
                     if (subCategory) {
                         url += `?sub_category=${encodeURIComponent(subCategory)}`;
                     }

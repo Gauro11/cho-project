@@ -48,9 +48,7 @@ Route::get('/public/routes', function() {
 
 
 
-
-Route::get('/trends', [TrendsController::class, 'index'])->name('trends.index');
-Route::get('/get-trend-data', [TrendsController::class, 'getTrendData'])->name('trends.data');
+Route::get('/trends/cases/{category}', [TrendsController::class, 'getCases']);
 
 
 
