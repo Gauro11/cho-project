@@ -10,6 +10,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TrendsController;
 
 // ✅ Root route to fix 404 on http://127.0.0.1:8000/
 Route::get('/', function () {
@@ -46,6 +47,10 @@ Route::get('/public/routes', function() {
 
 
 
+
+
+Route::get('/trends', [TrendsController::class, 'index'])->name('trends.index');
+Route::get('/get-trend-data', [TrendsController::class, 'getTrendData'])->name('trends.data');
 
 
 
