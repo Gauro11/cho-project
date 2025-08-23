@@ -20,12 +20,15 @@ class StaffController extends Controller
    
     
     
-public function index()
+public function index(Request $request)
 {
     if (Auth::check()) {
         $usertype = Auth::user()->usertype;
 
         if ($usertype == 'user' || $usertype == 'staff') {
+            // Fetch staff for the table
+            $staff = DB::table('staff')->paginate(10); // Adjust table name if different
+
             $barangays = DB::table('population_statistics_management')->get();
 
             $morbidityCases = DB::table('morbidity_mortality_management')
@@ -40,28 +43,22 @@ public function index()
 
             $immunizationData = DB::table('immunization_management')->get();
 
-            return view('staff.index', compact('morbidityCases', 'barangays', 'mortalityCases', 'vitalStatisticsData', 'immunizationData'));
-        } elseif ($usertype == 'mortality and morbidity records manager') {
-            $morbidityCases = DB::table('morbidity_mortality_management')
-                ->where('category', 'morbidity')
-                ->get();
-
-            $mortalityCases = DB::table('morbidity_mortality_management')
-                ->where('category', 'mortality')
-                ->get();
-
-            return view('morbiditymortality.index', compact('morbidityCases', 'mortalityCases'));
-        } elseif ($usertype == 'vital statistics records manager') {
-            $vitalStatisticsData = DB::table('vital_statistics_management')->get();
-
-            return view('vitalstatistics.index', compact('vitalStatisticsData'));
-        } else {
-            return redirect()->back()->withErrors(['error' => 'User type not recognized.']);
+            return view('staff.index', compact(
+                'staff', // <- pass staff here
+                'morbidityCases',
+                'barangays',
+                'mortalityCases',
+                'vitalStatisticsData',
+                'immunizationData'
+            ));
         }
+
+        // ... other usertype checks
     } else {
         return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
     }
 }
+
 
 
     
