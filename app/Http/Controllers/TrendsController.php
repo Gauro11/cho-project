@@ -8,15 +8,41 @@ use App\Models\MorbidityMortalityManagement;
 
 class TrendsController extends Controller
 {
-  public function getCases($category)
+   public function index()
 {
-    $cases = DB::table('morbidity_mortality_management')
-        ->where('category', $category)
+    $morbidityCases = DB::table('morbidity_mortality_management')
+        ->where('category', 'morbidity')
         ->distinct()
-        ->pluck('case_name');
+        ->pluck('case_name')
+        ->toArray();   // ✅ make it an array
 
-    return response()->json($cases);
+    $mortalityCases = DB::table('morbidity_mortality_management')
+        ->where('category', 'mortality')
+        ->distinct()
+        ->pluck('case_name')
+        ->toArray();   // ✅ make it an array
+
+    return view('staff.trends', compact('morbidityCases', 'mortalityCases'));
 }
 
+
+   public function getTrendData(Request $request)
+{
+    $category = $request->get('category'); // morbidity or mortality
+    $caseName = $request->get('case_name');
+
+    $data = DB::table('morbidity_mortality_management')
+        ->selectRaw('`date` as date, SUM(male_count + female_count) as total')
+        ->where('category', $category)
+        ->where('case_name', $caseName)
+        ->groupBy('date')
+        ->orderBy('date')
+        ->get();
+
+    return response()->json([
+        'labels' => $data->pluck('date'),
+        'values' => $data->pluck('total'),
+    ]);
+}
 
 }
