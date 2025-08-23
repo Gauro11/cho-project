@@ -9,9 +9,16 @@ class TrendsController extends Controller
 {
     public function index()
     {
-        // Get distinct case names from both tables
-        $morbidityCases = DB::table('morbidity')->distinct()->pluck('case_name');
-        $mortalityCases = DB::table('mortality')->distinct()->pluck('case_name');
+        // Fetch distinct cases per category from your single table
+        $morbidityCases = DB::table('morbidity_mortality_management')
+            ->where('category', 'morbidity')
+            ->distinct()
+            ->pluck('case_name');
+
+        $mortalityCases = DB::table('morbidity_mortality_management')
+            ->where('category', 'mortality')
+            ->distinct()
+            ->pluck('case_name');
 
         return view('staff.trends', compact('morbidityCases', 'mortalityCases'));
     }
@@ -21,10 +28,9 @@ class TrendsController extends Controller
         $category = $request->get('category'); // morbidity or mortality
         $caseName = $request->get('case_name');
 
-        $table = $category === 'morbidity' ? 'morbidity' : 'mortality';
-
-        $data = DB::table($table)
+        $data = DB::table('morbidity_mortality_management')
             ->selectRaw('DATE(date) as date, SUM(male_count + female_count) as total')
+            ->where('category', $category)
             ->where('case_name', $caseName)
             ->groupBy('date')
             ->orderBy('date')
