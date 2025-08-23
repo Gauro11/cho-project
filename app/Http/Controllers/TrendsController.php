@@ -48,6 +48,23 @@ class TrendsController extends Controller
     ]);
 }
 
+public function getPopulationData()
+{
+    try {
+        $data = $this->getPopulationStatisticsData();
+
+        return response()->json([
+            'success' => true,
+            'historical' => $data,
+            'prediction' => null
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
 
 
 

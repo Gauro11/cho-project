@@ -397,15 +397,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Initialize the chart
     function initChart() {
-        if (chart) {
-            chart.destroy();
-        }
+        if (chart) chart.destroy();
 
         chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: [],
-                datasets: [{
+                datasets: [
+                    {
                         label: 'Historical Data',
                         data: [],
                         borderColor: '#007bff',
@@ -500,9 +499,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 subCategorySelect.innerHTML = '<option value="">Error loading cases</option>';
             }
         } else {
-            // For population or other categories without sub-categories
+            // Population, Vital, Immunization -> no subcategory
             subCategorySelect.style.display = 'none';
-            loadChartData(selectedCategory); // <-- population loads here
+            loadChartData(selectedCategory);
         }
     });
 
@@ -516,7 +515,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Function to load chart data
+    // Unified function to load chart data
     async function loadChartData(category, subCategory = null) {
         try {
             chartTitle.textContent = `Loading ${category} data...`;
@@ -535,12 +534,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const formatDate = (dateString) => {
                 if (!dateString) return 'Unknown';
-                let date;
-                if (dateString.includes('-')) date = new Date(dateString);
-                else if (dateString.includes('/')) date = new Date(dateString);
-                else if (typeof dateString === 'number') date = new Date(dateString * 1000);
-                else date = new Date(dateString);
-                if (isNaN(date.getTime())) return dateString;
+                let date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString; // fallback for "2020", "2021"
                 return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
             };
 
@@ -581,6 +576,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+
 
 </body>
 
