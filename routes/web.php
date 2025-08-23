@@ -49,13 +49,8 @@ Route::get('/public/routes', function() {
 
 
 
-
 Route::get('/trends', [TrendsController::class, 'index'])->name('trends.index');
-
-// Fix the route to match what JavaScript is calling
-Route::get('/public/api/trend-data/{category}', [TrendsController::class, 'getTrendData'])
-    ->name('trends.data')
-    ->where('category', 'morbidity|mortality|population_statistics');
+Route::get('/get-trend-data', [TrendsController::class, 'getTrendData'])->name('trends.data');
 
 
 
