@@ -66,14 +66,9 @@ Route::put('/data/update', [AdminController::class, 'update_data'])->name('data.
 Route::delete('/data/{id}', [AdminController::class, 'delete_data'])->name('data.destroy');
 
 // Staff Management
-// Route::post('/staff/store', [AdminController::class, 'create_staff'])->name('staff.store');
-// Route::put('/staff/update/{id}', [AdminController::class, 'update'])->name('staff.update');
-// Route::delete('/staff/{id}', [AdminController::class, 'delete_staff'])->name('staff.destroy');
-  Route::get('/', [StaffController::class, 'index'])->name('staff.index');
-    Route::post('/store', [StaffController::class, 'store'])->name('staff.store');
-    Route::put('/update/{id}', [StaffController::class, 'update'])->name('staff.update');
-    Route::delete('/{id}', [StaffController::class, 'destroy'])->name('staff.destroy');
-
+Route::post('/staff/store', [AdminController::class, 'create_staff'])->name('staff.store');
+Route::put('/staff/update/{id}', [AdminController::class, 'update'])->name('staff.update');
+Route::delete('/staff/{id}', [AdminController::class, 'delete_staff'])->name('staff.destroy');
 
 // Category and Year Management
 Route::post('/categories/store', [AdminController::class, 'create_category'])->name('categories.store');
