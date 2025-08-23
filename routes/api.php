@@ -12,59 +12,59 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // 📌 Only use ONE version of this route
-// Route::get('/trend-data/{category}', function ($category) {
-//     try {
-//         $subCategory = request('sub_category');
+Route::get('/trend-data/{category}', function ($category) {
+    try {
+        $subCategory = request('sub_category');
 
-//         $historicalData = [];
-//         $predictionData = [];
+        $historicalData = [];
+        $predictionData = [];
 
-//         switch ($category) {
-//             case 'morbidity':
-//             case 'mortality':
-//                 if (!$subCategory) {
-//                     return response()->json([
-//                         'success' => false,
-//                         'message' => 'Sub-category required for morbidity/mortality'
-//                     ]);
-//                 }
-//                 $historicalData = getMorbidityMortalityData($category, $subCategory);
-//                 break;
+        switch ($category) {
+            case 'morbidity':
+            case 'mortality':
+                if (!$subCategory) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Sub-category required for morbidity/mortality'
+                    ]);
+                }
+                $historicalData = getMorbidityMortalityData($category, $subCategory);
+                break;
 
-//             case 'vital_statistics':
-//                 $historicalData = getVitalStatisticsData();
-//                 break;
+            case 'vital_statistics':
+                $historicalData = getVitalStatisticsData();
+                break;
 
-//             case 'population_statistics':
-//                 $historicalData = getPopulationStatisticsData();
-//                 break;
+            case 'population_statistics':
+                $historicalData = getPopulationStatisticsData();
+                break;
 
-//             case 'immunization':
-//                 $historicalData = getImmunizationData();
-//                 break;
+            case 'immunization':
+                $historicalData = getImmunizationData();
+                break;
 
-//             default:
-//                 return response()->json([
-//                     'success' => false,
-//                     'message' => 'Invalid category'
-//                 ]);
-//         }
+            default:
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid category'
+                ]);
+        }
 
-//         $predictionData = generatePrediction($historicalData['values']);
+        $predictionData = generatePrediction($historicalData['values']);
 
-//         return response()->json([
-//             'success' => true,
-//             'historical' => $historicalData,
-//             'prediction' => $predictionData
-//         ]);
+        return response()->json([
+            'success' => true,
+            'historical' => $historicalData,
+            'prediction' => $predictionData
+        ]);
 
-//     } catch (\Exception $e) {
-//         return response()->json([
-//             'success' => false,
-//             'message' => $e->getMessage()
-//         ]);
-//     }
-// });
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+});
 
 
 // -------------------------------------------

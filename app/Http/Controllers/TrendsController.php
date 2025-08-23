@@ -48,16 +48,6 @@ class TrendsController extends Controller
     ]);
 }
 
-public function getPopulationStatisticsData() {
-    $data = DB::table('population_statistics')
-              ->orderBy('year', 'asc')
-              ->get(['year', 'population']);
-
-    return [
-        'labels' => $data->pluck('year')->toArray(),
-        'values' => $data->pluck('population')->toArray()
-    ];
-}
 
 
 
