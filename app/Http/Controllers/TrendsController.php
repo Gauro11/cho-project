@@ -14,16 +14,17 @@ class TrendsController extends Controller
         ->where('category', 'morbidity')
         ->distinct()
         ->pluck('case_name')
-        ->toArray();   // ✅ make it an array
+        ->toArray();
 
     $mortalityCases = DB::table('morbidity_mortality_management')
         ->where('category', 'mortality')
         ->distinct()
         ->pluck('case_name')
-        ->toArray();   // ✅ make it an array
+        ->toArray();
 
     return view('staff.trends', compact('morbidityCases', 'mortalityCases'));
 }
+
 
 
    public function getTrendData(Request $request)
