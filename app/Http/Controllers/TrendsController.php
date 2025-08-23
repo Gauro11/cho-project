@@ -7,23 +7,23 @@ use Illuminate\Support\Facades\DB;
 
 class TrendsController extends Controller
 {
-    public function index()
-    {
-       $morbidityCases = DB::table('morbidity_mortality_management')
-    ->where('category', 'morbidity')
-    ->distinct()
-    ->pluck('case_name')
-    ->toArray();
+   public function index()
+{
+    $morbidityCases = DB::table('morbidity_mortality_management')
+        ->where('category', 'morbidity')
+        ->distinct()
+        ->pluck('case_name')
+        ->toArray();   // ✅ make it an array
 
-$mortalityCases = DB::table('morbidity_mortality_management')
-    ->where('category', 'mortality')
-    ->distinct()
-    ->pluck('case_name')
-    ->toArray();
+    $mortalityCases = DB::table('morbidity_mortality_management')
+        ->where('category', 'mortality')
+        ->distinct()
+        ->pluck('case_name')
+        ->toArray();   // ✅ make it an array
 
-return view('staff.trends', compact('morbidityCases', 'mortalityCases'));
+    return view('staff.trends', compact('morbidityCases', 'mortalityCases'));
+}
 
-    }
 
    public function getTrendData(Request $request)
 {
