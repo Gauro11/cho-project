@@ -10,19 +10,18 @@ class TrendsController extends Controller
 {
    public function index()
 {
-    $morbidityCases = DB::table('morbidity_mortality_management')
-        ->where('category', 'morbidity')
-        ->distinct()
-        ->pluck('case_name')
-        ->toArray();
+   $morbidityCases = DB::table('morbidity_mortality_management')
+    ->whereRaw('LOWER(category) = ?', ['morbidity'])
+    ->distinct()
+    ->pluck('case_name')
+    ->toArray();
 
-    $mortalityCases = DB::table('morbidity_mortality_management')
-        ->where('category', 'mortality')
-        ->distinct()
-        ->pluck('case_name')
-        ->toArray();
+$mortalityCases = DB::table('morbidity_mortality_management')
+    ->whereRaw('LOWER(category) = ?', ['mortality'])
+    ->distinct()
+    ->pluck('case_name')
+    ->toArray();
 
-    return view('staff.trends', compact('morbidityCases', 'mortalityCases'));
 }
 
 
