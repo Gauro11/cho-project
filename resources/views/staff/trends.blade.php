@@ -533,7 +533,7 @@ document.addEventListener("DOMContentLoaded", function() {
             chart.data.datasets[1].data = [];
             chart.update();
 
-            let url = `/public/api/trend-data/${category}`;
+            let url = `/api/trend-data/${category}`; // remove /public
             if (subCategory) url += `?sub_category=${encodeURIComponent(subCategory)}`;
 
             const response = await fetch(url);
