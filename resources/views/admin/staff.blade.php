@@ -8,105 +8,472 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
 <style>
-            .highlight {
-        background-color: yellow;
-        font-weight: bold;
+    :root {
+        --primary-color: #667eea;
+        --primary-dark: #5a67d8;
+        --secondary-color: #764ba2;
+        --accent-color: #f093fb;
+        --success-color: #48bb78;
+        --warning-color: #ed8936;
+        --danger-color: #f56565;
+        --dark-color: #2d3748;
+        --light-gray: #f7fafc;
+        --border-color: #e2e8f0;
+        --text-primary: #2d3748;
+        --text-secondary: #718096;
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
-.custom-pagination {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    border-radius: 5px;
-    background: #f8f9fa;
-    padding: 8px 12px;
-}
 
-.custom-pagination .page-item {
-    margin: 0 5px;
-}
+    * {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-.custom-pagination .page-link {
-    color: #000957;
-    padding: 8px 12px;
-    border: 1px solid #000957;
-    border-radius: 5px;
-    transition: 0.3s;
-    text-decoration: none;
-}
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
 
-.custom-pagination .page-item.active .page-link,
-.custom-pagination .page-link:hover {
-    background-color: #000957;
-    color: white;
-}
+    .highlight {
+        background: var(--gradient-accent);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
 
-.custom-pagination .disabled .page-link {
-    color: #ccc;
-    pointer-events: none;
-    border: 1px solid #ccc;
-}
+    .custom-pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 8px 12px;
+        box-shadow: var(--shadow-sm);
+    }
 
+    .custom-pagination .page-item {
+        margin: 0 3px;
+    }
+
+    .custom-pagination .page-link {
+        color: var(--primary-color);
+        padding: 10px 14px;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-weight: 500;
+        background: rgba(255, 255, 255, 0.7);
+    }
+
+    .custom-pagination .page-item.active .page-link,
+    .custom-pagination .page-link:hover {
+        background: var(--gradient-primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .custom-pagination .disabled .page-link {
+        color: var(--text-secondary);
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
+    .half-width {
+        width: 48%;
+    }
+
+    .input-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 4%;
+    }
+
+    .save-button {
+        margin-top: 20px;
+    }
+
+    /* Modern Page Header */
+    .page-header {
+        background: var(--gradient-primary);
+        padding: 2rem 0;
+        margin: -1rem -1rem 2rem -1rem;
+        border-radius: 0 0 24px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.1"><circle cx="30" cy="30" r="4"/></g></svg>');
+        opacity: 0.3;
+    }
+
+    .page-header h1 {
+        color: white !important;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Modern Card Design */
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .card-body {
+        padding: 2rem;
+        background: var(--gradient-primary);
+        position: relative;
+    }
+
+    /* Modern Toolbar */
+    .toolbar-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .toolbar-divider {
+        width: 2px;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+    }
+
+    .icon-button {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .icon-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .icon-button i {
+        color: white !important;
+    }
+
+    /* Modern Search Input */
+    .modern-search {
+        position: relative;
+        min-width: 300px;
+    }
+
+    .modern-search .input-group {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .modern-search .input-group:focus-within {
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: var(--shadow-md);
+    }
+
+    .modern-search .input-group-text {
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        padding: 0.75rem 1rem;
+    }
+
+    .modern-search .form-control {
+        border: none;
+        background: transparent;
+        color: var(--text-primary);
+        font-weight: 500;
+        padding: 0.75rem 1rem;
+    }
+
+    .modern-search .form-control:focus {
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .modern-search .form-control::placeholder {
+        color: var(--text-secondary);
+        font-weight: 400;
+    }
+
+    /* Modal Updates */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { 
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .modal-content {
+        background: white;
+        padding: 2rem;
+        width: 500px;
+        max-width: 90vw;
+        border-radius: 24px;
+        text-align: left;
+        position: relative;
+        box-shadow: var(--shadow-xl);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: slideIn 0.3s ease;
+    }
+
+    .modal-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: var(--gradient-primary);
+        border-radius: 24px 24px 0 0;
+    }
+
+    .modal-content h2 {
+        color: var(--text-primary);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    .close {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(248, 113, 113, 0.1);
+        color: var(--danger-color);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.3s ease;
+    }
+
+    .close:hover {
+        background: var(--danger-color);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    /* Modern Form Elements */
+    .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        background: rgba(247, 250, 252, 0.5);
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        gap: 1rem;
+    }
+
+    /* Modern Buttons */
+    .btn {
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary {
+        background: var(--gradient-primary);
+        color: white;
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+        color: white;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        color: white;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+        color: white;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .toolbar-section {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
         
-
-
-
-            
-    
-        .half-width {
-            width: 48%;
-        }
-
-        .input-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 4%;
-        }
-
-        .save-button {
-            margin-top: 20px;
-        }
-
-        /* Modal Background */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
+        .modern-search {
+            min-width: 250px;
+            order: 3;
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
         }
-
-        /* Modal Content */
+        
         .modal-content {
-            background-color: white;
-            padding: 20px;
-            width: 400px;
-            border-radius: 10px;
-            text-align: left;
-            position: relative;
-            border: 2px solid blue;
+            width: 95vw;
+            padding: 1.5rem;
         }
+        
+        .card-body {
+            padding: 1rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+        }
+    }
 
-        /* Close Button */
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 20px;
-            cursor: pointer;
-        }
+    /* Animation for icons */
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
 
-        /* Modal Footer */
-        .modal-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-    </style>
+    .icon-button:hover i {
+        animation: pulse 0.6s ease-in-out;
+    }
+
+    /* Loading states */
+    .btn.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .btn.loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
 </head>
 
 <body>
@@ -118,51 +485,57 @@
             <main class="content">
                 <div class="container-fluid p-0">
 
-                    <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <h1 style="color:#000957;" class="h3 mb-3">Staff Management</h1>
-                        
+                    <div class="page-header">
+                        <div class="container-fluid">
+                            <h1 class="h3 mb-0">Staff Management</h1>
+                        </div>
                     </div>
 
-                    <br><br>
                     <div class="col-12 col-lg-12">
                         <div class="card">
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <!-- Settings Icon (White Color) -->
-                                    <i id="openModal" data-feather="plus" style="color: white; cursor: pointer;"></i>
-
-                                    <!-- Vertical Bar Separator -->
-                                    <span style="color: white; font-weight: bold;">|</span>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white"><i data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search" class="form-control"
-                                            placeholder="Search..." style="background-color: white; color: black;">
+                            <div class="card-body">
+                                <div class="toolbar-section">
+                                    <!-- Add Staff Button -->
+                                    <div class="icon-button" id="openModal" title="Add New Staff">
+                                        <i data-feather="plus"></i>
                                     </div>
 
-                                    <span style="color: white; font-weight: bold;">|</span>
+                                    <div class="toolbar-divider"></div>
 
-                                    <!-- Search Field with Icon (Next to the Separator) -->
-                                    
+                                    <!-- Search Field -->
+                                    <div class="modern-search">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i data-feather="search"></i></span>
+                                            <input type="text" id="searchInput" name="search" class="form-control"
+                                                placeholder="Search staff members...">
+                                        </div>
+                                    </div>
+
+                                    <div class="toolbar-divider"></div>
                                 </div>
 
-                                <!-- Pagination + Download Icon on the Right -->
-                                <div class="d-flex align-items-center gap-2">
-                                    <!-- Pagination (Smaller Size) -->
+                                <!-- Action Buttons on the Right -->
+                                <div class="toolbar-section">
+                                    <!-- Print Button -->
+                                    <div class="icon-button" title="Print">
+                                        <i data-feather="printer"></i>
+                                    </div>
 
-                                    <!-- Download Icon -->
-                                    <i data-feather="printer" style="color: white;"></i>
-                                    <i data-feather="download" style="color: white;"></i>
+                                    <!-- Download Button -->
+                                    <div class="icon-button" title="Download">
+                                        <i data-feather="download"></i>
+                                    </div>
 
+                                    <div class="toolbar-divider"></div>
 
-                                    <span style="color: white; font-weight: bold;">|</span>
-
-                                    <i data-feather="maximize-2" style="color: white;"></i>
-
+                                    <!-- Expand Button -->
+                                    <div class="icon-button" title="Full Screen">
+                                        <i data-feather="maximize-2"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
 
                     <!-- Initialize Feather Icons -->
                     <script>
@@ -173,7 +546,7 @@
                     <div id="customModal" class="modal">
                         <div class="modal-content">
                             <span class="close">&times;</span>
-                            <h2>Add New Staff</h2>
+                            <h2>Add New Staff Member</h2>
                             <form action="{{ route('staff.store') }}" method="POST">
                                 @csrf
                                 <input type="hidden" id="edit_staff_id" name="id">
@@ -192,7 +565,7 @@
                                 </div>
 
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Add New Staff</button>
+                                    <button type="submit" class="btn btn-primary">Add Staff Member</button>
                                 </div>
                             </form>
                         </div>
@@ -202,7 +575,7 @@
                     <div id="editModal" class="modal">
                         <div class="modal-content">
                             <span class="close" id="closeModal">&times;</span>
-                            <h2>Edit Staff</h2>
+                            <h2>Edit Staff Member</h2>
                             <form id="editStaffForm" method="POST" action="">
                             @csrf
                                 @method('PUT')
@@ -246,7 +619,6 @@
                                 }
                             });
                         });
-
                     </script>
 
                <script>
@@ -300,7 +672,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".delete-button").forEach(button => {
@@ -333,7 +704,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     });
-
 </script>
 
     <script>
@@ -367,9 +737,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
     </script>
-
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -402,14 +770,12 @@ document.addEventListener("DOMContentLoaded", function () {
         row.style.display = found ? "" : "none";
     });
 });
-
 </script>
 
                 </div>
             </main>
         </div>
     </div>
-
 
     @if(session('success'))
         <script>
