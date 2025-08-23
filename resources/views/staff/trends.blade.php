@@ -405,9 +405,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Initialize the chart
     function initChart() {
-        if (chart) {
-            chart.destroy();
-        }
+        if (chart) chart.destroy();
 
         chart = new Chart(ctx, {
             type: 'line',
@@ -418,7 +416,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         data: [],
                         borderColor: '#007bff',
                         backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                        color: 'white',
                         borderWidth: 2,
                         fill: true,
                         tension: 0.4
@@ -439,20 +436,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: '#333' },
-                        title: { display: true, text: 'Count', color: '#333' }
-                    },
-                    x: {
-                        ticks: { color: '#333' },
-                        title: { display: true, text: 'Time Period', color: '#333' }
-                    }
+                    y: { beginAtZero: true, ticks: { color: '#333' }, title: { display: true, text: 'Count', color: '#333' } },
+                    x: { ticks: { color: '#333' }, title: { display: true, text: 'Time Period', color: '#333' } }
                 },
                 plugins: {
-                    legend: {
-                        labels: { color: '#333', font: { size: 14, weight: 'bold' } }
-                    },
+                    legend: { labels: { color: '#333', font: { size: 14, weight: 'bold' } } },
                     annotation: {
                         annotations: {
                             line1: {
@@ -483,11 +471,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     initChart();
 
-    // Category change handler
+    // CATEGORY CHANGE
     categorySelect.addEventListener("change", async function() {
         const selectedCategory = categorySelect.value;
 
         if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
+            // Show sub-category select
             subCategorySelect.style.display = 'block';
             subCategorySelect.innerHTML = '<option value="">Loading cases...</option>';
 
@@ -508,13 +497,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 subCategorySelect.innerHTML = '<option value="">Error loading cases</option>';
             }
         } else {
-            // For population or other categories without sub-categories
+            // Population or other categories without sub-categories
             subCategorySelect.style.display = 'none';
             loadChartData(selectedCategory); // <-- population loads here
         }
     });
 
-    // Sub-category change handler (only for morbidity/mortality)
+    // SUB-CATEGORY CHANGE
     subCategorySelect.addEventListener("change", function() {
         const selectedCategory = categorySelect.value;
         const selectedSubCategory = subCategorySelect.value;
@@ -524,7 +513,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Function to load chart data
+    // LOAD CHART DATA
     async function loadChartData(category, subCategory = null) {
         try {
             chartTitle.textContent = `Loading ${category} data...`;
@@ -533,7 +522,8 @@ document.addEventListener("DOMContentLoaded", function() {
             chart.data.datasets[1].data = [];
             chart.update();
 
-            let url = `/public/api/trend-data/${category}`;
+            // Fix URL: population API might not have /public
+            let url = category === "population" ? `/api/trend-data/${category}` : `/public/api/trend-data/${category}`;
             if (subCategory) url += `?sub_category=${encodeURIComponent(subCategory)}`;
 
             const response = await fetch(url);
@@ -541,13 +531,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (!data.success) throw new Error(data.message || 'Failed to load data');
 
-            const formatDate = (dateString) => {
+            const formatDate = dateString => {
                 if (!dateString) return 'Unknown';
-                let date;
-                if (dateString.includes('-')) date = new Date(dateString);
-                else if (dateString.includes('/')) date = new Date(dateString);
-                else if (typeof dateString === 'number') date = new Date(dateString * 1000);
-                else date = new Date(dateString);
+                let date = typeof dateString === 'number' ? new Date(dateString * 1000) : new Date(dateString);
                 if (isNaN(date.getTime())) return dateString;
                 return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
             };
@@ -562,9 +548,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const formattedPredictionLabels = data.prediction.labels.map(formatDate);
                 const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
                 chart.data.labels = allLabels;
-                chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(
-                    data.prediction.values
-                );
+                chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(data.prediction.values);
                 chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
                 chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
             }
@@ -587,9 +571,12 @@ document.addEventListener("DOMContentLoaded", function() {
             predictionInfo.innerHTML = `Error: ${error.message}`;
         }
     }
+
+    // AUTOMATICALLY LOAD POPULATION ON PAGE LOAD
+    categorySelect.value = 'population';
+    categorySelect.dispatchEvent(new Event('change'));
 });
 </script>
-
 
 
 </body>
