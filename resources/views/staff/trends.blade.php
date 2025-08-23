@@ -393,7 +393,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
 
-    <script>
+   <script>
 document.addEventListener("DOMContentLoaded", function() {
     const categorySelect = document.getElementById("categorySelect");
     const subCategorySelect = document.getElementById("subCategorySelect");
@@ -441,35 +441,17 @@ document.addEventListener("DOMContentLoaded", function() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: {
-                            color: '#333'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Count',
-                            color: '#333'
-                        }
+                        ticks: { color: '#333' },
+                        title: { display: true, text: 'Count', color: '#333' }
                     },
                     x: {
-                        ticks: {
-                            color: '#333'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Time Period',
-                            color: '#333'
-                        }
+                        ticks: { color: '#333' },
+                        title: { display: true, text: 'Time Period', color: '#333' }
                     }
                 },
                 plugins: {
                     legend: {
-                        labels: {
-                            color: '#333',
-                            font: {
-                                size: 14,
-                                weight: 'bold'
-                            }
-                        }
+                        labels: { color: '#333', font: { size: 14, weight: 'bold' } }
                     },
                     annotation: {
                         annotations: {
@@ -480,12 +462,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 borderColor: 'rgb(255, 99, 132)',
                                 borderWidth: 2,
                                 borderDash: [5, 5],
-                                label: {
-                                    content: 'Prediction Start',
-                                    enabled: true,
-                                    position: 'right',
-                                    color: '#333'
-                                }
+                                label: { content: 'Prediction Start', enabled: true, position: 'right', color: '#333' }
                             }
                         }
                     },
@@ -493,12 +470,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         callbacks: {
                             label: function(context) {
                                 let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    label += context.parsed.y;
-                                }
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) label += context.parsed.y;
                                 return label;
                             }
                         }
@@ -508,10 +481,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Initialize the chart on page load
     initChart();
 
-    // Show/hide sub-category based on main category
+    // Category change handler
     categorySelect.addEventListener("change", async function() {
         const selectedCategory = categorySelect.value;
 
@@ -536,87 +508,69 @@ document.addEventListener("DOMContentLoaded", function() {
                 subCategorySelect.innerHTML = '<option value="">Error loading cases</option>';
             }
         } else {
+            // For population or other categories without sub-categories
             subCategorySelect.style.display = 'none';
-            loadChartData(selectedCategory);
+            loadChartData(selectedCategory); // <-- population loads here
         }
     });
 
-    // Handle sub-category selection
+    // Sub-category change handler (only for morbidity/mortality)
     subCategorySelect.addEventListener("change", function() {
         const selectedCategory = categorySelect.value;
         const selectedSubCategory = subCategorySelect.value;
 
-        if (selectedSubCategory) {
+        if ((selectedCategory === "morbidity" || selectedCategory === "mortality") && selectedSubCategory) {
             loadChartData(selectedCategory, selectedSubCategory);
         }
     });
 
-    // Function to load chart data based on category
+    // Function to load chart data
     async function loadChartData(category, subCategory = null) {
         try {
-            // Show loading state
             chartTitle.textContent = `Loading ${category} data...`;
             chart.data.labels = [];
             chart.data.datasets[0].data = [];
             chart.data.datasets[1].data = [];
             chart.update();
 
-            // Fetch data from server
             let url = `/public/api/trend-data/${category}`;
-            if (subCategory) {
-                url += `?sub_category=${encodeURIComponent(subCategory)}`;
-            }
+            if (subCategory) url += `?sub_category=${encodeURIComponent(subCategory)}`;
 
             const response = await fetch(url);
             const data = await response.json();
 
-            if (!data.success) {
-                throw new Error(data.message || 'Failed to load data');
-            }
+            if (!data.success) throw new Error(data.message || 'Failed to load data');
 
-            // Process and format dates properly
             const formatDate = (dateString) => {
                 if (!dateString) return 'Unknown';
                 let date;
-                if (dateString.includes('-')) {
-                    date = new Date(dateString);
-                } else if (dateString.includes('/')) {
-                    date = new Date(dateString);
-                } else if (typeof dateString === 'number') {
-                    date = new Date(dateString * 1000);
-                } else {
-                    date = new Date(dateString);
-                }
-                if (isNaN(date.getTime())) {
-                    console.warn('Invalid date:', dateString);
-                    return dateString;
-                }
+                if (dateString.includes('-')) date = new Date(dateString);
+                else if (dateString.includes('/')) date = new Date(dateString);
+                else if (typeof dateString === 'number') date = new Date(dateString * 1000);
+                else date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString;
                 return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
             };
 
             const formattedHistoricalLabels = data.historical.labels.map(formatDate);
 
-            // Update chart with historical data
             chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis`;
             chart.data.labels = formattedHistoricalLabels;
             chart.data.datasets[0].data = data.historical.values;
 
-            // Update prediction data if available
             if (data.prediction) {
                 const formattedPredictionLabels = data.prediction.labels.map(formatDate);
                 const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
-
                 chart.data.labels = allLabels;
                 chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(
-                    data.prediction.values);
-
+                    data.prediction.values
+                );
                 chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
                 chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
             }
 
             chart.update();
 
-            // Update prediction information
             if (data.prediction) {
                 let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
                 data.prediction.labels.forEach((month, index) => {
@@ -635,6 +589,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+
 
 
 </body>
