@@ -3,2334 +3,928 @@
 
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     @include('staff.css')
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
+<style>
+    :root {
+        --primary-color: #1a202c;
+        --primary-light: #2d3748;
+        --secondary-color: #4a5568;
+        --accent-color: #ed8936;
+        --accent-light: #fbb040;
+        --success-color: #38a169;
+        --warning-color: #d69e2e;
+        --danger-color: #e53e3e;
+        --info-color: #3182ce;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f7fafc;
+        --gray-200: #edf2f7;
+        --gray-300: #e2e8f0;
+        --gray-400: #cbd5e0;
+        --gray-500: #a0aec0;
+        --gray-600: #718096;
+        --gray-700: #4a5568;
+        --gray-800: #2d3748;
+        --gray-900: #1a202c;
+        --border-radius: 16px;
+        --border-radius-sm: 8px;
+        --border-radius-lg: 24px;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-    <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            --warning-gradient: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
-            --dark-bg: #0f0f23;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --shadow-glow: 0 8px 32px rgba(31, 38, 135, 0.37);
-        }
+    * {
+        transition: var(--transition);
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-attachment: fixed;
-            color: var(--text-primary);
-        }
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        line-height: 1.6;
+    }
 
-        .content {
-            padding: 2rem;
-        }
+    .highlight {
+        background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+        color: white;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-weight: 600;
+        box-shadow: var(--shadow-sm);
+    }
 
-        /* Modern Page Title */
-        .page-title {
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            position: relative;
-            animation: fadeInUp 0.8s ease-out;
-        }
+    .custom-pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        border-radius: var(--border-radius);
+        background: var(--white);
+        padding: 6px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--gray-200);
+    }
 
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150px;
-            height: 3px;
-            background: var(--primary-gradient);
-            border-radius: 10px;
-        }
+    .custom-pagination .page-item {
+        margin: 0 2px;
+    }
 
-        /* Modern Glass Cards */
-        .glass-card {
-            background: var(--primary-gradient);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            box-shadow: var(--shadow-glow);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 2rem;
-        }
+    .custom-pagination .page-link {
+        color: var(--gray-600);
+        padding: 8px 12px;
+        border: none;
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
 
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
+    .custom-pagination .page-item.active .page-link,
+    .custom-pagination .page-link:hover {
+        background: var(--primary-color);
+        color: white;
+        box-shadow: var(--shadow-sm);
+    }
 
-        .glass-card:hover::before {
-            left: 100%;
-        }
+    .custom-pagination .disabled .page-link {
+        color: var(--gray-400);
+        pointer-events: none;
+        opacity: 0.6;
+    }
 
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.5);
-        }
+    .half-width {
+        width: 48%;
+    }
 
-        /* Modern Card Body */
+    .input-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 4%;
+    }
+
+    .save-button {
+        margin-top: 20px;
+    }
+
+    /* Clean Header Design */
+    .page-header {
+        background: var(--white);
+        padding: 2.5rem 0;
+        margin-bottom: 2rem;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--gray-200);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
+    }
+
+    .page-header h1 {
+        color: var(--gray-900) !important;
+        font-weight: 800;
+        font-size: 2.25rem;
+        margin: 0;
+        letter-spacing: -0.025em;
+    }
+
+    .page-subtitle {
+        color: var(--gray-600);
+        font-size: 1.125rem;
+        margin-top: 0.5rem;
+        font-weight: 400;
+    }
+
+    /* Sleek Card Design */
+    .card {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+
+    .card-body {
+        padding: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+    }
+
+    /* Modern Toolbar */
+    .toolbar-left, .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .toolbar-group {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--gray-200);
+    }
+
+    .action-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--border-radius-sm);
+        background: var(--gray-100);
+        border: 1px solid var(--gray-200);
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--gray-600);
+    }
+
+    .action-button:hover {
+        background: var(--gray-200);
+        color: var(--gray-800);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .action-button.primary {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .action-button.primary:hover {
+        background: var(--primary-light);
+        border-color: var(--primary-light);
+    }
+
+    .action-button.accent {
+        background: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+    }
+
+    .action-button.accent:hover {
+        background: var(--accent-light);
+        border-color: var(--accent-light);
+    }
+
+    /* Enhanced Search */
+    .search-container {
+        position: relative;
+        min-width: 320px;
+    }
+
+    .search-container .input-group {
+        background: var(--white);
+        border: 1px solid var(--gray-300);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+    .search-container .input-group:focus-within {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgb(237 137 54 / 0.1);
+    }
+
+    .search-container .input-group-text {
+        background: transparent;
+        border: none;
+        color: var(--gray-500);
+        padding: 0.875rem 1rem;
+    }
+
+    .search-container .form-control {
+        border: none;
+        background: transparent;
+        color: var(--gray-900);
+        font-weight: 500;
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .search-container .form-control:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    .search-container .form-control::placeholder {
+        color: var(--gray-500);
+        font-weight: 400;
+    }
+
+    /* Refined Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(26, 32, 44, 0.75);
+        backdrop-filter: blur(12px);
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+        opacity: 1;
+    }
+
+    .modal-content {
+        background: var(--white);
+        padding: 2.5rem;
+        width: 480px;
+        max-width: 90vw;
+        border-radius: var(--border-radius-lg);
+        position: relative;
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--gray-200);
+        transform: scale(0.95) translateY(-20px);
+        transition: transform 0.3s ease;
+    }
+
+    .modal.show .modal-content {
+        transform: scale(1) translateY(0);
+    }
+
+    .modal-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    }
+
+    .modal-content h2 {
+        color: var(--gray-900);
+        font-weight: 700;
+        margin-bottom: 2rem;
+        font-size: 1.5rem;
+        letter-spacing: -0.025em;
+    }
+
+    .close {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--gray-100);
+        color: var(--gray-600);
+        border: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 16px;
+        transition: var(--transition);
+    }
+
+    .close:hover {
+        background: var(--danger-color);
+        color: white;
+        border-color: var(--danger-color);
+        transform: scale(1.05);
+    }
+
+    /* Clean Form Design */
+    .form-label {
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+        display: block;
+    }
+
+    .form-control {
+        border: 1px solid var(--gray-300);
+        border-radius: var(--border-radius-sm);
+        padding: 0.875rem 1rem;
+        font-weight: 500;
+        transition: var(--transition);
+        background: var(--gray-50);
+        width: 100%;
+        font-size: 0.9rem;
+        color: var(--gray-900);
+    }
+
+    .form-control:focus {
+        border-color: var(--accent-color);
+        background: var(--white);
+        box-shadow: 0 0 0 3px rgb(237 137 54 / 0.1);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--gray-500);
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 2rem;
+        gap: 1rem;
+    }
+
+    /* Sophisticated Buttons */
+    .btn {
+        border-radius: var(--border-radius-sm);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: var(--transition);
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.4s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-light);
+        border-color: var(--primary-light);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+        background: var(--gray-100);
+        color: var(--gray-700);
+        border-color: var(--gray-200);
+    }
+
+    .btn-secondary:hover {
+        background: var(--gray-200);
+        color: var(--gray-800);
+    }
+
+    .btn-success {
+        background: var(--success-color);
+        color: white;
+        border-color: var(--success-color);
+    }
+
+    .btn-warning {
+        background: var(--warning-color);
+        color: white;
+        border-color: var(--warning-color);
+    }
+
+    .btn-danger {
+        background: var(--danger-color);
+        color: white;
+        border-color: var(--danger-color);
+    }
+
+    /* Badge System */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .badge-primary {
+        background: rgba(26, 32, 44, 0.1);
+        color: var(--primary-color);
+    }
+
+    .badge-success {
+        background: rgba(56, 161, 105, 0.1);
+        color: var(--success-color);
+    }
+
+    .badge-warning {
+        background: rgba(214, 158, 46, 0.1);
+        color: var(--warning-color);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
         .card-body {
-            padding: 2rem;
-            background: transparent;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1.5rem;
         }
-
-        /* Modern Buttons */
-        .modern-btn {
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 15px;
-            padding: 12px 24px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .modern-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .modern-btn:hover::before {
-            left: 100%;
-        }
-
-        .modern-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-            color: white;
-            text-decoration: none;
-        }
-
-        .modern-btn.btn-success {
-            background: var(--success-gradient);
-            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
-        }
-
-        .modern-btn.btn-success:hover {
-            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.5);
-        }
-
-        .modern-btn.btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-        }
-
-        .modern-btn.btn-primary {
-            background: var(--primary-gradient);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        /* Modern Form Controls */
-        .modern-form-control {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 12px 20px;
-            color: var(--text-primary);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .modern-form-control:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #667eea;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
-            color: var(--text-primary);
-        }
-
-        .modern-form-control::placeholder {
-            color: var(--text-secondary);
-        }
-
-        /* Modern Input Group */
-        .modern-input-group {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-        }
-
-        .modern-input-group .input-group-text {
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-        }
-
-        /* Modern Modal */
-        .modern-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modern-modal-content {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            box-shadow: var(--shadow-glow);
-            padding: 2rem;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .modern-modal-content h2 {
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .modern-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--text-primary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .modern-close:hover {
-            background: var(--secondary-gradient);
-            transform: rotate(90deg);
-        }
-
-        /* Modern Form Labels */
-        .modern-form-label {
-            color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        /* Modern Modal Footer */
-        .modern-modal-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-            gap: 1rem;
-        }
-
-        /* Highlight Search Results */
-        .highlight {
-            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
-            color: #000;
-            font-weight: bold;
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-
-        /* Modern Pagination */
-        .custom-pagination {
-            display: flex;
-            list-style: none;
-            padding: 0;
-            border-radius: 15px;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            padding: 8px 12px;
+        
+        .toolbar-left, .toolbar-right {
             justify-content: center;
         }
-
-        .custom-pagination .page-item {
-            margin: 0 5px;
+        
+        .search-container {
+            min-width: 100%;
         }
-
-        .custom-pagination .page-link {
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            transition: 0.3s;
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .custom-pagination .page-item.active .page-link,
-        .custom-pagination .page-link:hover {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
-            transform: translateY(-2px);
-        }
-
-        .custom-pagination .disabled .page-link {
-            color: var(--text-secondary);
-            pointer-events: none;
-            border: 1px solid var(--text-secondary);
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        /* Modern Table Styles */
-        .modern-table {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid var(--glass-border);
-        }
-
-        .modern-table th {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            padding: 1rem;
-            font-weight: 600;
-        }
-
-        .modern-table td {
-            background: rgba(255, 255, 255, 0.02);
-            border: none;
-            border-bottom: 1px solid var(--glass-border);
-            padding: 1rem;
-            color: var(--text-primary);
-        }
-
-        .modern-table tbody tr:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.01);
-            transition: all 0.3s ease;
-        }
-
-        /* Action Buttons in Table */
-        .action-btn {
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: none;
-            margin: 0 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.8rem;
-        }
-
-        .action-btn.edit {
-            background: var(--warning-gradient);
-            color: white;
-        }
-
-        .action-btn.delete {
-            background: var(--secondary-gradient);
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Separator Styles */
-        .separator {
-            color: var(--text-secondary);
-            font-weight: bold;
-            margin: 0 10px;
-        }
-
-        /* Override original styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
+        
         .modal-content {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            box-shadow: var(--shadow-glow);
+            width: 95vw;
             padding: 2rem;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        .page-header h1 {
+            font-size: 1.875rem;
         }
 
-        .modal-content h2 {
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--text-primary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
+        .toolbar-group {
+            flex-wrap: wrap;
             justify-content: center;
-            transition: all 0.3s ease;
         }
+    }
 
-        .close:hover {
-            background: var(--secondary-gradient);
-            transform: rotate(90deg);
+    @media (max-width: 480px) {
+        .page-header {
+            padding: 2rem 1rem;
         }
-
-        .form-label {
-            color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .form-control {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 12px 20px;
-            color: var(--text-primary);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #667eea;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
-            color: var(--text-primary);
-        }
-
-        .form-control::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-            gap: 1rem;
-        }
-
-        .input-group {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-        }
-
-        .input-group .input-group-text {
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-        }
-
-        /* Style the original button classes to match modern design */
-        .btn {
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 15px;
-            padding: 12px 24px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-success {
-            background: var(--success-gradient);
-            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-            color: white;
-            text-decoration: none;
-        }
-
-        .btn-success:hover {
-            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.5);
-        }
-
-        /* Additional animations for modern alerts */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /*  delete confirmation styles */
-        .modern-confirm-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .modern-confirm-box {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 2rem;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            color: var(--text-primary);
-            box-shadow: var(--shadow-glow);
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        .modern-alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            padding: 1rem 1.5rem;
-            border-radius: 15px;
-            box-shadow: var(--shadow-glow);
-            z-index: 10001;
-            animation: slideInRight 0.3s ease-out;
-            max-width: 300px;
-        }
-
-        /* Media Queries */
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 1.8rem;
-            }
-
-            .modal-content {
-                width: 95%;
-                padding: 1.5rem;
-            }
-
-            .content {
-                padding: 1rem;
-            }
-        }
-
-        @media print {
-
-            .no-print,
-            .pagination {
-                display: none !important;
-            }
-        }
-
-        /* Original CSS preserved */
-        .half-width {
-            width: 48%;
-        }
-
-        .input-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 4%;
-        }
-
-        .save-button {
-            margin-top: 20px;
-        }
-
-        /* File Upload Styling */
-        .file-upload-area {
-            border: 2px dashed var(--glass-border);
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .file-upload-area:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        .file-upload-area.dragover {
-            border-color: #43e97b;
-            background: rgba(67, 233, 123, 0.1);
-            transform: scale(1.02);
-        }
-
-        .file-upload-icon {
-            font-size: 3rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .file-upload-text {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .file-info {
-            background: rgba(67, 233, 123, 0.1);
-            border: 1px solid rgba(67, 233, 123, 0.3);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .file-info.show {
-            display: block;
-        }
-
-        /* Media Queries */
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 1.8rem;
-            }
-
-            .modern-modal-content {
-                width: 95%;
-                padding: 1.5rem;
-            }
-
-            .content {
-                padding: 1rem;
-            }
-        }
-
-        @media print {
-
-            .no-print,
-            .pagination {
-                display: none !important;
-            }
-        }
-
-        /* Modern Download Button */
-        .modern-download-btn {
-            background: var(--success-gradient);
-            border: none;
-            border-radius: 15px;
-            padding: 14px 28px;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .modern-download-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .modern-download-btn:hover::before {
-            left: 100%;
-        }
-
-
-
-        .modern-download-btn:focus {
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-            outline: none;
-        }
-
-        .modern-download-btn i {
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .modern-download-btn:hover i {
-            transform: translateY(-2px);
-        }
-
-        /* Modern Dropdown Menu */
-        .modern-dropdown-menu {
-            background: var(--dark-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-boder);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.4);
-            padding: 12px;
-            margin-top: 8px;
-            min-width: 200px;
-            overflow: hidden;
-            animation: dropdownSlideIn 0.3s ease-out;
-        }
-
-        @keyframes dropdownSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px) scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* Modern download Items */
-        .modern-dropdown-item {
-            color: var(--text-primary) !important;
-            padding: 14px 20px;
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            text-decoration: none;
-            margin-bottom: 4px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .modern-dropdown-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .modern-dropdown-item:hover::before {
-            left: 100%;
-        }
-
-        .modern-dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(5px);
-            color: var(--text-primary) !important;
-            box-shadow: 0 4px 15px rgba(31, 38, 135, 0.2);
-        }
-
-        .modern-dropdown-item:focus {
-            background: rgba(255, 255, 255, 0.2);
-            outline: none;
-            color: var(--text-primary) !important;
-        }
-
-        /* Download Icons */
-        .download-icon {
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .file-csv {
-            color: #43e97b;
-            filter: drop-shadow(0 0 8px rgba(67, 233, 123, 0.3));
-        }
-
-        .file-pdf {
-            color: #f5576c;
-            filter: drop-shadow(0 0 8px rgba(245, 87, 108, 0.3));
-        }
-
-        .modern-dropdown-item:hover .download-icon {
-            transform: scale(1.2);
-        }
-
-        /* Dropdown Arrow Animation */
-        .dropdown-toggle::after {
-            transition: transform 0.3s ease;
-            margin-left: 8px;
-        }
-
-        .dropdown-toggle[aria-expanded="true"]::after {
-            transform: rotate(180deg);
-        }
-
-        /* Custom Scrollbar for Dropdown */
-        .modern-dropdown-menu::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .modern-dropdown-menu::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-
-        .modern-dropdown-menu::-webkit-scrollbar-thumb {
-            background: var(--primary-gradient);
-            border-radius: 10px;
-        }
-
-        .modern-dropdown-menu::-webkit-scrollbar-thumb:hover {
-            background: var(--secondary-gradient);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .modern-download-btn {
-                padding: 12px 20px;
-                font-size: 0.9rem;
-            }
-
-            .modern-dropdown-menu {
-                min-width: 160px;
-            }
-
-            .modern-dropdown-item {
-                padding: 12px 16px;
-            }
-        }
-
-        /* Demo Container */
-        .demo-container {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            box-shadow: var(--shadow-glow);
-            padding: 3rem;
-            text-align: center;
-        }
-
-        .demo-title {
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-            font-size: 2rem;
-            margin-bottom: 2rem;
-        }
-
-
-        .dropdown-menu.show {
-            z-index: 9999 !important;
-            position: absolute !important;
-            top: 100% !important;
-            left: 0 !important;
-            transform: none !important;
-        }
-
-        /* Make sure parent containers don't interfere */
-        .glass-card {
-            overflow: visible !important;
-        }
-
-        /* If inside a table or other container */
-        .table-responsive {
-            overflow: visible !important;
-        }
-
-
-
-        /* Fix for dropdown appearing behind table */
-        .dropdown {
-            position: relative;
-            z-index: 1050;
-            /* Higher than table */
-        }
-
-        .dropdown-menu {
-            z-index: 1055 !important;
-            /* Even higher for the menu */
-            position: absolute !important;
-        }
-
-        /* Ensure dropdown menu appears on top */
-        .modern-dropdown-menu {
-            z-index: 1055 !important;
-            position: absolute !important;
-            top: 100% !important;
-            left: 0 !important;
-            transform: none !important;
-        }
-
-        /* Fix glass card overflow issues */
-        .glass-card {
-            overflow: visible !important;
-
-            position: relative;
-            z-index: 1;
-        }
-
+        
         .card-body {
-            overflow: visible !important;
-            position: relative;
+            padding: 1.5rem;
         }
-
-
-        .table-responsive {
-            overflow: visible !important;
-            /* Allow dropdown to show outside table */
+        
+        .modal-content {
+            padding: 1.5rem;
         }
+    }
 
-        .table-container {
-            overflow-x: auto;
-
-            overflow-y: visible;
-            /* Allow vertical overflow for dropdowns */
+    /* Smooth Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
         }
-
-        /* Ensure table doesn't interfere with dropdowns */
-        .modern-table {
-            position: relative;
-            z-index: 1;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
+    .card {
+        animation: fadeInUp 0.6s ease-out;
+    }
 
-        .content {
-            position: relative;
-            z-index: auto;
-        }
+    .page-header {
+        animation: fadeInUp 0.4s ease-out;
+    }
 
-        .main {
-            position: relative;
-            z-index: auto;
-        }
+    /* Loading State */
+    .btn.loading {
+        pointer-events: none;
+        opacity: 0.7;
+        position: relative;
+    }
 
-        /* Specific fix for your export dropdown */
-        #exportDropdown {
-            z-index: 1050;
-        }
+    .btn.loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
 
-        .dropdown-menu.show {
-            z-index: 1055 !important;
-            position: absolute !important;
-            top: 100% !important;
-            left: 0 !important;
-            right: auto !important;
-            transform: none !important;
-            display: block !important;
-        }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 
-        /* Ensure dropdown parent has proper stacking context */
-        .d-flex.align-items-center.gap-2.flex-wrap {
-            position: relative;
-            z-index: 1050;
-        }
-
-        /* Additional Bootstrap dropdown fixes */
-        .dropdown-toggle::after {
-            vertical-align: middle;
-        }
-
-        /* Fix for mobile responsiveness */
-        @media (max-width: 768px) {
-            .dropdown-menu {
-                position: absolute !important;
-                z-index: 1055 !important;
-                width: auto !important;
-                min-width: 160px !important;
-            }
-        }
-
-        /* Fix for any potential backdrop issues */
-        .dropdown-backdrop {
-            z-index: 1040;
-        }
-
-        /* Ensure proper layering hierarchy */
-        .wrapper {
-            position: relative;
-            z-index: auto;
-        }
-
-        .sidebar {
-            z-index: 1030;
-        }
-
-        .header {
-            z-index: 1020;
-        }
-
-        /* Specific fix for table wrapper if it exists */
-        .table-wrapper,
-        .dataTables_wrapper {
-            overflow: visible !important;
-        }
-
-        /* Fix for any modal that might interfere */
-        .modern-modal {
-            z-index: 1060;
-        }
-
-        /* Ensure button group doesn't clip dropdown */
-        .btn-group {
-            position: relative;
-        }
-
-        .btn-group .dropdown-menu {
-            z-index: 1055 !important;
-        }
-       
-    </style>
+    /* Focus styles for accessibility */
+    .action-button:focus,
+    .btn:focus,
+    .form-control:focus {
+        outline: 2px solid var(--accent-color);
+        outline-offset: 2px;
+    }
+</style>
 </head>
 
 <body>
     <div class="wrapper">
-        @include('staff.sidebar')
+        @include('admin.sidebar')
 
         <div class="main">
             @include('staff.header')
             <main class="content">
                 <div class="container-fluid p-0">
 
-                    <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <h1 class="page-title">Immunization Records</h1>
-                        <div class="d-flex gap-2" style="width: 100%; max-width: 400px;">
-
+                    <div class="page-header">
+                        <div class="container-fluid">
+                            <h1>Staff Management</h1>
+                            <p class="page-subtitle">Manage your team members and their information</p>
                         </div>
                     </div>
 
-                    <br><br>
-
-                    <div class="col-12 col-lg-12 fade-in-up">
-                        <div class="glass-card">
-                            <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <button class="modern-btn btn-success btn-sm" id="openModal">
-                                        ➕ Add New Record
-                                    </button>
-
-
-                                    <button class="modern-btn btn-danger btn-sm" id="deleteAllBtn">
-                                        <i data-feather="trash-2"></i> Delete All
-                                    </button>
-
-                                    
-                                    <style>
-                                        /* Add this to your existing CSS */
-                                        @keyframes pulse {
-
-                                            0%,
-                                            100% {
-                                                transform: scale(1);
-                                            }
-
-                                            50% {
-                                                transform: scale(1.05);
-                                            }
-                                        }
-
-                                        .modern-alert {
-                                            position: fixed;
-                                            top: 20px;
-                                            right: 20px;
-                                            background: var(--card-bg);
-                                            backdrop-filter: blur(16px);
-                                            border: 1px solid var(--glass-border);
-                                            border-radius: 15px;
-                                            padding: 1rem 1.5rem;
-                                            color: var(--text-primary);
-                                            box-shadow: var(--shadow-glow);
-                                            z-index: 10001;
-                                            animation: fadeIn 0.3s ease-out;
-                                            max-width: 400px;
-                                        }
-
-                                        .modern-alert.success {
-                                            border-left: 4px solid #10b981;
-                                        }
-
-                                        .modern-alert.error {
-                                            border-left: 4px solid #ef4444;
-                                        }
-
-                                        .modern-alert.warning {
-                                            border-left: 4px solid #f59e0b;
-                                        }
-                                    </style>
-
-                                    <!-- 3. ADD THIS JAVASCRIPT AT THE END OF YOUR DOCUMENT (before closing </body> tag) -->
-                                    <script>
-                                        // Delete All Functionality - Add this to your existing JavaScript
-                                        document.addEventListener("DOMContentLoaded", function() {
-                                            // Delete All Button Event Listener
-                                            document.getElementById('deleteAllBtn').addEventListener('click', function() {
-                                                const tableBody = document.querySelector('#dataTable tbody');
-                                                const rowCount = tableBody ? tableBody.children.length : 0;
-
-                                                if (rowCount === 0) {
-                                                    showModernAlert("⚠️ Warning", "No data to delete.", "warning");
-                                                    return;
-                                                }
-
-                                                // Create modern confirmation modal
-                                                const confirmOverlay = document.createElement('div');
-                                                confirmOverlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease-out;
-        `;
-
-                                                const confirmBox = document.createElement('div');
-                                                confirmBox.style.cssText = `
-            background: linear-gradient(135deg, #1e1e2f, #2a2a3e);
-            border-radius: 25px;
-            padding: 2.5rem;
-            max-width: 480px;
-            width: 90%;
-            text-align: center;
-            color: #fff;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        `;
-
-                                                confirmBox.innerHTML = `
-            <div style="margin-bottom: 1.5rem;">
-                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #ff4757, #ff3838); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; animation: pulse 2s infinite;">
-                    🗑️
-                </div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.6rem; background: linear-gradient(135deg, #ff4757, #ff6b7a); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Confirm Delete All</h3>
-                <p style="margin-bottom: 2rem; font-size: 1.1rem; color: #ccc; line-height: 1.5;">
-                    This action will permanently delete all <strong>${rowCount} records</strong> from the immunization table. 
-                    <br><br>
-                    <span style="color: #ff6b7a; font-weight: 600;">⚠️ This action cannot be undone!</span>
-                </p>
-            </div>
-            <div style="display: flex; gap: 1rem; justify-content: center;">
-                <button id="cancelDeleteAll" style="background: linear-gradient(135deg, #6c757d, #8a94a6); border: none; border-radius: 15px; padding: 12px 24px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
-                    <span>❌</span> Cancel
-                </button>
-                <button id="confirmDeleteAll" style="background: linear-gradient(135deg, #ff4757, #ff3838); border: none; border-radius: 15px; padding: 12px 24px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);">
-                    <span>🗑️</span> Delete All
-                </button>
-            </div>
-        `;
-
-                                                confirmOverlay.appendChild(confirmBox);
-                                                document.body.appendChild(confirmOverlay);
-
-                                                // Add hover effects
-                                                const cancelBtn = confirmBox.querySelector("#cancelDeleteAll");
-                                                const confirmBtn = confirmBox.querySelector("#confirmDeleteAll");
-
-                                                cancelBtn.addEventListener('mouseover', function() {
-                                                    this.style.transform = 'translateY(-2px)';
-                                                    this.style.boxShadow = '0 6px 20px rgba(108, 117, 125, 0.4)';
-                                                });
-
-                                                cancelBtn.addEventListener('mouseout', function() {
-                                                    this.style.transform = 'translateY(0)';
-                                                    this.style.boxShadow = 'none';
-                                                });
-
-                                                confirmBtn.addEventListener('mouseover', function() {
-                                                    this.style.transform = 'translateY(-2px)';
-                                                    this.style.boxShadow = '0 8px 25px rgba(255, 71, 87, 0.5)';
-                                                });
-
-                                                confirmBtn.addEventListener('mouseout', function() {
-                                                    this.style.transform = 'translateY(0)';
-                                                    this.style.boxShadow = '0 4px 15px rgba(255, 71, 87, 0.3)';
-                                                });
-
-                                                // Cancel action
-                                                cancelBtn.addEventListener("click", () => {
-                                                    confirmOverlay.remove();
-                                                });
-
-                                                // Confirm action - Delete all records
-                                                confirmBtn.addEventListener("click", () => {
-                                                    // Show loading state
-                                                    confirmBtn.innerHTML = '<span>⏳</span> Deleting...';
-                                                    confirmBtn.disabled = true;
-                                                    cancelBtn.disabled = true;
-
-                                                    // Make the delete all request
-                                                    fetch("{{ url('/immunization/delete-all') }}", {
-                                                            method: "DELETE",
-                                                            headers: {
-                                                                "X-CSRF-TOKEN": document.querySelector(
-                                                                    'meta[name="csrf-token"]').content,
-                                                                "Accept": "application/json",
-                                                                "Content-Type": "application/json"
-                                                            }
-                                                        })
-                                                        .then(response => response.json())
-                                                        .then(data => {
-                                                            confirmOverlay.remove();
-                                                            if (data.success) {
-                                                                // Clear the table body
-                                                                tableBody.innerHTML = '';
-
-                                                                // Update pagination info
-                                                                const paginationInfo = document.querySelector(
-                                                                    '.pagination-container p');
-                                                                if (paginationInfo) {
-                                                                    paginationInfo.textContent = 'Showing 0 to 0 of 0 results';
-                                                                }
-
-                                                                // Hide pagination
-                                                                const pagination = document.querySelector('.pagination');
-                                                                if (pagination) {
-                                                                    pagination.style.display = 'none';
-                                                                }
-
-                                                                // Show no data message
-                                                                const tableContainer = document.querySelector(
-                                                                    '#dataTable .card');
-                                                                if (tableContainer && rowCount > 0) {
-                                                                    tableContainer.innerHTML = `
-                            <div class="no-data-message" style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
-                                <p style="color: #374151; font-size: 18px; margin: 0; font-weight: 500;">No immunization data available.</p>
-                            </div>
-                        `;
-                                                                }
-
-                                                                showModernAlert("✅ Success",
-                                                                    `Successfully deleted all ${data.deleted_count} records!`,
-                                                                    "success");
-                                                            } else {
-                                                                showModernAlert("❌ Error", data.message ||
-                                                                    "Failed to delete records.", "error");
-                                                            }
-                                                        })
-                                                        .catch(error => {
-                                                            confirmOverlay.remove();
-                                                            console.error("Error:", error);
-                                                            showModernAlert("❌ Error",
-                                                                "Something went wrong while deleting records.", "error");
-                                                        });
-                                                });
-
-                                                // Close on outside click
-                                                confirmOverlay.addEventListener('click', function(e) {
-                                                    if (e.target === confirmOverlay) {
-                                                        confirmOverlay.remove();
-                                                    }
-                                                });
-                                            });
-
-                                            // Enhanced showModernAlert function (if not already exists)
-                                            if (typeof window.showModernAlert === 'undefined') {
-                                                window.showModernAlert = function(title, message, type = 'success') {
-                                                    const alertBox = document.createElement('div');
-                                                    alertBox.className = `modern-alert ${type}`;
-                                                    alertBox.innerHTML =
-                                                        `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
-                                                    document.body.appendChild(alertBox);
-
-                                                    setTimeout(() => {
-                                                        alertBox.style.opacity = "0";
-                                                        alertBox.style.transform = "translateX(100%)";
-                                                        setTimeout(() => {
-                                                            if (alertBox.parentNode) {
-                                                                alertBox.remove();
-                                                            }
-                                                        }, 500);
-                                                    }, 3000);
-                                                };
-                                            }
-                                        });
-                                    </script>
-
-
-                                    <span class="separator">|</span>
-
-                                    <div class="modern-input-group input-group" style="width: 300px;">
-                                        <span class="input-group-text bg-transparent"><i
-                                                data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" name="search"
-                                            class="form-control modern-form-control" placeholder="Search records..."
-                                            style="border-left: none;">
-                                    </div>
-
-                                    <!--SORT BUTTON odlest to latest -->
-                                    <div class="dropdown">
-                                        <button class="modern-btn btn-sort btn-sm dropdown-toggle" id="sortDropdownBtn">
-                                            <i class="fas fa-sort"></i> Sort Options
-                                        </button>
-                                        <div class="dropdown-menu" id="sortDropdownMenu">
-                                            <button class="dropdown-item" data-sort="date-oldest">📅 Year: Oldest
-                                                First</button>
-                                            <button class="dropdown-item" data-sort="date-newest">📅 Year: Newest
-                                                First</button>
-                                            <button class="dropdown-item" data-sort="az">🔤 A-Z</button>
-                                            <button class="dropdown-item" data-sort="za">🔤 Z-A</button>
+                    <div class="col-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Left Toolbar -->
+                                <div class="toolbar-left">
+                                    <div class="toolbar-group">
+                                        <div class="action-button primary" id="openModal" title="Add New Staff">
+                                            <i data-feather="plus" size="18"></i>
                                         </div>
                                     </div>
 
-                                    <style>
-                                        /* Dropdown container */
-                                        .dropdown {
-                                            position: relative;
-                                            display: inline-block;
-                                        }
-
-                                        /* Dropdown button */
-                                        .modern-btn.btn-sort.dropdown-toggle {
-                                            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-                                            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-                                        }
-
-                                        .modern-btn.btn-sort.dropdown-toggle:hover {
-                                            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
-                                        }
-
-                                       
-                                        .dropdown-menu {
-                                            display: none;
-                                            position: absolute;
-                                            background: black;
-                                            min-width: 180px;
-                                            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-                                            border-radius: 12px;
-                                            margin-top: 5px;
-                                            z-index: 1000;
-                                        }
-
-                                        .dropdown-menu.show {
-                                            display: block;
-                                        }
-
-                                        .dropdown-item {
-                                            padding: 10px 16px;
-                                            display: block;
-                                            width: 100%;
-                                            text-align: left;
-                                            background: none;
-                                            border: none;
-                                            cursor: pointer;
-                                            font-size: 14px;
-                                             color: white;
-                                        }
-                                        .dropdown-item:hover {
-                                            background: #000;
-                                            color: #7c3aed;
-                                        }
-                                    </style>
-
-                                    <script>
-                                        document.addEventListener("DOMContentLoaded", function() {
-                                            setTimeout(function() {
-                                                const sortDropdownBtn = document.getElementById('sortDropdownBtn');
-                                                const sortDropdownMenu = document.getElementById('sortDropdownMenu');
-                                                const tableBody = document.querySelector('#dataTable tbody');
-
-                                                if (!sortDropdownBtn || !sortDropdownMenu || !tableBody) {
-                                                    console.log("Dropdown sort elements not found");
-                                                    return;
-                                                }
-
-                                                // Toggle dropdown
-                                                sortDropdownBtn.addEventListener("click", function() {
-                                                    sortDropdownMenu.classList.toggle("show");
-                                                });
-
-                                                // Close dropdown if clicked outside
-                                                document.addEventListener("click", function(e) {
-                                                    if (!sortDropdownBtn.contains(e.target) && !sortDropdownMenu.contains(e
-                                                        .target)) {
-                                                        sortDropdownMenu.classList.remove("show");
-                                                    }
-                                                });
-
-                                                // Sorting logic
-                                                function getRows() {
-                                                    return Array.from(tableBody.querySelectorAll("tr"));
-                                                }
-
-                                                function updateTable(rows) {
-                                                    tableBody.innerHTML = "";
-                                                    rows.forEach(r => tableBody.appendChild(r));
-                                                }
-
-                                                const sortFunctions = {
-                                                    "date-oldest": () => getRows().sort((a, b) => new Date(a.cells[0].textContent
-                                                    .trim()) - new Date(b.cells[0].textContent.trim())),
-                                                    "date-newest": () => getRows().sort((a, b) => new Date(b.cells[0].textContent
-                                                    .trim()) - new Date(a.cells[0].textContent.trim())),
-                                                    "az": () => getRows().sort((a, b) => a.cells[1].textContent.trim().localeCompare(b
-                                                        .cells[1].textContent.trim())),
-                                                    "za": () => getRows().sort((a, b) => b.cells[1].textContent.trim().localeCompare(a
-                                                        .cells[1].textContent.trim()))
-                                                };
-
-                                                // Handle click on dropdown items
-                                                sortDropdownMenu.querySelectorAll(".dropdown-item").forEach(item => {
-                                                    item.addEventListener("click", function() {
-                                                        const sortType = this.dataset.sort;
-                                                        if (sortFunctions[sortType]) {
-                                                            const sortedRows = sortFunctions[sortType]();
-                                                            updateTable(sortedRows);
-                                                            showSortingFeedback(this.textContent);
-                                                        }
-                                                        sortDropdownMenu.classList.remove("show");
-                                                    });
-                                                });
-
-                                                // Feedback
-                                                function showSortingFeedback(message) {
-                                                    if (typeof window.showModernAlert === "function") {
-                                                        window.showModernAlert("✨ Sorting Applied", message, "success");
-                                                    } else {
-                                                        const note = document.createElement("div");
-                                                        note.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-                    color: white;
-                    padding: 12px 20px;
-                    border-radius: 12px;
-                    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-                    z-index: 10001;
-                    font-weight: 600;
-                    animation: slideInRight 0.3s ease-out;
-                `;
-                                                        note.innerHTML = message;
-                                                        document.body.appendChild(note);
-                                                        setTimeout(() => {
-                                                            note.style.opacity = "0";
-                                                            note.style.transform = "translateX(100%)";
-                                                            setTimeout(() => note.remove(), 300);
-                                                        }, 2000);
-                                                    }
-                                                }
-
-                                                // Animation for feedback
-                                                if (!document.querySelector('#sortingNotificationCSS')) {
-                                                    const style = document.createElement('style');
-                                                    style.id = 'sortingNotificationCSS';
-                                                    style.textContent = `
-                @keyframes slideInRight {
-                    from {opacity: 0; transform: translateX(100%);}
-                    to {opacity: 1; transform: translateX(0);}
-                }
-            `;
-                                                    document.head.appendChild(style);
-                                                }
-                                            }, 500);
-                                        });
-                                    </script>
-
-
-                                    <span class="separator">|</span>
+                                    <div class="search-container">
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i data-feather="search" size="18"></i>
+                                            </span>
+                                            <input type="text" id="searchInput" name="search" class="form-control"
+                                                placeholder="Search staff members...">
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <!-- Changed from dropdown to direct button -->
-                                    <button class="modern-btn btn-secondary btn-sm" id="openImportModal">
-                                        <i data-feather="upload"></i> Import
-                                    </button>
-
-                                    <button id="printTable" class="modern-btn btn-primary btn-sm">
-                                        <i data-feather="printer"></i> Print
-                                    </button>
-                                    <!-- Replace your existing button code with this -->
-                                    <div class="dropdown">
-                                        <button class="modern-download-btn dropdown-toggle" type="button"
-                                            id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-download"></i>
-                                            Download
-                                        </button>
-                                        <ul class="dropdown-menu modern-dropdown-menu" aria-labelledby="exportDropdown">
-                                            <li>
-                                                <a class="dropdown-item modern-dropdown-item"
-                                                    href="{{ route('immunization.export', 'csv') }}">
-                                                    <i class="fas fa-file-csv download-icon file-csv"></i>
-                                                    Download CSV
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item modern-dropdown-item"
-                                                    href="{{ route('immunization.export', 'pdf') }}">
-                                                    <i class="fas fa-file-pdf download-icon file-pdf"></i>
-                                                    Download PDF
-                                                </a>
-                                            </li>
-                                        </ul>
+                                <!-- Right Toolbar -->
+                                <div class="toolbar-right">
+                                    <div class="toolbar-group">
+                                        <div class="action-button" title="Print Report">
+                                            <i data-feather="printer" size="18"></i>
+                                        </div>
+                                        <div class="action-button" title="Export Data">
+                                            <i data-feather="download" size="18"></i>
+                                        </div>
+                                        <div class="action-button" title="Full Screen">
+                                            <i data-feather="maximize-2" size="18"></i>
+                                        </div>
                                     </div>
-
-
-
-
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    @include('immunization.immunization_table')
-
                     <!-- Initialize Feather Icons -->
                     <script>
                         feather.replace();
                     </script>
 
-                    <!-- Add New Record Modal -->
-                    <div id="customModal" class="modern-modal modal">
-                        <div class="modern-modal-content modal-content">
-                            <span class="modern-close close">&times;</span>
-                            <h2>Add Immunization Record</h2>
-                            <form action="{{ route('immunization.store') }}" method="POST">
+                    <!-- Modal for Adding Staff -->
+                    <div id="customModal" class="modal">
+                        <div class="modal-content">
+                            <button class="close" type="button">&times;</button>
+                            <h2>Add New Staff Member</h2>
+                            <form action="{{ route('staff.store') }}" method="POST">
                                 @csrf
-                                <div class="mb-3">
-                                    <label for="date" class="modern-form-label form-label">📅 Date of
-                                        Immunization</label>
-                                    <input type="date" class="modern-form-control form-control" id="date"
-                                        name="date" required min="">
-                                </div>
+                                <input type="hidden" id="edit_staff_id" name="id">
 
                                 <div class="mb-3">
-                                    <label for="vaccine_name" class="modern-form-label form-label">💊 Vaccine
-                                        Name</label>
-                                    <input type="text" class="modern-form-control form-control text-uppercase"
-                                        id="vaccine_name" name="vaccine_name" required
-                                        oninput="this.value = this.value.toUpperCase()">
+                                    <label for="staff_id" class="form-label">Staff ID</label>
+                                    <input type="text" class="form-control" id="staff_id" name="staff_id" 
+                                           placeholder="Enter staff ID" required>
                                 </div>
-
+                                
                                 <div class="mb-3">
-                                    <label for="male_vaccinated" class="modern-form-label form-label">👨 Male
-                                        Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="male_vaccinated"
-                                        name="male_vaccinated" required min="0">
+                                    <label for="first_name" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" 
+                                           placeholder="Enter first name" required>
                                 </div>
-
+                                
                                 <div class="mb-3">
-                                    <label for="female_vaccinated" class="modern-form-label form-label">👩 Female
-                                        Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control"
-                                        id="female_vaccinated" name="female_vaccinated" required min="0">
+                                    <label for="last_name" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" 
+                                           placeholder="Enter last name" required>
                                 </div>
 
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="submit" class="modern-btn btn-primary">✅ Add Record</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Import Modal -->
-                    <div id="importModal" class="modern-modal modal">
-                        <div class="modern-modal-content modal-content">
-                            <span class="modern-close close" id="closeImportModal">&times;</span>
-                            <h2>Import Immunization Records</h2>
-                            <form action="{{ route('immunization.import') }}" method="POST"
-                                enctype="multipart/form-data" id="importForm">
-                                @csrf
-                                <div class="file-upload-area" id="fileUploadArea">
-                                    <div class="file-upload-icon">📁</div>
-                                    <div class="file-upload-text">
-                                        <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
-                                    </div>
-                                    <input type="file" name="file" id="fileInput"
-                                        class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
-                                        style="display: none;">
-                                    <button type="button" class="modern-btn btn-secondary btn-sm"
-                                        onclick="document.getElementById('fileInput').click()">
-                                        📂 Choose File
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i data-feather="plus" size="16"></i>
+                                        Add Staff Member
                                     </button>
-                                     <a href="{{ route('immunization.template') }}" class="modern-btn btn-primary">
-                                   ⬇️ Download Template
-                                     </a>
-                                </div>
-
-                                <div class="file-info" id="fileInfo">
-                                    <strong>Selected File:</strong>
-                                    <div id="fileName"></div>
-                                    <div id="fileSize"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <small class="text-muted">
-                                        <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
-                                        <strong>Required columns:</strong> Date, Vaccine Name, Male Vaccinated, Female
-                                        Vaccinated
-                                    </small>
-                                </div>
-
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌
-                                        Cancel</button>
-                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤
-                                        Upload File</button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    <!-- Modern Edit Modal -->
-                    <div id="editModal" class="modern-modal modal" style="display: none;">
-                        <div class="modern-modal-content modal-content">
-                            <span class="modern-close close">&times;</span>
-                            <h2>✏️ Edit Immunization Data</h2>
-                            <form id="updateForm" action="{{ route('immunization.update') }}" method="POST">
-                                @csrf
+                    <!-- Update Staff Modal -->
+                    <div id="editModal" class="modal">
+                        <div class="modal-content">
+                            <button class="close" id="closeModal" type="button">&times;</button>
+                            <h2>Edit Staff Member</h2>
+                            <form id="editStaffForm" method="POST" action="">
+                            @csrf
                                 @method('PUT')
-                                <input type="hidden" id="edit_id" name="id">
-
+                                <input type="hidden" id="edit_staff_id" name="id">
+                                
                                 <div class="mb-3">
-                                    <label for="edit_vaccine" class="modern-form-label form-label">💊 Vaccine
-                                        Name</label>
-                                    <input type="text" class="modern-form-control form-control" id="edit_vaccine"
-                                        name="vaccine_name" required>
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="edit_first_name" name="first_name" 
+                                           placeholder="Enter first name" required>
                                 </div>
-
+                                
                                 <div class="mb-3">
-                                    <label for="edit_date" class="modern-form-label form-label">📅 Date</label>
-                                    <input type="date" class="modern-form-control form-control" id="edit_date"
-                                        name="date" required>
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="edit_last_name" name="last_name" 
+                                           placeholder="Enter last name" required>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_male" class="modern-form-label form-label">👨 Male
-                                        Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_male"
-                                        name="male_vaccinated" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_female" class="modern-form-label form-label">👩 Female
-                                        Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_female"
-                                        name="female_vaccinated" required>
-                                </div>
-
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌
-                                        Cancel</button>
-                                    <button type="submit" class="modern-btn btn-primary">💾 Update</button>
+                               
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i data-feather="save" size="16"></i>
+                                        Update Staff
+                                    </button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
                     <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            // Add New Record Modal
-                            setTimeout(() => {
-                                var modal = document.getElementById("customModal");
-                                var openModalBtn = document.getElementById("openModal");
-                                var closeModalBtn = document.querySelector("#customModal .close");
-
-                                if (!modal || !openModalBtn) {
-                                    console.error("Modal or button not found!");
-                                    return;
-                                }
-
-                                openModalBtn.addEventListener("click", function() {
-                                    modal.style.display = "flex";
-                                });
-
-                                closeModalBtn.addEventListener("click", function() {
-                                    modal.style.display = "none";
-                                });
-
-                                window.addEventListener("click", function(event) {
-                                    if (event.target === modal) {
-                                        modal.style.display = "none";
-                                    }
-                                });
-                            }, 100);
-
-                            // Import Modal
-                            var importModal = document.getElementById("importModal");
-                            var openImportModalBtn = document.getElementById("openImportModal");
-                            var closeImportModalBtn = document.getElementById("closeImportModal");
-                            var cancelImportModalBtn = document.getElementById("cancelImportModal");
-                            var fileInput = document.getElementById("fileInput");
-                            var fileUploadArea = document.getElementById("fileUploadArea");
-                            var fileInfo = document.getElementById("fileInfo");
-                            var fileName = document.getElementById("fileName");
-                            var fileSize = document.getElementById("fileSize");
-                            var uploadBtn = document.getElementById("uploadBtn");
-
-                            // Allowed file types
-                            const allowedExtensions = ['xlsx', 'xls', 'csv'];
-
-                            // Open Import Modal
-                            openImportModalBtn.addEventListener("click", function() {
-                                importModal.style.display = "flex";
-                            });
-
-                            // Close Import Modal
-                            closeImportModalBtn.addEventListener("click", closeImportModal);
-                            cancelImportModalBtn.addEventListener("click", closeImportModal);
-
-                            function closeImportModal() {
-                                importModal.style.display = "none";
-                                resetFileUpload();
-                            }
-
-                            // Close modal when clicking outside
-                            window.addEventListener("click", function(event) {
-                                if (event.target === importModal) {
-                                    closeImportModal();
-                                }
-                            });
-
-                            // File upload functionality
-                            fileInput.addEventListener("change", function() {
-                                validateAndHandleFile(this.files[0]);
-                            });
-
-                            // Drag and drop functionality
-                            fileUploadArea.addEventListener("dragover", function(e) {
-                                e.preventDefault();
-                                this.classList.add("dragover");
-                            });
-
-                            fileUploadArea.addEventListener("dragleave", function(e) {
-                                this.classList.remove("dragover");
-                            });
-
-                            fileUploadArea.addEventListener("drop", function(e) {
-                                e.preventDefault();
-                                this.classList.remove("dragover");
-                                var files = e.dataTransfer.files;
-                                if (files.length > 0) {
-                                    fileInput.files = files;
-                                    validateAndHandleFile(files[0]);
-                                }
-                            });
-
-                            // Validate file extension before showing info
-                            function validateAndHandleFile(file) {
-                                if (!file) {
-                                    resetFileUpload();
-                                    return;
-                                }
-
-                                const ext = file.name.split('.').pop().toLowerCase();
-                                if (!allowedExtensions.includes(ext)) {
-                                    showModernAlert("❌ Invalid File",
-                                        "Please upload only Excel (.xlsx, .xls) or CSV (.csv) files.");
-                                    resetFileUpload();
-                                    return;
-                                }
-
-                                fileName.textContent = file.name;
-                                fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
-                                fileInfo.classList.add("show");
-                                uploadBtn.disabled = false;
-                            }
-
-                            function resetFileUpload() {
-                                fileInput.value = "";
-                                fileInfo.classList.remove("show");
-                                uploadBtn.disabled = true;
-                            }
-
-                            // Modern toast alert
-                            function showModernAlert(title, message) {
-                                const alertBox = document.createElement('div');
-                                alertBox.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #1e1e2f;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 10001;
-            animation: fadeIn 0.3s ease-out;
-        `;
-                                alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
-                                document.body.appendChild(alertBox);
-                                setTimeout(() => {
-                                    alertBox.style.opacity = "0";
-                                    setTimeout(() => alertBox.remove(), 500);
-                                }, 2500);
-                            }
-                        });
-                    </script>
-
-
-                    <script>
-                        document.getElementById("printTable").addEventListener("click", function() {
-                            let printContent = document.getElementById("dataTable").outerHTML;
-                            let newWindow = window.open("", "", "width=800,height=600");
-
-                            newWindow.document.write(`
-                                <html>
-                                <head>
-                                    <title>Print</title>
-                                    <style>
-                                        @media print {
-                                            .no-print, .pagination { display: none !important; }
-                                        }
-                                    </style>
-                                </head>
-                                <body>${printContent}</body>
-                                </html>
-                            `);
-
-                            newWindow.document.close();
-                            newWindow.print();
-                        });
-                    </script>
-
-                    <!-- Initialize Feather Icons -->
-                    <script>
-                        feather.replace();
-                    </script>
-
-                    <!-- Modern Modal Structure -->
-                    <!-- <div id="customModal" class="modern-modal modal">
-                        <div class="modern-modal-content modal-content">
-                            <span class="modern-close close">&times;</span>
-                            <h2>🩹 Add Immunization Record</h2>
-                            <form action="{{ route('immunization.store') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="date" class="modern-form-label form-label">📅 Date of Immunization</label>
-                                    <input type="date" class="modern-form-control form-control" id="date" name="date" required min="">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="vaccine_name" class="modern-form-label form-label">💊 Vaccine Name</label>
-                                    <input type="text" class="modern-form-control form-control text-uppercase" id="vaccine_name" name="vaccine_name" required oninput="this.value = this.value.toUpperCase()">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="male_vaccinated" class="modern-form-label form-label">👨 Male Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="male_vaccinated" name="male_vaccinated" required min="0">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="female_vaccinated" class="modern-form-label form-label">👩 Female Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="female_vaccinated" name="female_vaccinated" required min="0">
-                                </div>
-
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="submit" class="modern-btn btn-primary">✅ Add Record</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div> -->
-
-                    <!-- Modern Edit Modal -->
-                    <!-- <div id="editModal" class="modern-modal modal" style="display: none;">
-                        <div class="modern-modal-content modal-content">
-                            <span class="modern-close close">&times;</span>
-                            <h2>✏️ Edit Immunization Data</h2>
-                            <form id="updateForm" action="{{ route('immunization.update') }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" id="edit_id" name="id">
-
-                                <div class="mb-3">
-                                    <label for="edit_vaccine" class="modern-form-label form-label">💊 Vaccine Name</label>
-                                    <input type="text" class="modern-form-control form-control" id="edit_vaccine" name="vaccine_name" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_date" class="modern-form-label form-label">📅 Date</label>
-                                    <input type="date" class="modern-form-control form-control" id="edit_date" name="date" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_male" class="modern-form-label form-label">👨 Male Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_male" name="male_vaccinated" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_female" class="modern-form-label form-label">👩 Female Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_female" name="female_vaccinated" required>
-                                </div>
-
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌ Cancel</button>
-                                    <button type="submit" class="modern-btn btn-primary">💾 Update</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div> -->
-
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            setTimeout(() => {
-                                var modal = document.getElementById("customModal");
-                                var openModalBtn = document.getElementById("openModal");
-                                var closeModalBtn = document.querySelector(".close");
-
-                                if (!modal || !openModalBtn) {
-                                    console.error("Modal or button not found!");
-                                    return;
-                                }
-
-                                openModalBtn.addEventListener("click", function() {
-                                    modal.style.display = "flex";
-                                });
-
-                                closeModalBtn.addEventListener("click", function() {
-                                    modal.style.display = "none";
-                                });
-
-                                window.addEventListener("click", function(event) {
-                                    if (event.target === modal) {
-                                        modal.style.display = "none";
-                                    }
-                                });
-                            }, 100);
-                        });
-                    </script>
-
-                    <script>
-                        // Prevent selection of past dates
-                        document.addEventListener("DOMContentLoaded", function() {
-                            let today = new Date().toISOString().split("T")[0];
-                            document.getElementById("date").setAttribute("min", today);
-                        });
-                    </script>
-
-                    <script>
-                        document.getElementById("printTable").addEventListener("click", function() {
-                            let printContent = document.getElementById("dataTable").outerHTML;
-                            let newWindow = window.open("", "", "width=800,height=600");
-
-                            newWindow.document.write(`
-                                <html>
-                                <head>
-                                    <title>Print</title>
-                                    <style>
-                                        @media print {
-                                            .no-print, .pagination { display: none !important; }
-                                        }
-                                    </style>
-                                </head>
-                                <body>${printContent}</body>
-                                </html>
-                            `);
-
-                            newWindow.document.close();
-                            newWindow.print();
-                        });
-                    </script>
-
-
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            document.querySelectorAll(".delete-button").forEach(button => {
-                                button.addEventListener("click", function() {
-                                    const dataId = this.dataset.id;
-                                    const tableRow = this.closest("tr"); // Save reference to the row
-
-                                    // Modern confirmation overlay
-                                    const confirmOverlay = document.createElement('div');
-                                    confirmOverlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.7);
-                backdrop-filter: blur(5px);
-                z-index: 10000;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                animation: fadeIn 0.3s ease-out;
-            `;
-
-                                    // Modal box
-                                    const confirmBox = document.createElement('div');
-                                    confirmBox.style.cssText = `
-                background: #1e1e2f;
-                border-radius: 20px;
-                padding: 2rem;
-                max-width: 400px;
-                width: 100%;
-                text-align: center;
-                color: #fff;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-                animation: modalSlideIn 0.3s ease-out;
-            `;
-
-                                    confirmBox.innerHTML = `
-                <h3 style="margin-bottom: 1rem; font-size: 1.4rem; background: linear-gradient(90deg, #ff4d4d, #ff8080); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🗑️ Confirm Delete</h3>
-                <p style="margin-bottom: 2rem; font-size: 1rem; color: #ccc;">Are you sure you want to delete this data? This action cannot be undone.</p>
-                <div style="display: flex; gap: 1rem; justify-content: center;">
-                    <button id="cancelDelete" style="background: linear-gradient(90deg, #6c757d, #8a94a6); border: none; border-radius: 12px; padding: 10px 20px; color: white; font-weight: 600; cursor: pointer;">❌ Cancel</button>
-                    <button id="confirmDelete" style="background: linear-gradient(90deg, #ff4d4d, #ff8080); border: none; border-radius: 12px; padding: 10px 20px; color: white; font-weight: 600; cursor: pointer;">🗑️ Delete</button>
-                </div>
-            `;
-
-                                    confirmOverlay.appendChild(confirmBox);
-                                    document.body.appendChild(confirmOverlay);
-
-                                    // Cancel action
-                                    confirmBox.querySelector("#cancelDelete").addEventListener("click", () => {
-                                        confirmOverlay.remove();
-                                    });
-
-                                    // Confirm action
-                                    confirmBox.querySelector("#confirmDelete").addEventListener("click", () => {
-                                        fetch(`/public/immunization/delete/${dataId}`, {
-                                                method: "DELETE",
-                                                headers: {
-                                                    "X-CSRF-TOKEN": document.querySelector(
-                                                        'meta[name="csrf-token"]').content,
-                                                    "Content-Type": "application/json"
-                                                }
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                confirmOverlay.remove();
-                                                if (data.success) {
-                                                    // Remove the row from the table without reloading
-                                                    tableRow.remove();
-                                                    showModernAlert("✅ Success",
-                                                        "Data deleted successfully!");
-                                                } else {
-                                                    showModernAlert("❌ Error",
-                                                        "Failed to delete data.");
-                                                }
-                                            })
-                                            .catch(error => {
-                                                confirmOverlay.remove();
-                                                console.error("Error:", error);
-                                                showModernAlert("❌ Error", "Something went wrong.");
-                                            });
-                                    });
-                                });
-                            });
-
-
-
-
-                            // Simple modern alert
-                            window.showModernAlert = function(title, message) {
-                                const alertBox = document.createElement('div');
-                                alertBox.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #1e1e2f;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 10001;
-            animation: fadeIn 0.3s ease-out;
-        `;
-                                alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
-                                document.body.appendChild(alertBox);
-                                setTimeout(() => {
-                                    alertBox.style.opacity = "0";
-                                    setTimeout(() => alertBox.remove(), 500);
-                                }, 2000);
-                            };
-                        });
-                    </script>
-
-
-
-                    <style>
-                        @keyframes fadeIn {
-                            from {
-                                opacity: 0;
-                            }
-
-                            to {
-                                opacity: 1;
-                            }
-                        }
-
-                        @keyframes modalSlideIn {
-                            from {
-                                transform: translateY(-20px);
-                                opacity: 0;
-                            }
-
-                            to {
-                                transform: translateY(0);
-                                opacity: 1;
-                            }
-                        }
-                    </style>
-
-
-                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                    <script>
-                        document.getElementById("searchInput").addEventListener("input", function() {
-                            let searchValue = this.value.toLowerCase();
-                            let rows = document.querySelectorAll("#dataTable tbody tr");
-
-                            rows.forEach(row => {
-                                let cells = row.querySelectorAll("td");
-                                let rowText = "";
-                                let found = false;
-
-                                // Collect all cell text & check if search matches any
-                                cells.forEach(cell => {
-                                    let text = cell.innerText.toLowerCase();
-                                    if (text.includes(searchValue)) {
-                                        found = true;
-                                    }
-                                });
-
-                                // Show or hide row based on match
-                                if (searchValue === "" || found) {
-                                    row.style.display = "";
-                                } else {
-                                    row.style.display = "none";
-                                }
-                            });
-                        });
-                    </script>
-
-
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            const editModal = document.getElementById("editModal");
-                            const closeEditModalBtn = document.querySelector("#editModal .close");
-                            const cancelEditModalBtn = document.getElementById("cancelEditModal");
-
-                            // Open modal and populate form
-                            document.querySelectorAll(".edit-button").forEach(button => {
-                                button.addEventListener("click", function() {
-                                    document.getElementById("edit_id").value = this.dataset.id;
-                                    document.getElementById("edit_vaccine").value = this.dataset.vaccine;
-                                    document.getElementById("edit_date").value = this.dataset.date;
-                                    document.getElementById("edit_male").value = this.dataset.male;
-                                    document.getElementById("edit_female").value = this.dataset.female;
-
-                                    editModal.style.display = "flex";
-                                });
-                            });
-
-                            // Close modal on 'X' or Cancel
-                            closeEditModalBtn.addEventListener("click", () => editModal.style.display = "none");
-                            cancelEditModalBtn.addEventListener("click", () => editModal.style.display = "none");
-
-                            // Close modal when clicking outside the content
-                            window.addEventListener("click", (event) => {
-                                if (event.target === editModal) {
-                                    editModal.style.display = "none";
-                                }
-                            });
-
-                            // Handle form submission with AJAX
-                            document.getElementById("updateForm").addEventListener("submit", function(event) {
-                                event.preventDefault();
-
-                                let formData = new FormData(this);
-                                formData.append('_method', 'PUT');
-
-                                fetch(`/public/immunization/update`, {
-                                        method: "POST",
-                                        headers: {
-                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                                            "X-Requested-With": "XMLHttpRequest",
-                                        },
-                                        body: formData,
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-
-                                            location.reload();
-                                        } else {
-                                            alert("Failed to update record: " + (data.message || "Unknown error."));
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error("Error:", error);
-                                        alert("An error occurred while updating the record.");
-                                    });
-                            });
-                        });
-                    </script>
-
-                    <!-- Initialize Feather Icons -->
-                    <script>
-                        feather.replace();
-                    </script>
-
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function() {
+                        document.addEventListener("DOMContentLoaded", function () {
                             var modal = document.getElementById("customModal");
                             var openModalBtn = document.getElementById("openModal");
-                            var closeModalBtn = document.querySelector(".close");
+                            var closeModalBtns = document.querySelectorAll(".close, .close-modal");
 
-                            // Open Modal
-                            openModalBtn.addEventListener("click", function() {
+                            // Open Modal with smooth animation
+                            openModalBtn.addEventListener("click", function () {
                                 modal.style.display = "flex";
+                                setTimeout(() => modal.classList.add("show"), 10);
                             });
 
-                            // Close Modal
-                            closeModalBtn.addEventListener("click", function() {
-                                modal.style.display = "none";
+                            // Close Modal with smooth animation
+                            closeModalBtns.forEach(btn => {
+                                btn.addEventListener("click", function () {
+                                    modal.classList.remove("show");
+                                    setTimeout(() => modal.style.display = "none", 300);
+                                });
                             });
 
                             // Close if clicked outside the modal
-                            window.addEventListener("click", function(event) {
+                            window.addEventListener("click", function (event) {
                                 if (event.target === modal) {
-                                    modal.style.display = "none";
+                                    modal.classList.remove("show");
+                                    setTimeout(() => modal.style.display = "none", 300);
                                 }
                             });
                         });
                     </script>
+
+               <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Open Modal
+    document.querySelectorAll(".edit-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let staffId = this.dataset.id;  
+            if (!staffId) {
+                alert("Error: Staff ID is missing!");
+                return;
+            }
+
+            // ✅ Set the hidden input field for ID
+            document.getElementById("edit_staff_id").value = staffId;
+
+            // ✅ Set the action URL correctly
+            document.getElementById("editStaffForm").action = `/staff/update/${staffId}`;
+
+            // ✅ Populate the form fields
+            document.getElementById("edit_first_name").value = this.dataset.first_name;
+            document.getElementById("edit_last_name").value = this.dataset.last_name;
+
+            // ✅ Properly set selected value in dropdown
+            let positionDropdown = document.getElementById("edit_position");
+            let usertype = this.dataset.usertype;
+            for (let option of positionDropdown.options) {
+                if (option.value === usertype) {
+                    option.selected = true;
+                    break;
+                }
+            }
+
+            // ✅ Show the modal with animation
+            let editModal = document.getElementById("editModal");
+            editModal.style.display = "flex";
+            setTimeout(() => editModal.classList.add("show"), 10);
+        });
+    });
+
+    // ✅ Close button event listener
+    document.querySelectorAll("#editModal .close, #editModal .close-modal").forEach(btn => {
+        btn.addEventListener("click", function () {
+            let editModal = document.getElementById("editModal");
+            editModal.classList.remove("show");
+            setTimeout(() => editModal.style.display = "none", 300);
+        });
+    });
+
+    // ✅ Close modal when clicking outside of it
+    window.addEventListener("click", function (event) {
+        let modal = document.getElementById("editModal");
+        if (event.target === modal) {
+            modal.classList.remove("show");
+            setTimeout(() => modal.style.display = "none", 300);
+        }
+    });
+});
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".delete-button").forEach(button => {
+            button.addEventListener("click", function () {
+                const dataId = this.dataset.id;
+
+                if (confirm("Are you sure you want to delete this data?")) {
+                    fetch(`/staff/delete/${dataId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                            "Content-Type": "application/json"
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert("Data deleted successfully!");
+                                location.reload();
+                            } else {
+                                alert("Failed to delete data.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("Something went wrong.");
+                        });
+
+                }
+            });
+        });
+    });
+</script>
+
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const dataId = this.dataset.id;
+
+            if (!confirm("Are you sure you want to delete this staff?")) return;
+
+            fetch(`/staff/${dataId}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Staff deleted successfully!");
+                    location.reload();
+                } else {
+                    alert("Failed to delete staff.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Something went wrong.");
+            });
+        });
+    });
+});
+    </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.getElementById("searchInput").addEventListener("input", function () {
+    let searchValue = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#dataTable tbody tr");
+
+    rows.forEach(row => {
+        let found = false;
+
+        row.querySelectorAll("td").forEach(cell => {
+            let originalText = cell.innerText; // Store original uppercase text
+            let lowerText = originalText.toLowerCase();
+
+            if (lowerText.includes(searchValue)) {
+                found = true;
+                let regex = new RegExp(`(${searchValue})`, "gi");
+                
+                // Replace only the matching part, but keep original case
+                cell.innerHTML = originalText.replace(
+                    regex,
+                    `<span class="highlight" style="background-color: yellow; font-weight: bold;">$1</span>`
+                );
+            } else {
+                cell.innerHTML = originalText; // Reset text without modification
+            }
+        });
+
+        // Show or hide row based on search match
+        row.style.display = found ? "" : "none";
+    });
+});
+</script>
+
                 </div>
             </main>
-
-            @include('staff.footer')
         </div>
     </div>
 
-    @include('staff.js')
-
+    @if(session('success'))
+        <script>
+            alert("{{ session('success') }}");
+        </script>
+    @endif
 </body>
 
 </html>
