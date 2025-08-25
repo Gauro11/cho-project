@@ -463,7 +463,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!confirm("Are you sure you want to delete this staff?")) return;
 
-            fetch(`/staff/${dataId}`, {
+            fetch(`/public/staff/${dataId}`, {
                 method: "DELETE",
                 headers: {
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
