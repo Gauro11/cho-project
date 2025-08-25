@@ -114,8 +114,6 @@ class AdminController extends Controller
         $staff->last_name = $request->last_name;
         $staff->usertype = 'staff';
         $staff->save();
-    
-        return redirect()->back()->with('success', 'Staff updated successfully!');
     }
 
     
