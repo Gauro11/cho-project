@@ -393,6 +393,13 @@ public function update_year(Request $request, $id)
 
     return view('admin.staff', compact('staff'));
 }
+public function destroy($id)
+{
+    $staff = User::findOrFail($id);
+    $staff->delete();
+
+    return redirect()->back()->with('success', 'Staff deleted successfully.');
+}
 
         
     

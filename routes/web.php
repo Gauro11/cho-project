@@ -87,6 +87,8 @@ Route::get('/show_year', [AdminController::class, 'show_year']);
 Route::get('/show_staff', [AdminController::class, 'show_staff']);
 Route::get('/show_disease', [AdminController::class, 'show_disease']);
 Route::get('/show_trends', [AdminController::class, 'show_trends']);
+Route::delete('/staff/{id}', [AdminController::class, 'destroy'])->name('staff.destroy');
+
 
 // Disease Management
 Route::get('/update_disease/{id}', [AdminController::class, 'update_disease']);
