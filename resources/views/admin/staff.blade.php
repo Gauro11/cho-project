@@ -456,37 +456,38 @@
 
                     <!-- JavaScript for Delete Functionality -->
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            document.querySelectorAll(".delete-btn").forEach(button => {
-                                button.addEventListener("click", function () {
-                                    const dataId = this.dataset.id;
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const dataId = this.dataset.id;
 
-                                    if (!confirm("Are you sure you want to delete this staff?")) return;
+            if (!confirm("Are you sure you want to delete this staff?")) return;
 
-                                    fetch(`/staff/${dataId}`, {
-                                        method: "DELETE",
-                                        headers: {
-                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                                            "Content-Type": "application/json"
-                                        }
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            alert("Staff deleted successfully!");
-                                            location.reload();
-                                        } else {
-                                            alert("Failed to delete staff.");
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error("Error:", error);
-                                        alert("Something went wrong.");
-                                    });
-                                });
-                            });
-                        });
-                    </script>
+            fetch(`/staff/${dataId}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    "Accept": "application/json",
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("✅ Staff deleted successfully!");
+                    location.reload();
+                } else {
+                    alert("❌ Failed to delete staff: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Something went wrong.");
+            });
+        });
+    });
+});
+</script>
+
 
                     <!-- JavaScript for Search Functionality -->
                     <script>
