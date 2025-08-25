@@ -147,7 +147,7 @@ class AdminController extends Controller
     $staff->last_name = $request->last_name;
     $staff->save();
 
-
+    return back()->with('success', 'Staff updated successfully!');
 }
 
 
