@@ -413,46 +413,47 @@
                     </script>
 
                     <!-- JavaScript for Edit Modal -->
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            // Open Edit Modal
-                            document.querySelectorAll(".edit-btn").forEach(button => {
-                                button.addEventListener("click", function () {
-                                    let staffId = this.dataset.id;  
-                                    if (!staffId) {
-                                        alert("Error: Staff ID is missing!");
-                                        return;
-                                    }
+                   <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Open Edit Modal
+    document.querySelectorAll(".edit-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let staffId = this.dataset.id;  
+            if (!staffId) {
+                alert("Error: Staff ID is missing!");
+                return;
+            }
 
-                                    // Set the hidden input field for ID
-                                    document.getElementById("edit_staff_id").value = staffId;
+            // Set the hidden input field for ID
+            document.getElementById("edit_staff_id").value = staffId;
 
-                                    // Set the action URL correctly
-                                    document.getElementById("editStaffForm").action = `/staff/update/${staffId}`;
+            // ✅ FIX: Use full correct path with /public
+            document.getElementById("editStaffForm").action = `/public/staff/update/${staffId}`;
 
-                                    // Populate the form fields
-                                    document.getElementById("edit_first_name").value = this.dataset.first_name;
-                                    document.getElementById("edit_last_name").value = this.dataset.last_name;
+            // Populate the form fields
+            document.getElementById("edit_first_name").value = this.dataset.first_name;
+            document.getElementById("edit_last_name").value = this.dataset.last_name;
 
-                                    // Show the modal
-                                    document.getElementById("editModal").style.display = "flex";
-                                });
-                            });
+            // Show the modal
+            document.getElementById("editModal").style.display = "flex";
+        });
+    });
 
-                            // Close button event listener
-                            document.getElementById("closeModal").addEventListener("click", function () {
-                                document.getElementById("editModal").style.display = "none";
-                            });
+    // Close button event listener
+    document.getElementById("closeModal").addEventListener("click", function () {
+        document.getElementById("editModal").style.display = "none";
+    });
 
-                            // Close modal when clicking outside of it
-                            window.addEventListener("click", function (event) {
-                                let modal = document.getElementById("editModal");
-                                if (event.target === modal) {
-                                    modal.style.display = "none";
-                                }
-                            });
-                        });
-                    </script>
+    // Close modal when clicking outside of it
+    window.addEventListener("click", function (event) {
+        let modal = document.getElementById("editModal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+</script>
+
 
                     <!-- JavaScript for Delete Functionality -->
                     <script>

@@ -137,6 +137,22 @@ class AdminController extends Controller
         return response()->json(['success' => true, 'message' => 'Staff deleted successfully.']);
     }
 
+    public function update_staff(Request $request, $id)
+{
+    $staff = User::find($id);
+
+    if (!$staff) {
+        return back()->with('error', 'Staff not found.');
+    }
+
+    $staff->first_name = $request->first_name;
+    $staff->last_name = $request->last_name;
+    $staff->save();
+
+    return back()->with('success', 'Staff updated successfully!');
+}
+
+
     public function update_data(Request $request)
 {
     $data = Data::findOrFail($request->id);
