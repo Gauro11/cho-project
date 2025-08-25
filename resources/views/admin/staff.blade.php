@@ -62,13 +62,13 @@
 
         /* Modern Glass Cards */
         .card {
-            background: var(--primary-gradient);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            box-shadow: var(--shadow-glow);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: visible;
+            overflow: hidden;
             position: relative;
             margin-bottom: 2rem;
         }
@@ -93,7 +93,7 @@
             box-shadow: 0 20px 40px rgba(31, 38, 135, 0.5);
         }
 
-        /* Modern Card Body */
+        /* Modern Card Body for the top card */
         .card-body {
             padding: 2rem;
             background: transparent;
@@ -101,7 +101,7 @@
         }
 
         .card-body.d-flex {
-            background: transparent;
+            background: var(--primary-gradient);
             color: white;
             border-radius: 0;
         }
@@ -188,66 +188,82 @@
             color: white;
         }
 
-        /* Modern Table Styles */
+        /* Updated Modern Table Styles */
         .table {
-            color: var(--text-primary);
-            margin-bottom: 0;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
+            margin: 0;
+            border-radius: 20px;
             overflow: hidden;
+            background: transparent;
         }
 
         .table thead th {
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, #1f2937, #374151);
             color: white;
-            border: none;
-            padding: 1rem;
             font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            padding: 20px 15px;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .table tbody td {
-            background: rgba(255, 255, 255, 0.02);
-            border: none;
-            border-bottom: 1px solid var(--glass-border);
-            padding: 1rem;
-            color: var(--text-primary);
+            padding: 18px 15px;
             vertical-align: middle;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+            color: #374151;
+            background: white;
         }
 
-        .table tbody tr:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.01);
+        .table tbody tr {
+            background: white;
             transition: all 0.3s ease;
         }
 
-        /* Action Buttons in Table */
-        .btn-warning {
-            background: var(--warning-gradient);
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.03), rgba(124, 58, 237, 0.03));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Updated Button Styles */
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 8px 16px;
+            font-size: 13px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
-            font-weight: 600;
         }
 
         .btn-warning:hover {
-            background: var(--warning-gradient);
+            background: linear-gradient(135deg, #d97706, #b45309);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(254, 202, 87, 0.4);
         }
 
         .btn-danger {
-            background: var(--secondary-gradient);
-            border: none;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
-            font-weight: 600;
         }
 
         .btn-danger:hover {
-            background: var(--secondary-gradient);
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
         }
 
         .btn-sm {
@@ -258,45 +274,94 @@
             transition: all 0.3s ease;
         }
 
-        /* Modern Pagination */
+        /* Updated Modern Pagination */
         .custom-pagination {
             display: flex;
             list-style: none;
             padding: 0;
-            border-radius: 15px;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            padding: 8px 12px;
             justify-content: center;
         }
 
         .custom-pagination .page-item {
-            margin: 0 5px;
+            margin: 0 3px;
         }
 
         .custom-pagination .page-link {
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            transition: 0.3s;
+            color: #4f46e5 !important;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             text-decoration: none;
-            background: rgba(255, 255, 255, 0.05);
         }
 
-        .custom-pagination .page-item.active .page-link,
         .custom-pagination .page-link:hover {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
+            background: rgba(255, 255, 255, 1);
+            border-color: #4f46e5;
+            color: #4f46e5 !important;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
         }
 
-        .custom-pagination .disabled .page-link {
-            color: var(--text-secondary);
-            pointer-events: none;
-            border: 1px solid var(--text-secondary);
+        .custom-pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-color: #4f46e5;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .custom-pagination .page-item.disabled .page-link {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: rgba(107, 114, 128, 0.6) !important;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Updated Pagination Container */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        .pagination-container p {
+            margin: 0;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Table Container for better scrolling */
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 20px;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 10px;
         }
 
         /* Modern Modal */
@@ -480,6 +545,24 @@
             border-left: 4px solid #f59e0b;
         }
 
+        /* No data message */
+        .no-data-message {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-data-message p {
+            color: #374151;
+            font-size: 18px;
+            margin: 0;
+            font-weight: 500;
+        }
+
         /* Media Queries */
         @media (max-width: 768px) {
             .h3 {
@@ -503,6 +586,19 @@
                 flex-direction: column;
                 align-items: stretch;
                 gap: 1rem;
+            }
+
+            .table-responsive {
+                border-radius: 16px;
+            }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .custom-pagination {
+                justify-content: center;
             }
         }
 
@@ -541,9 +637,23 @@
             z-index: 1;
         }
 
-        /* Text color for results info */
+        /* Text color for results info - Updated */
         .d-flex.justify-content-between.align-items-center.mt-3.px-3 p {
-            color: var(--text-secondary);
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .stats-badge {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px 16px;
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            margin-left: 10px;
         }
     </style>
 </head>
