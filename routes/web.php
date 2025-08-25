@@ -155,11 +155,7 @@ Route::post('/vital-statistics/import', [VitalStatisticsController::class, 'impo
 Route::post('/mortality/import', [MorbidityMortalityController::class, 'import'])->name('mortality.import');
 Route::post('/morbidity/import', [MorbidityMortalityController::class, 'imports'])->name('morbidity.import');
 
-// Staff management routes
-Route::get('/staff/management', [StaffController::class, 'showStaff'])->name('staff.management');
-Route::post('/staff/store', [StaffController::class, 'store'])->name('staff.store');
-Route::put('/staff/update/{id}', [StaffController::class, 'update'])->name('staff.update');
-Route::delete('/staff/{id}', [StaffController::class, 'destroy'])->name('staff.destroy');
+
 
 
 

@@ -380,18 +380,20 @@ public function update_year(Request $request, $id)
             return view('staff.trends');
         }
 
-        public function show_staff()
-        {
-            $roles = [
-                'mortality and morbidity records manager', 
-                'vital statistics records manager', 
-                'immunization records manager'
-            ];
-        
-            $staff = User::whereIn('usertype', $roles)->paginate(10);
-        
-            return view('admin.staff', compact('staff'));
-        }
+       public function show_staff()
+{
+    $roles = [
+        'mortality and morbidity records manager', 
+        'vital statistics records manager', 
+        'immunization records manager',
+        'staff' // ✅ Add this so they appear
+    ];
+
+    $staff = User::whereIn('usertype', $roles)->paginate(10);
+
+    return view('admin.staff', compact('staff'));
+}
+
         
     
 
