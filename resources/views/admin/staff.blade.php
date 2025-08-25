@@ -163,6 +163,46 @@
             background: #ffffff;
             color: #1e1e2d;
         }
+
+        /* Table styles */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px;
+        }
+
+        .table tbody td {
+            padding: 12px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .btn-warning {
+            background-color: #f59e0b;
+            border: none;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            border: none;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            margin-right: 5px;
+        }
     </style>
 </head>
 
@@ -197,6 +237,91 @@
                                     <i data-feather="download"></i>
                                     <span>|</span>
                                     <i data-feather="maximize-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Staff Table - This was missing in your main document -->
+                    <div class="row">
+                        <div class="col-12 col-lg-12 col-xxl-12 d-flex">
+                            <div class="card flex-fill" id="dataTable">
+                                <table class="table table-hover my-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Staff ID</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Position</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($staff as $person)
+                                            <tr>
+                                                <td>{{ strtoupper($person->staff_id) }}</td>
+                                                <td>{{ strtoupper($person->first_name) }}</td>
+                                                <td>{{ strtoupper($person->last_name) }}</td>
+                                                <td>{{ strtoupper($person->usertype) }}</td>
+                                                <td>
+                                                    <button class="btn btn-warning btn-sm edit-btn"
+                                                            data-id="{{ $person->id }}"
+                                                            data-staff_id="{{ $person->staff_id }}"
+                                                            data-first_name="{{ $person->first_name }}"
+                                                            data-last_name="{{ $person->last_name }}"
+                                                            data-usertype="{{ $person->usertype }}">
+                                                        Edit
+                                                    </button>
+
+                                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="{{ $person->id }}">
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="text-center">No data found.</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+
+                                <div class="d-flex justify-content-between align-items-center mt-3 px-3">
+                                    <!-- Showing X to Y of Z results -->
+                                    <p class="mb-0">
+                                        Showing {{ $staff->firstItem() }} to {{ $staff->lastItem() }} of {{ $staff->total() }} results
+                                    </p>
+
+                                    <!-- Pagination Links -->
+                                    <nav>
+                                        <ul class="pagination custom-pagination">
+                                            @if ($staff->onFirstPage())
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">&laquo; Previous</span>
+                                                </li>
+                                            @else
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $staff->appends(['search' => request()->search])->previousPageUrl() }}" rel="prev">&laquo; Previous</a>
+                                                </li>
+                                            @endif
+
+                                            @for ($i = 1; $i <= $staff->lastPage(); $i++)
+                                                <li class="page-item {{ $i == $staff->currentPage() ? 'active' : '' }}">
+                                                    <a class="page-link" href="{{ $staff->appends(['search' => request()->search])->url($i) }}">{{ $i }}</a>
+                                                </li>
+                                            @endfor
+
+                                            @if ($staff->hasMorePages())
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ $staff->appends(['search' => request()->search])->nextPageUrl() }}" rel="next">Next &raquo;</a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled">
+                                                    <span class="page-link">Next &raquo;</span>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </div>
@@ -242,7 +367,7 @@
                             <span class="close" id="closeModal">&times;</span>
                             <h2>Edit Staff</h2>
                             <form id="editStaffForm" method="POST" action="">
-                            @csrf
+                                @csrf
                                 @method('PUT')
                                 <input type="hidden" id="edit_staff_id" name="id">
                                 <div class="mb-3">
@@ -261,6 +386,7 @@
                         </div>
                     </div>
 
+                    <!-- JavaScript for Modal Management -->
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {
                             var modal = document.getElementById("customModal");
@@ -284,170 +410,119 @@
                                 }
                             });
                         });
-
                     </script>
 
-               <script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Open Modal
-    document.querySelectorAll(".edit-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            let staffId = this.dataset.id;  
-            if (!staffId) {
-                alert("Error: Staff ID is missing!");
-                return;
-            }
+                    <!-- JavaScript for Edit Modal -->
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // Open Edit Modal
+                            document.querySelectorAll(".edit-btn").forEach(button => {
+                                button.addEventListener("click", function () {
+                                    let staffId = this.dataset.id;  
+                                    if (!staffId) {
+                                        alert("Error: Staff ID is missing!");
+                                        return;
+                                    }
 
-            // ✅ Set the hidden input field for ID
-            document.getElementById("edit_staff_id").value = staffId;
+                                    // Set the hidden input field for ID
+                                    document.getElementById("edit_staff_id").value = staffId;
 
-            // ✅ Set the action URL correctly
-            document.getElementById("editStaffForm").action = `/staff/update/${staffId}`;
+                                    // Set the action URL correctly
+                                    document.getElementById("editStaffForm").action = `/staff/update/${staffId}`;
 
-            // ✅ Populate the form fields
-            document.getElementById("edit_first_name").value = this.dataset.first_name;
-            document.getElementById("edit_last_name").value = this.dataset.last_name;
+                                    // Populate the form fields
+                                    document.getElementById("edit_first_name").value = this.dataset.first_name;
+                                    document.getElementById("edit_last_name").value = this.dataset.last_name;
 
-            // ✅ Properly set selected value in dropdown
-            let positionDropdown = document.getElementById("edit_position");
-            let usertype = this.dataset.usertype;
-            for (let option of positionDropdown.options) {
-                if (option.value === usertype) {
-                    option.selected = true;
-                    break;
-                }
-            }
+                                    // Show the modal
+                                    document.getElementById("editModal").style.display = "flex";
+                                });
+                            });
 
-            // ✅ Show the modal
-            document.getElementById("editModal").style.display = "flex";
-        });
-    });
+                            // Close button event listener
+                            document.getElementById("closeModal").addEventListener("click", function () {
+                                document.getElementById("editModal").style.display = "none";
+                            });
 
-    // ✅ Close button event listener
-    document.getElementById("closeModal").addEventListener("click", function () {
-        document.getElementById("editModal").style.display = "none";
-    });
-
-    // ✅ Close modal when clicking outside of it
-    window.addEventListener("click", function (event) {
-        let modal = document.getElementById("editModal");
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    });
-});
-</script>
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".delete-button").forEach(button => {
-            button.addEventListener("click", function () {
-                const dataId = this.dataset.id;
-
-                if (confirm("Are you sure you want to delete this data?")) {
-                    fetch(`/staff/delete/${dataId}`, {
-                        method: "DELETE",
-                        headers: {
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                            "Content-Type": "application/json"
-                        }
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert("Data deleted successfully!");
-                                location.reload();
-                            } else {
-                                alert("Failed to delete data.");
-                            }
-                        })
-                        .catch(error => {
-                            console.error("Error:", error);
-                            alert("Something went wrong.");
+                            // Close modal when clicking outside of it
+                            window.addEventListener("click", function (event) {
+                                let modal = document.getElementById("editModal");
+                                if (event.target === modal) {
+                                    modal.style.display = "none";
+                                }
+                            });
                         });
+                    </script>
 
-                }
-            });
-        });
-    });
+                    <!-- JavaScript for Delete Functionality -->
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.querySelectorAll(".delete-btn").forEach(button => {
+                                button.addEventListener("click", function () {
+                                    const dataId = this.dataset.id;
 
-</script>
+                                    if (!confirm("Are you sure you want to delete this staff?")) return;
 
-    <script>
-       document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".delete-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            const dataId = this.dataset.id;
+                                    fetch(`/staff/${dataId}`, {
+                                        method: "DELETE",
+                                        headers: {
+                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                                            "Content-Type": "application/json"
+                                        }
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            alert("Staff deleted successfully!");
+                                            location.reload();
+                                        } else {
+                                            alert("Failed to delete staff.");
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Error:", error);
+                                        alert("Something went wrong.");
+                                    });
+                                });
+                            });
+                        });
+                    </script>
 
-            if (!confirm("Are you sure you want to delete this staff?")) return;
+                    <!-- JavaScript for Search Functionality -->
+                    <script>
+                        document.getElementById("searchInput").addEventListener("input", function () {
+                            let searchValue = this.value.toLowerCase();
+                            let rows = document.querySelectorAll("#dataTable tbody tr");
 
-            fetch(`/staff/${dataId}`, {
-                method: "DELETE",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Staff deleted successfully!");
-                    location.reload();
-                } else {
-                    alert("Failed to delete staff.");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("Something went wrong.");
-            });
-        });
-    });
-});
+                            rows.forEach(row => {
+                                let found = false;
 
-    </script>
+                                row.querySelectorAll("td").forEach(cell => {
+                                    let originalText = cell.innerText;
+                                    let lowerText = originalText.toLowerCase();
 
+                                    if (lowerText.includes(searchValue)) {
+                                        found = true;
+                                        let regex = new RegExp(`(${searchValue})`, "gi");
+                                        
+                                        cell.innerHTML = originalText.replace(
+                                            regex,
+                                            `<span class="highlight" style="background-color: yellow; font-weight: bold;">$1</span>`
+                                        );
+                                    } else {
+                                        cell.innerHTML = originalText;
+                                    }
+                                });
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    document.getElementById("searchInput").addEventListener("input", function () {
-    let searchValue = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#dataTable tbody tr");
-
-    rows.forEach(row => {
-        let found = false;
-
-        row.querySelectorAll("td").forEach(cell => {
-            let originalText = cell.innerText; // Store original uppercase text
-            let lowerText = originalText.toLowerCase();
-
-            if (lowerText.includes(searchValue)) {
-                found = true;
-                let regex = new RegExp(`(${searchValue})`, "gi");
-                
-                // Replace only the matching part, but keep original case
-                cell.innerHTML = originalText.replace(
-                    regex,
-                    `<span class="highlight" style="background-color: yellow; font-weight: bold;">$1</span>`
-                );
-            } else {
-                cell.innerHTML = originalText; // Reset text without modification
-            }
-        });
-
-        // Show or hide row based on search match
-        row.style.display = found ? "" : "none";
-    });
-});
-
-</script>
+                                row.style.display = found ? "" : "none";
+                            });
+                        });
+                    </script>
 
                 </div>
             </main>
         </div>
     </div>
-
 
     @if(session('success'))
         <script>
