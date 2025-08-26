@@ -8,21 +8,7 @@
     <style>
 		
 
-        /* Base sidebar style */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 280px;
-    background: #0a2a66;  /* Dagupan blue (change to your theme if needed) */
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
+        
         .sidebar-nav {
             list-style: none;
             padding: 24px 0;
