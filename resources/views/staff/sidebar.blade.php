@@ -6,49 +6,7 @@
     <title>Modern Sidebar</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-            z-index: 1000;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .sidebar-content {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-brand {
-            padding: 24px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 0;
-        }
-
-        .sidebar-brand img {
-            width: 100px;
-            height: auto;
-        }
-
+		
         .sidebar-nav {
             list-style: none;
             padding: 24px 0;
@@ -164,67 +122,15 @@
             box-shadow: 0 16px 50px rgba(0, 0, 0, 0.1);
         }
 
-        /* Mobile hamburger menu */
-        .mobile-menu-btn {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-
-        .mobile-menu-btn i {
-            color: white;
-            font-size: 24px;
-        }
-
-        /* Mobile overlay */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar-overlay.active {
-            opacity: 1;
-        }
-
         /* Responsive design */
         @media (max-width: 768px) {
             .sidebar {
-                width: 280px;
+                width: 260px;
                 transform: translateX(-100%);
             }
             
             .sidebar.open {
                 transform: translateX(0);
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .sidebar-overlay {
-                display: block;
             }
         }
 
@@ -239,7 +145,6 @@
         @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
-                padding-top: 80px;
             }
         }
 
@@ -263,17 +168,12 @@
             scrollbar-width: thin;
             scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
         }
+
+
+        
     </style>
 </head>
-<body>
 
-<!-- Mobile Menu Button -->
-<button class="mobile-menu-btn" onclick="toggleSidebar()">
-    <i data-feather="menu"></i>
-</button>
-
-<!-- Sidebar Overlay for Mobile -->
-<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <nav id="sidebar" class="sidebar js-sidebar">
 	<div class="sidebar-content js-simplebar">
@@ -291,42 +191,66 @@
 				</a>
 			</li>
 
-			<li class="sidebar-item">
-				<a class="sidebar-link" href="{{url('show_immunization')}}">
-					<i class="align-middle" data-feather="shield"></i> <span class="align-middle">Immunization</span>
-				</a>
+
 			</li>
 
 			<li class="sidebar-item">
-				<a class="sidebar-link" href="{{url('show_vital_statistics')}}">
-					<i class="align-middle" data-feather="activity"></i> <span class="align-middle">Vital Statistics</span>
-				</a>
-			</li>
+    <a class="sidebar-link" href="{{url('show_immunization')}}">
+        <i class="align-middle" data-feather="shield"></i> <span class="align-middle">Immunization</span>
+    </a>
+</li>
 
-			<li class="sidebar-item">
-				<a class="sidebar-link" href="{{url('show_population')}}">
-					<i class="align-middle" data-feather="users"></i> <span class="align-middle">Population Statistics</span>
-				</a>
-			</li>
+<li class="sidebar-item">
+    <a class="sidebar-link" href="{{url('show_vital_statistics')}}">
+        <i class="align-middle" data-feather="activity"></i> <span class="align-middle">Vital Statistics</span>
+    </a>
+</li>
 
-			<li class="sidebar-item">
-				<a class="sidebar-link" href="{{url('show_morbidity')}}">
-					<i class="align-middle" data-feather="thermometer"></i> <span class="align-middle">Morbidity Records</span>
-				</a>
-			</li>
+<li class="sidebar-item">
+    <a class="sidebar-link" href="{{url('show_population')}}">
+        <i class="align-middle" data-feather="users"></i> <span class="align-middle">Population Statistics</span>
+    </a>
+</li>
 
-			<li class="sidebar-item">
-				<a class="sidebar-link" href="{{url('show_mortality')}}">
-					<i class="align-middle" data-feather="heart"></i> <span class="align-middle">Mortality Records</span>
-				</a>
-			</li>
+<li class="sidebar-item">
+    <a class="sidebar-link" href="{{url('show_morbidity')}}">
+        <i class="align-middle" data-feather="thermometer"></i> <span class="align-middle">Morbidity Records</span>
+    </a>
+</li>
 
-			<li class="sidebar-item">
-				<a class="sidebar-link" href="{{url('show_trends')}}">
-					<i class="align-middle" data-feather="pie-chart"></i> <span class="align-middle">Trends</span>
+<li class="sidebar-item">
+    <a class="sidebar-link" href="{{url('show_mortality')}}">
+        <i class="align-middle" data-feather="heart"></i> <span class="align-middle">Mortality Records</span>
+    </a>
+</li>
+
+<li class="sidebar-item">
+    <a class="sidebar-link" href="{{url('show_trends')}}">
+        <i class="align-middle" data-feather="pie-chart"></i> <span class="align-middle">Trends</span>
+    </a>
+</li>
+
+
+
+
+			<!-- <li class="sidebar-item">
+				<a class="sidebar-link" href="">
+					<i class="align-middle" data-feather="book"></i> <span class="align-middle">Reports</span>
 				</a>
-			</li>
+			</li> -->
+
+			<!-- <li class="sidebar-item">
+				<a class="sidebar-link" href="#">
+					<i class="align-middle" data-feather="settings"></i> <span
+						class="align-middle">Settings</span>
+				</a>
+			</li> -->
+
+			
+
 		</ul>
+
+
 	</div>
 </nav>
 
