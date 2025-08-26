@@ -1117,20 +1117,7 @@
 <body>
     <div class="wrapper">
         @include('staff.sidebar')
-        <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Immunization Records</h3>
-    <div>
-        @php
-            $user = \Illuminate\Support\Facades\Auth::user();
-        @endphp
-        @if ($user)
-            <span class="fw-bold text-primary">
-                Logged in as: {{ $user->first_name }} {{ $user->last_name }}
-            </span>
-        @endif
-    </div>
-</div>
-
+        
 
         <div class="main">
             @include('staff.header')
