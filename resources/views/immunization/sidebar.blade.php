@@ -51,17 +51,3 @@
 	</div>
 </nav>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Highlight active link
-    let currentUrl = window.location.href;
-    let sidebarLinks = document.querySelectorAll(".sidebar-link");
-    sidebarLinks.forEach(link => {
-        if (link.href === currentUrl) {
-            link.closest(".sidebar-item").classList.add("active");
-        } else {
-            link.closest(".sidebar-item").classList.remove("active");
-        }
-    });
-	});
-</script>
