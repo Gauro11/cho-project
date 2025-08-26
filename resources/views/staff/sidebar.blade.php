@@ -257,16 +257,27 @@
 </nav>
 
 <script>
-	document.addEventListener("DOMContentLoaded", function () {
-		let currentUrl = window.location.href; // Get current URL
-		let sidebarLinks = document.querySelectorAll(".sidebar-link");
+document.addEventListener("DOMContentLoaded", function () {
+    // Highlight active link
+    let currentUrl = window.location.href;
+    let sidebarLinks = document.querySelectorAll(".sidebar-link");
+    sidebarLinks.forEach(link => {
+        if (link.href === currentUrl) {
+            link.closest(".sidebar-item").classList.add("active");
+        } else {
+            link.closest(".sidebar-item").classList.remove("active");
+        }
+    });
 
-		sidebarLinks.forEach(link => {
-			if (link.href === currentUrl) {
-				link.closest(".sidebar-item").classList.add("active");
-			} else {
-				link.closest(".sidebar-item").classList.remove("active");
-			}
-		});
-	});
+    // Sidebar toggle (mobile + desktop collapse)
+    let sidebarToggle = document.querySelector(".js-sidebar-toggle");
+    let sidebar = document.getElementById("sidebar");
+
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener("click", function (e) {
+            e.preventDefault();
+            sidebar.classList.toggle("open"); // toggle .open class
+        });
+    }
+});
 </script>
