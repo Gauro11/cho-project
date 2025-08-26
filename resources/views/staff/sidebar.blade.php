@@ -169,28 +169,7 @@
             scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
         }
 
-        /* Base sidebar style */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh; 
-    width: 280px;  /* adjust width */
-    background: #0a2a66;  /* Dagupan blue, pwede palitan */
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-/* Make sure content starts after sidebar */
-.main-content {
-    margin-left: 280px; 
-    padding: 24px;
-    background: #f8fafc;
-    min-height: 100vh;
-}
+        
 
 /* Responsive: collapse sidebar in mobile */
 @media (max-width: 768px) {
