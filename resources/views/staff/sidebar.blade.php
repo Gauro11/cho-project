@@ -23,7 +23,6 @@
     z-index: 1000;
 }
 
-
         .sidebar-nav {
             list-style: none;
             padding: 24px 0;
