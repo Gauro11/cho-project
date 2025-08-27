@@ -582,27 +582,7 @@
                 options: modernChartOptions
             });
 
-            new Chart(document.getElementById("populationStatisticsChart"), {
-    type: "line",
-    data: {
-        labels: sortedPopulation.map(item => item.date), // or just year if you only want YYYY
-        datasets: [{
-            label: "Population (Statistics Management)",
-            borderColor: "#ff9800",
-            backgroundColor: "rgba(255, 152, 0, 0.2)",
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: "#ff9800",
-            pointBorderColor: "#fff",
-            pointBorderWidth: 2,
-            pointRadius: 5,
-            data: sortedPopulation.map(item => item.population)
-        }]
-    },
-    options: modernChartOptions
-});
-
+            
 
             new Chart(document.getElementById("birthDeathChart"), {
                 type: "line",
@@ -719,47 +699,51 @@
 <!-- Scripts -->
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        let vitalStatisticsData = {!! json_encode($vitalStatisticsData) !!};
-        let sortedData = vitalStatisticsData.sort((a, b) => a.year - b.year);
+        // Separate datasets from Laravel
+        let populationData = {!! json_encode($populationData) !!}; // from population_statistics_management
+        let vitalStatisticsData = {!! json_encode($vitalStatisticsData) !!}; // from vital_statistics_management
 
+        let sortedPopulation = populationData.sort((a, b) => a.year - b.year);
+        let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
+
+        // --- Population Chart (from population_statistics_management) ---
         new Chart(document.getElementById("populationChart"), {
             type: "line",
             data: {
-                labels: sortedData.map(item => item.year),
+                labels: sortedPopulation.map(item => item.year),
                 datasets: [{
                     label: "Total Population",
                     borderColor: "#4A90E2",
                     borderWidth: 2,
                     fill: false,
-                    data: sortedData.map(item => item.population)
+                    data: sortedPopulation.map(item => item.population)
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                    y: { beginAtZero: true }
                 }
             }
         });
 
+        // --- Birth & Death Chart (from vital_statistics_management) ---
         new Chart(document.getElementById("birthDeathChart"), {
             type: "line",
             data: {
-                labels: sortedData.map(item => item.year),
-                datasets: [{
+                labels: sortedVital.map(item => item.year),
+                datasets: [
+                    {
                         label: "Live Births",
                         borderColor: "#2ECC71",
                         borderWidth: 3,
                         pointStyle: 'circle',
                         pointRadius: 5,
                         fill: false,
-                        data: sortedData.map(item => item.total_live_births)
+                        data: sortedVital.map(item => item.total_live_births)
                     },
                     {
                         label: "Total Deaths",
@@ -769,7 +753,7 @@
                         pointStyle: 'rect',
                         pointRadius: 5,
                         fill: false,
-                        data: sortedData.map(item => item.total_deaths)
+                        data: sortedVital.map(item => item.total_deaths)
                     }
                 ]
             },
@@ -777,18 +761,18 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                    y: { beginAtZero: true }
                 }
             }
         });
 
+        // --- Immunization Chart ---
         new Chart(document.getElementById("immunizationChart"), {
             type: "bar",
             data: {
                 labels: {!! json_encode($immunizationData->pluck('vaccine_name')) !!},
-                datasets: [{
+                datasets: [
+                    {
                         label: "Male",
                         backgroundColor: "#4A90E2",
                         data: {!! json_encode($immunizationData->pluck('male_vaccinated')) !!}
@@ -804,17 +788,13 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        beginAtZero: true,
-                        stacked: false
-                    }
+                    x: { stacked: true },
+                    y: { beginAtZero: true, stacked: false }
                 }
             }
         });
 
+        // --- Morbidity & Mortality Charts ---
         const morbidityData = {!! json_encode($morbidityCases) !!};
         const mortalityData = {!! json_encode($mortalityCases) !!};
 
@@ -827,7 +807,8 @@
                 type: "bar",
                 data: {
                     labels: caseData.map(c => c.case_name),
-                    datasets: [{
+                    datasets: [
+                        {
                             label: "Male",
                             backgroundColor: "yellow",
                             data: caseData.map(c => c.male_count)
@@ -843,24 +824,11 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: {
-                            ticks: {
-                                color: "black"
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: "black"
-                            }
-                        }
+                        x: { ticks: { color: "black" } },
+                        y: { beginAtZero: true, ticks: { color: "black" } }
                     },
                     plugins: {
-                        legend: {
-                            labels: {
-                                color: "black"
-                            }
-                        }
+                        legend: { labels: { color: "black" } }
                     }
                 }
             });
@@ -870,6 +838,7 @@
         createChart("mortalityCasesChart", getChronologicalTopCases(mortalityData));
     });
 </script>
+
 
 </body>
 
