@@ -27,8 +27,9 @@ public function index()
 
         if ($usertype == 'user' || $usertype == 'staff') {
             $barangays = DB::table('population_statistics_management')
-        ->orderBy('date', 'asc')
-        ->pluck('population');
+    ->select('date as year', 'population')
+    ->orderBy('date', 'asc')
+    ->get();
             
             
 
