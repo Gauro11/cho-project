@@ -533,28 +533,26 @@
 let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   // ✅ Calculate total population
-    let totalPopulation = sortedPopulation.reduce((sum, item) => sum + item.population, 0);
+  let totalPopulation = sortedPopulation.reduce((sum, item) => sum + parseInt(item.population), 0);
 
 // -------------------------
 // Population Chart
 // -------------------------
 new Chart(document.getElementById("populationChart"), {
+  const chart = new Chart(ctx, {
     type: "line",
     data: {
-        labels: sortedPopulation.map(item => item.date), // ✅ now use date
+        labels: sortedPopulation.map(item => item.date),
         datasets: [
             {
-                label: "Total Population",
+                label: "Total Population (" + totalPopulation.toLocaleString() + ")",
                 borderColor: "#007bff",
                 backgroundColor: "rgba(0, 123, 255, 0.2)",
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                data: sortedPopulation.map(item => item.population) // ✅ correct values
+                data: sortedPopulation.map(item => item.population) // ✅ values
             }
-            
-
-            
         ]
     },
     options: {
