@@ -534,28 +534,37 @@ let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.da
 
 
 
-// -------------------------
-// Population Chart
-// -------------------------
-new Chart(document.getElementById("populationChart"), {
-    type: "line",
-    data: {
-        labels: sortedPopulation.map(item => item.date), // ✅ now use date
-        datasets: [
-            {
-                label: "Total Population",
-                borderColor: "#007bff",
-                backgroundColor: "rgba(0, 123, 255, 0.2)",
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                data: sortedPopulation.map(item => item.population) // ✅ correct values
-            }
-            
+ let totalPopulation = sortedPopulation.reduce((sum, item) => sum + item.population, 0);
 
-            
-        ]
-    },
+    // -------------------------
+    // Population Chart
+    // -------------------------
+    new Chart(document.getElementById("populationChart"), {
+        type: "line",
+        data: {
+            labels: sortedPopulation.map(item => item.date), // ✅ now use date
+            datasets: [
+                {
+                    label: "Total Population",
+                    borderColor: "#007bff",
+                    backgroundColor: "rgba(0, 123, 255, 0.2)",
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    data: sortedPopulation.map(item => item.population) // ✅ correct values
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: "Total Population: " + totalPopulation.toLocaleString(), // ✅ Show total here
+                    font: { size: 16 }
+                }
+            }
+        }
+    
     options: {
         responsive: true,
         maintainAspectRatio: false,

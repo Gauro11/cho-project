@@ -31,6 +31,8 @@ public function index()
     ->select('date', 'population')
     ->get();
 
+    $totalPopulation = DB::table('population_statistics_management')->sum('population');
+
             
             
 
