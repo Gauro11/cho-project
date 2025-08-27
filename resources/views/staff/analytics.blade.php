@@ -576,7 +576,7 @@
                         pointBorderColor: "#fff",
                         pointBorderWidth: 2,
                         pointRadius: 6,
-                        data: sortedData.map(item => item.total_population)
+                        data: sortedData.map(item => item.population)
                     }]
                 },
                 options: modernChartOptions
