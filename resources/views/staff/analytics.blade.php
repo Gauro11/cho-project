@@ -532,12 +532,7 @@
       // Sort population data by date
 let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // ✅ Calculate total population
-        let totalPopulation = sortedPopulation.reduce((sum, item) => sum + (item.population || 0), 0);
 
-        // ✅ Display total population automatically
-        document.getElementById("totalPopulation").innerText = 
-            "Total Population: " + totalPopulation.toLocaleString();
 
 // -------------------------
 // Population Chart
