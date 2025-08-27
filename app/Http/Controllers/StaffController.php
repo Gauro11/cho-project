@@ -26,9 +26,7 @@ public function index()
         $usertype = Auth::user()->usertype;
 
         if ($usertype == 'user' || $usertype == 'staff') {
-           $populationData = DB::table('population_statistics_management')
-    ->select('year', 'population') // select only what you need
-    ->get();
+            $barangays = DB::table('population_statistics_management')->get();
             
 
             $morbidityCases = DB::table('morbidity_mortality_management')
