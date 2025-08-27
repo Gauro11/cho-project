@@ -551,18 +551,7 @@ new Chart(document.getElementById("populationChart"), {
                 tension: 0.4,
                 data: sortedPopulation.map(item => item.population) // ✅ correct values
             }
-              {
-            label: "Overall Total",
-            borderColor: "#28a745",
-            backgroundColor: "rgba(40, 167, 69, 0.2)",
-            borderWidth: 3,
-            fill: false,
-            tension: 0.4,
-            // 👇 repeat the total value across all labels so it appears as a straight line
-            data: sortedPopulation.map(() => 
-                sortedPopulation.reduce((sum, item) => sum + item.population, 0)
-            )
-        }
+            
 
             
         ]
