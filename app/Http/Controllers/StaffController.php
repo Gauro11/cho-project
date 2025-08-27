@@ -26,18 +26,9 @@ public function index()
         $usertype = Auth::user()->usertype;
 
         if ($usertype == 'user' || $usertype == 'staff') {
-            $populationData = DB::table('population_statistics_management')
-    ->select('date', 'population') // adjust column name if it's just "population"
-    ->orderBy('date', 'asc')
-    ->get();
-
-return view('staff.index', compact(
-    'morbidityCases',
-    'mortalityCases',
-    'vitalStatisticsData',
-    'immunizationData',
-    'populationData' // pass this instead of $barangays
-));
+           $populationData = DB::table('population_statistics_management')
+    ->orderBy('date', 'asc') // since your "year" is stored in `date`
+    ->pluck('population');
 
             
 
