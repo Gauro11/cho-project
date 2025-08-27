@@ -572,7 +572,7 @@
             x: {
                 title: {
                     display: true,
-                    text: "Year"
+                    text: "Date"
                 }
             },
             y: {
