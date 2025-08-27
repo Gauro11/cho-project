@@ -534,7 +534,7 @@
       new Chart(document.getElementById("populationChart"), {
     type: "line",
     data: {
-        labels: sortedVital.map(item => item.year), // x-axis years
+        labels: sortedVital.map(item => item.date), // x-axis years
         datasets: [
             {
                 label: "Total Population",
