@@ -1403,7 +1403,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <div class="mb-3">
                                     <small class="text-muted">
                                         <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
-                                        <strong>Required columns:</strong> Month & Year, Total Population, Total Live
+                                        <strong>Required columns:</strong> Month & Year, Total Live
                                         Births, Total Deaths, Infant Deaths, Maternal Deaths
                                     </small>
                                 </div>
@@ -1444,12 +1444,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     </select>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="total_population" class="modern-form-label form-label">👥 Total
-                                        Population</label>
-                                    <input type="number" class="modern-form-control form-control"
-                                        id="total_population" name="total_population" required min="0">
-                                </div>
+                               
 
                                 <div class="mb-3">
                                     <label for="total_live_births" class="modern-form-label form-label">👶 Total Live
@@ -1627,13 +1622,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 </div>
 
 
-                                <div class="mb-3">
-                                    <label for="edit_population" class="modern-form-label form-label">👥
-                                        Population</label>
-                                    <input type="number" class="modern-form-control form-control"
-                                        id="edit_population" name="total_population" required min="0">
-                                </div>
-
+                                
                                 <div class="mb-3">
                                     <label for="edit_births" class="modern-form-label form-label">👶 Total Live
                                         Births</label>
@@ -2188,7 +2177,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             button.addEventListener("click", function() {
                                 document.getElementById("edit_id").value = this.dataset.id;
                                 document.getElementById("edit_year").value = this.dataset.year;
-                                document.getElementById("edit_population").value = this.dataset.population;
+                               
                                 document.getElementById("edit_births").value = this.dataset.births;
                                 document.getElementById("edit_deaths").value = this.dataset.deaths;
                                 document.getElementById("edit_infant").value = this.dataset.infant;
