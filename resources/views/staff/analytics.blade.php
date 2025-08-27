@@ -538,19 +538,20 @@ let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.da
 // Population Chart
 // -------------------------
 new Chart(document.getElementById("populationChart"), {
+    type: "line",
     data: {
-    labels: sortedPopulation.map(item => item.date), // ✅ dates as labels
-    datasets: [
-        {
-            label: "Population",
-            borderColor: "#007bff",
-            backgroundColor: "rgba(0, 123, 255, 0.2)",
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            data: sortedPopulation.map(item => item.population) // ✅ per-date population
-        },
-        {
+        labels: sortedPopulation.map(item => item.date), // ✅ now use date
+        datasets: [
+            {
+                label: "Total Population",
+                borderColor: "#007bff",
+                backgroundColor: "rgba(0, 123, 255, 0.2)",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                data: sortedPopulation.map(item => item.population) // ✅ correct values
+            }
+              {
             label: "Overall Total",
             borderColor: "#28a745",
             backgroundColor: "rgba(40, 167, 69, 0.2)",
@@ -562,9 +563,10 @@ new Chart(document.getElementById("populationChart"), {
                 sortedPopulation.reduce((sum, item) => sum + item.population, 0)
             )
         }
-    ]
-}
 
+            
+        ]
+    },
     options: {
         responsive: true,
         maintainAspectRatio: false,
