@@ -267,7 +267,8 @@
         @endphp
         <tr>
             
-            <td>{{ date('Y', strtotime($row->date)) }}</td>
+            <td>{{ date('F d, Y', strtotime($row->date)) }}</td>
+
             <td>{{ strtoupper($row->vaccine_name) }}</td>
             <td>{{ number_format($row->male_vaccinated) }}</td>
             <td>{{ number_format($row->female_vaccinated) }}</td>
