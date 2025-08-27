@@ -537,8 +537,8 @@
         datasets: [
             {
                 label: "Total Population",
-                borderColor: "#FF5733",
-                backgroundColor: "rgba(255,87,51,0.2)",
+                borderColor: "#007bff",
+                backgroundColor: "rgba(0, 123, 255, 0.2)",
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
