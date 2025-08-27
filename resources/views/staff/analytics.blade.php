@@ -582,6 +582,28 @@
                 options: modernChartOptions
             });
 
+            new Chart(document.getElementById("populationStatisticsChart"), {
+    type: "line",
+    data: {
+        labels: sortedPopulation.map(item => item.date), // or just year if you only want YYYY
+        datasets: [{
+            label: "Population (Statistics Management)",
+            borderColor: "#ff9800",
+            backgroundColor: "rgba(255, 152, 0, 0.2)",
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: "#ff9800",
+            pointBorderColor: "#fff",
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            data: sortedPopulation.map(item => item.population)
+        }]
+    },
+    options: modernChartOptions
+});
+
+
             new Chart(document.getElementById("birthDeathChart"), {
                 type: "line",
                 data: {
