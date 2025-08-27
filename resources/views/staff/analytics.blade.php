@@ -527,6 +527,7 @@
 
         // Sort vital stats
         let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
+        let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         // -------------------------
         // Population Chart (BOTH)
@@ -534,7 +535,7 @@
       new Chart(document.getElementById("populationChart"), {
     type: "line",
     data: {
-        labels: sortedVital.map(item => item.year), // x-axis years
+        labels: sortedVital.map(item => item.date), // x-axis years
         datasets: [
             {
                 label: "Total Population",
