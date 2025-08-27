@@ -582,8 +582,6 @@
                 options: modernChartOptions
             });
 
-            
-
             new Chart(document.getElementById("birthDeathChart"), {
                 type: "line",
                 data: {

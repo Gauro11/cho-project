@@ -26,7 +26,19 @@ public function index()
         $usertype = Auth::user()->usertype;
 
         if ($usertype == 'user' || $usertype == 'staff') {
-            $barangays = DB::table('population_statistics_management')->get();
+            $populationData = DB::table('population_statistics_management')
+    ->select('year', 'total_population') // adjust column name if it's just "population"
+    ->orderBy('year', 'asc')
+    ->get();
+
+return view('staff.index', compact(
+    'morbidityCases',
+    'mortalityCases',
+    'vitalStatisticsData',
+    'immunizationData',
+    'populationData' // pass this instead of $barangays
+));
+
             
 
             $morbidityCases = DB::table('morbidity_mortality_management')
