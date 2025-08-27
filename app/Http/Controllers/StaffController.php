@@ -27,14 +27,7 @@ public function index()
 
         if ($usertype == 'user' || $usertype == 'staff') {
             $barangays = DB::table('population_statistics_management')->get();
-            return view('staff.index', compact(
-    'morbidityCases',
-    'barangays',
-    'mortalityCases',
-    'vitalStatisticsData',
-    'immunizationData',
-    'populationData'
-));
+            
 
             $morbidityCases = DB::table('morbidity_mortality_management')
                 ->where('category', 'morbidity')
