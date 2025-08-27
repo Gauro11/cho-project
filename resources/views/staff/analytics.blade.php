@@ -512,9 +512,7 @@
             </div>
         </div>
     </div>
-    <div style="height:400px;">
-    <canvas id="populationChart"></canvas>
-</div>
+    
 
     <!-- Scripts -->
    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
