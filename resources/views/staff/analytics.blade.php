@@ -700,8 +700,9 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        let vitalStatisticsData = {!! json_encode($vitalStatisticsData) !!};
-        let sortedData = vitalStatisticsData.sort((a, b) => a.year - b.year);
+       let barangays = {!! json_encode($barangays) !!};
+       
+let sortedBarangays = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         new Chart(document.getElementById("populationChart"), {
             type: "line",
