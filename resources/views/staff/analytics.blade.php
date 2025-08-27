@@ -712,7 +712,7 @@
                     borderColor: "#4A90E2",
                     borderWidth: 2,
                     fill: false,
-                    data: sortedData.map(item => item.total_population)
+                    data: sortedData.map(item => item.population)
                 }]
             },
             options: {
