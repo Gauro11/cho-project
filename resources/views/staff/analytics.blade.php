@@ -547,13 +547,11 @@
         ]
     },
     options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "top",
-                labels: {
-                    font: {
-                        size: 14
+       options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: "#333" } } },
+                scales: { y: { beginAtZero: true } }
                     }
                 }
             },
