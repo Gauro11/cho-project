@@ -551,6 +551,16 @@ new Chart(document.getElementById("populationChart"), {
                 tension: 0.4,
                 data: sortedPopulation.map(item => item.population) // ✅ correct values
             }
+
+             {
+                    label: "Total Population",
+                    borderColor: "#007bff",
+                    backgroundColor: "rgba(0, 123, 255, 0.2)",
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    data: totalPopulation // ✅ cumulative (sum of all up to that date)
+                }
         ]
     },
     options: {
