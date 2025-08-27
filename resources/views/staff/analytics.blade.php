@@ -527,15 +527,18 @@
 
         // Sort vital stats
         let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
-        let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
 
-        // -------------------------
-        // Population Chart (BOTH)
-        // -------------------------
-      new Chart(document.getElementById("populationChart"), {
+      // Sort population data by date
+let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+// -------------------------
+// Population Chart
+// -------------------------
+new Chart(document.getElementById("populationChart"), {
     type: "line",
     data: {
-        labels: sortedVital.map(item => item.date), // x-axis years
+        labels: sortedPopulation.map(item => item.date), // ✅ now use date
         datasets: [
             {
                 label: "Total Population",
@@ -544,35 +547,29 @@
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                data: barangays // total population from DB
+                data: sortedPopulation.map(item => item.population) // ✅ correct values
             }
         ]
     },
     options: {
         responsive: true,
-        maintainAspectRatio: false, // ✅ important for responsiveness
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: "top",
-                labels: {
-                    font: {
-                        size: 14
-                    }
-                }
+                labels: { font: { size: 14 } }
             },
             title: {
                 display: true,
                 text: "Barangay Population Records",
-                font: {
-                    size: 18
-                }
+                font: { size: 18 }
             }
         },
         scales: {
             x: {
                 title: {
                     display: true,
-                    text: "Date"
+                    text: "Date" // ✅ corrected label
                 }
             },
             y: {
@@ -584,7 +581,6 @@
             }
         }
     }
-    
 });
 
 

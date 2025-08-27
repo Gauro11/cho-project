@@ -26,9 +26,11 @@ public function index()
         $usertype = Auth::user()->usertype;
 
         if ($usertype == 'user' || $usertype == 'staff') {
-            $barangays = DB::table('population_statistics_management')
-        ->orderBy('date', 'asc')
-        ->pluck('population');
+           $barangays = DB::table('population_statistics_management')
+    ->orderBy('date', 'asc')
+    ->select('date', 'population')
+    ->get();
+
             
             
 
