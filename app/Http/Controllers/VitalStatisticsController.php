@@ -28,7 +28,7 @@ class VitalStatisticsController extends Controller
     $request->validate([
         'id' => 'required|exists:vital_statistics_management,id',
         'year' => 'required|string',
-        'total_population' => 'required|numeric',
+        
         'total_live_births' => 'required|numeric',
         'total_deaths' => 'required|numeric',
         'infant_deaths' => 'required|numeric',
@@ -39,7 +39,7 @@ class VitalStatisticsController extends Controller
         $data = VitalStatisticsManagement::find($request->id);
 
         $data->year = $request->year;
-        $data->total_population = $request->total_population;
+       
         $data->total_live_births = $request->total_live_births;
         $data->total_deaths = $request->total_deaths;
         $data->infant_deaths = $request->infant_deaths;
@@ -55,7 +55,7 @@ public function store_vitalstatiscs(Request $request)
 {
     $request->validate([
         'month_year' => 'required|string',
-        'total_population' => 'required|integer|min:0',
+       
         'total_live_births' => 'required|integer|min:0',
         'total_deaths' => 'required|integer|min:0',
         'infant_deaths' => 'required|integer|min:0',
@@ -74,7 +74,7 @@ public function store_vitalstatiscs(Request $request)
 
     VitalStatisticsManagement::create([
         'year' => $request->month_year,
-        'total_population' => $request->total_population,
+       
         'total_live_births' => $request->total_live_births,
         'total_deaths' => $request->total_deaths,
         'infant_deaths' => $request->infant_deaths,
