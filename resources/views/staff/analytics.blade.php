@@ -581,12 +581,7 @@
             }
         }
     }
-    options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: "#333" } } },
-                scales: { y: { beginAtZero: true } }
-            }
+    
 });
 
 
