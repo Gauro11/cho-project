@@ -530,56 +530,59 @@
         // -------------------------
         // Population Chart (BOTH)
         // -------------------------
-        new Chart(document.getElementById("populationChart"), {
-            type: "line",
-            data: {
-                labels: sortedVital.map(item => item.year), // x-axis years
-                datasets: [
-                    {
-                        label: "Vital Statistics Population",
-                        borderColor: "#4A90E2",
-                        backgroundColor: "rgba(74,144,226,0.2)",
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        data: sortedVital.map(item => item.population)
-                    },
-                    {
-                        label: "Barangay Population Records",
-                        borderColor: "#FF5733",
-                        backgroundColor: "rgba(255,87,51,0.2)",
-                        borderWidth: 3,
-                        borderDash: [6, 6],
-                        fill: true,
-                        tension: 0.4,
-                        data: barangays // from DB::pluck
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#333',
-                            font: { family: 'Inter', weight: '500' }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: { color: '#666', font: { family: 'Inter' } },
-                        grid: { color: 'rgba(0,0,0,0.1)' }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: '#666', font: { family: 'Inter' } },
-                        grid: { color: 'rgba(0,0,0,0.1)' }
+      new Chart(document.getElementById("populationChart"), {
+    type: "line",
+    data: {
+        labels: sortedVital.map(item => item.year), // x-axis years
+        datasets: [
+            {
+                label: "Total Population",
+                borderColor: "#FF5733",
+                backgroundColor: "rgba(255,87,51,0.2)",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                data: barangays // total population from DB
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "top",
+                labels: {
+                    font: {
+                        size: 14
                     }
                 }
+            },
+            title: {
+                display: true,
+                text: "Barangay Population Records",
+                font: {
+                    size: 18
+                }
             }
-        });
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: "Year"
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: "Population"
+                },
+                beginAtZero: true
+            }
+        }
+    }
+});
+
 
         // -------------------------
         // Birth / Death Chart
