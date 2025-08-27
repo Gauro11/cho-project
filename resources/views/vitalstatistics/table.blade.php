@@ -245,7 +245,7 @@
                     <thead>
                         <tr style="color: white;">
                             <th>Year</th>
-                            <th>Population</th>
+                           
                             <th>Total Live Births</th>
                             <th>Crude Birth Rate</th>
                             <th>Total Deaths</th>
@@ -274,7 +274,7 @@
                             <tr>
                                <td>{{ date('Y', strtotime($row->year)) }}</td>
 
-                                <td>{{ number_format($population) }}</td>
+                              
                                 <td>{{ number_format($births) }}</td>
                                 <td>{{ number_format($crudeBirthRate, 2) }}</td>
                                 <td>{{ number_format($deaths) }}</td>

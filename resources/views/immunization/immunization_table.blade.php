@@ -238,7 +238,7 @@
                         <thead>
                             <tr style="color: white;">
                                 
-                                <th>Year</th>
+                                <th>Date</th>
                                 <th>Vaccine Name</th>
                                 <th>Male Vaccinated</th>
                                 <th>Female Vaccinated</th>
