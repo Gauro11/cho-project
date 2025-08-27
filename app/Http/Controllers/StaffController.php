@@ -27,8 +27,8 @@ public function index()
 
         if ($usertype == 'user' || $usertype == 'staff') {
             $populationData = DB::table('population_statistics_management')
-    ->select('year', 'total_population') // adjust column name if it's just "population"
-    ->orderBy('year', 'asc')
+    ->select('date', 'population') // adjust column name if it's just "population"
+    ->orderBy('date', 'asc')
     ->get();
 
 return view('staff.index', compact(
