@@ -126,13 +126,14 @@ Route::delete('/vitalstatistics/delete-all', [VitalStatisticsController::class, 
 Route::get('/vitalstatistic/template', [VitalStatisticsController::class, 'vitalstatisticTemplate'])->name('vitalstatistic.template');
 
 // Immunization
+Route::middleware(['auth'])->group(function () {
 Route::post('store/immunization', [ImmunizationController::class, 'store_immunization'])->name('immunization.store');
 Route::put('/immunization/update', [ImmunizationController::class, 'update_immunization'])->name('immunization.update');
 Route::delete('/immunization/delete/{id}', [ImmunizationController::class, 'delete_immunization'])->name('immunization.delete');
 Route::post('/immunization/import', [ImmunizationController::class, 'import'])->name('immunization.import');
 Route::delete('/immunization/delete-all', [ImmunizationController::class, 'deleteAll'])->name('immunization.deleteAll');
 Route::get('/immunization/template', [ImmunizationController::class, 'immunizationTemplate'])->name('immunization.template');
-
+});
 
 // Population
 Route::post('store/population', [PopulationController::class, 'store_population'])->name('population.store');

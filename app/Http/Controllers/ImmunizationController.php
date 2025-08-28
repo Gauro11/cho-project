@@ -20,6 +20,12 @@ use App\Exports\ImmunizationTemplateExport;
 class ImmunizationController extends Controller
 {
 
+    public function __construct()
+    {
+        // Protect all routes in this controller
+        $this->middleware('auth');
+    }
+
     
     public function delete_immunization($id)
     {
