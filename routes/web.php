@@ -169,15 +169,16 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/home', [AdminController::class, 'index'])->name('admin.dashboard');
 });
 
-Route::middleware('auth:staff')->group(function () {
+Route::middleware(['auth:staff', 'prevent-back-history'])->group(function () {
     Route::get('/staff', [StaffController::class, 'index'])->name('staff.dashboard');
-       Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization'])->name('immunization.show');
-      Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
-      Route::get('/show_population', [PopulationController::class, 'show_population']);
-      Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbidity']);
-      Route::get('/show_mortality', [MorbidityMortalityController::class, 'show_mortality']);
-      Route::get('/show_trends', [AdminController::class, 'show_trends']);
+    Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization'])->name('immunization.show');
+    Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
+    Route::get('/show_population', [PopulationController::class, 'show_population']);
+    Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbidity']);
+    Route::get('/show_mortality', [MorbidityMortalityController::class, 'show_mortality']);
+    Route::get('/show_trends', [AdminController::class, 'show_trends']);
 });
+
 
 
 Route::get('/dagupan-population', [PopulationController::class, 'getDagupanPopulation']);
