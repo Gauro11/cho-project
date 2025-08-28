@@ -290,7 +290,7 @@ $barangayCoordinates = [
                     <tbody style="background-color: white;">
                         @foreach($data as $row)
                             <tr>
-                                <td>{{ $row->date }}</td>
+                                 <td>{{ \Carbon\Carbon::parse($row->date)->format('m-d-Y') }}</td>
                                 <td>{{ $row->location }}</td>
                                 <td>
                                     {{ $barangayCoordinates[ucwords(strtolower($row->location))]['lat'] ?? 'N/A' }}

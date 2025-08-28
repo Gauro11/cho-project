@@ -267,7 +267,7 @@
         @endphp
         <tr>
             
-            <td>{{ date('F d, Y', strtotime($row->date)) }}</td>
+           <td>{{ \Carbon\Carbon::parse($row->date)->format('m-d-Y') }}</td>
 
             <td>{{ strtoupper($row->vaccine_name) }}</td>
             <td>{{ number_format($row->male_vaccinated) }}</td>
