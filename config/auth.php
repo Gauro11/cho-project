@@ -36,15 +36,36 @@ return [
     */
 
    'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+
     'admin' => [
         'driver' => 'session',
-        'provider' => 'users', // You can also create a separate provider for admins if needed
+        'provider' => 'users', // or 'admins' if you use a different table
     ],
+
     'staff' => [
         'driver' => 'session',
-        'provider' => 'users', // Same provider if both are in the same table
+        'provider' => 'users', // or 'staffs'
     ],
 ],
+
+'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+
+    // if you use separate models/tables:
+    // 'admins' => [
+    //     'driver' => 'eloquent',
+    //     'model' => App\Models\Admin::class,
+    // ],
+],
+
+
 
 
 
