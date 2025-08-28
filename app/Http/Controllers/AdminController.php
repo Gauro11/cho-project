@@ -391,7 +391,15 @@ public function update_year(Request $request, $id)
 
         public function show_trends()
         {
-            return view('staff.trends');
+           if (Auth::check()) {
+        $usertype = Auth::user()->usertype;
+
+        // You can pass additional data if needed, right now just return the view
+        return view('staff.trends', compact('usertype'));
+    } else {
+        return redirect()->route('login')
+            ->withErrors(['error' => 'Please log in first.']);
+    }
         }
 
        public function show_staff()

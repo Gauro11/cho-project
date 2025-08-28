@@ -86,7 +86,7 @@ Route::get('/show_category', [AdminController::class, 'show_category']);
 Route::get('/show_year', [AdminController::class, 'show_year']);
 Route::get('/show_staff', [AdminController::class, 'show_staff']);
 Route::get('/show_disease', [AdminController::class, 'show_disease']);
-Route::get('/show_trends', [AdminController::class, 'show_trends']);
+// Route::get('/show_trends', [AdminController::class, 'show_trends']);
 Route::delete('/staff/{id}', [AdminController::class, 'delete_staff'])->name('staff.destroy');
 Route::put('/staff/update/{id}', [AdminController::class, 'update_staff'])->name('staff.update');
 
@@ -176,6 +176,7 @@ Route::middleware('auth:staff')->group(function () {
       Route::get('/show_population', [PopulationController::class, 'show_population']);
       Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbidity']);
       Route::get('/show_mortality', [MorbidityMortalityController::class, 'show_mortality']);
+      Route::get('/show_trends', [AdminController::class, 'show_trends']);
 });
 
 
