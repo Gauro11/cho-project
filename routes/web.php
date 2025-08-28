@@ -102,7 +102,7 @@ Route::post('/delete_disease/{id}', [AdminController::class, 'delete_disease']);
 Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbidity']);
 Route::get('/show_mortality', [MorbidityMortalityController::class, 'show_mortality']);
 Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization']);
-Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
+// Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
 Route::get('/show_population', [PopulationController::class, 'show_population']);
 
 // Morbidity & Mortality
@@ -126,7 +126,9 @@ Route::delete('/vitalstatistics/delete-all', [VitalStatisticsController::class, 
 Route::get('/vitalstatistic/template', [VitalStatisticsController::class, 'vitalstatisticTemplate'])->name('vitalstatistic.template');
 
 // Immunization
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization'])->name('immunization.show');
+});
 Route::post('store/immunization', [ImmunizationController::class, 'store_immunization'])->name('immunization.store');
 Route::put('/immunization/update', [ImmunizationController::class, 'update_immunization'])->name('immunization.update');
 Route::delete('/immunization/delete/{id}', [ImmunizationController::class, 'delete_immunization'])->name('immunization.delete');
