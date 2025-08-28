@@ -126,9 +126,7 @@ Route::delete('/vitalstatistics/delete-all', [VitalStatisticsController::class, 
 Route::get('/vitalstatistic/template', [VitalStatisticsController::class, 'vitalstatisticTemplate'])->name('vitalstatistic.template');
 
 // Immunization
-Route::middleware(['auth'])->group(function () {
-    Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization'])->name('immunization.show');
-});
+
 Route::post('store/immunization', [ImmunizationController::class, 'store_immunization'])->name('immunization.store');
 Route::put('/immunization/update', [ImmunizationController::class, 'update_immunization'])->name('immunization.update');
 Route::delete('/immunization/delete/{id}', [ImmunizationController::class, 'delete_immunization'])->name('immunization.delete');
@@ -173,6 +171,7 @@ Route::middleware('auth:admin')->group(function () {
 
 Route::middleware('auth:staff')->group(function () {
     Route::get('/staff', [StaffController::class, 'index'])->name('staff.dashboard');
+       Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization'])->name('immunization.show');
 });
 
 

@@ -77,20 +77,15 @@ class ImmunizationController extends Controller
 
 public function show_immunization()
 {
-    if (Auth::check()) {
-        $usertype = Auth::user()->usertype; // if you need role/type
-        $user = Auth::user(); // logged-in user
-
+    if (Auth::guard('staff')->check()) {
         $data = ImmunizationManagement::paginate(10);
-
-        // pass user also to the view so your header/sidebar can use it
-        return view('immunization.immunization', compact('data', 'user', 'usertype'));
+        $user = Auth::guard('staff')->user(); // ✅ get logged-in staff
+        return view('immunization.immunization', compact('data', 'user'));
     } else {
-        return redirect()->route('login')->withErrors([
-            'error' => 'Please log in first.'
-        ]);
+        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
     }
 }
+
 
     // public function show_immunization()
     // {
