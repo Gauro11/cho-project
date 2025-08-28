@@ -76,7 +76,8 @@ class ImmunizationController extends Controller
 
 public function show_immunization()
 {
-    $data = ImmunizationManagement::paginate(10);
+     $data = ImmunizationManagement::paginate(10);
+    $user = Auth::user(); // get the logged-in user
     return view('immunization.immunization', compact('data'));
 }
 
