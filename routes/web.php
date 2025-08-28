@@ -107,11 +107,11 @@ Route::post('/edit_disease/{id}', [AdminController::class, 'edit_disease']);
 Route::post('/delete_disease/{id}', [AdminController::class, 'delete_disease']);
 
 // Show Health Data
-// Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbidity']);
-// Route::get('/show_mortality', [MorbidityMortalityController::class, 'show_mortality']);
-// Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization']);
-//  Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
-// Route::get('/show_population', [PopulationController::class, 'show_population']);
+Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbidity']);
+Route::get('/show_mortality', [MorbidityMortalityController::class, 'show_mortality']);
+Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization']);
+ Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
+Route::get('/show_population', [PopulationController::class, 'show_population']);
 
 // Morbidity & Mortality
 Route::post('store/mortality', [MorbidityMortalityController::class, 'store_mortality'])->name('mortality.store');
