@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Or register route middleware
         $middleware->alias([
-            'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
+            'PreventBackHistory' => \App\Http\Middleware\PreventBackHistory::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
