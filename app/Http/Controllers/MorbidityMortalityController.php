@@ -164,7 +164,7 @@ public function update_morbidity(Request $request)
        if (Auth::guard('staff')->check()) {
         $user = Auth::guard('staff')->user();
         $data = MorbidityMortalityManagement::paginate(10);
-        return view('morbidity.morbidity', compact('data', 'user'));
+        return view('morbiditymortality.morbidity', compact('data', 'user'));
     } else {
         return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
     }
@@ -174,7 +174,7 @@ public function update_morbidity(Request $request)
         if (Auth::guard('staff')->check()) {
         $user = Auth::guard('staff')->user();
         $data = MorbidityMortalityManagement::paginate(10);
-        return view('mortality.mortality', compact('data', 'user'));
+        return view('morbiditymortality.mortality', compact('data', 'user'));
     } else {
         return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
     }
