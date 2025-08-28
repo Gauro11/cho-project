@@ -214,6 +214,8 @@ return [
 
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
 
+
+    'session_name' => env('SESSION_NAME', 'laravel_session'),
     'guards_session' => [
     'admin' => 'admin_session',
     'staff' => 'staff_session',
