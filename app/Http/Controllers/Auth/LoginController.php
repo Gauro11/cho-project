@@ -7,73 +7,78 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+ use Illuminate\Support\Facades\Session;
+
+use Illuminate\Support\Facades\Config;
+
 
 class LoginController extends Controller
 {
-    /**
-     * Handle login for both admin and staff
-     */
+
+
+
+
     public function login(Request $request)
     {
+        
+
+    // // DEBUG: Dump all session data
+    // dd(Session::all());
+        // Validate form inputs
         $request->validate([
             'staff_id' => 'required',
             'password' => 'required',
         ]);
 
-        // Find user
+        // Find user by staff_id
         $user = User::where('staff_id', $request->staff_id)->first();
 
+        // User not found
         if (!$user) {
             return back()->withErrors(['staff_id' => 'No user found with this Staff ID']);
         }
 
+        // Password incorrect
         if (!Hash::check($request->password, $user->password)) {
             return back()->withErrors(['password' => 'Incorrect password']);
         }
 
+        // Choose guard based on usertype
         $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
 
-        // Attempt login
+        // Attempt login on the correct guard
         if (Auth::guard($guard)->attempt([
             'staff_id' => $request->staff_id,
             'password' => $request->password
         ])) {
             $request->session()->regenerate();
 
-            return $guard === 'admin'
-                ? redirect()->route('admin.dashboard')
-                : redirect()->route('staff.dashboard');
+            if ($guard === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } else {
+                return redirect()->route('staff.dashboard');
+            }
         }
 
         return back()->withErrors(['password' => 'Incorrect password']);
     }
 
-    /**
-     * Logout both admin and staff independently
-     */
-    public function logout(Request $request, $guard = null)
-    {
-        // If guard specified, logout only that guard
-        if ($guard) {
-            if (Auth::guard($guard)->check()) {
-                Auth::guard($guard)->logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-            }
-        } else {
-            // Logout both guards
-            if (Auth::guard('admin')->check()) {
-                Auth::guard('admin')->logout();
-            }
-
-            if (Auth::guard('staff')->check()) {
-                Auth::guard('staff')->logout();
-            }
-
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-        }
-
-        return redirect()->route('login');
+    public function logout(Request $request)
+{
+    if (Auth::guard('admin')->check()) {
+        Auth::guard('admin')->logout();
     }
+
+    if (Auth::guard('staff')->check()) {
+        Auth::guard('staff')->logout();
+    }
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('login'); // change to your login route
+}
+
+
+
 }
