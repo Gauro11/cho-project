@@ -55,5 +55,22 @@ class LoginController extends Controller
         return back()->withErrors(['password' => 'Incorrect password']);
     }
 
+    public function logout(Request $request)
+{
+    if (Auth::guard('admin')->check()) {
+        Auth::guard('admin')->logout();
+    }
+
+    if (Auth::guard('staff')->check()) {
+        Auth::guard('staff')->logout();
+    }
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('login'); // change to your login route
+}
+
+
 
 }
