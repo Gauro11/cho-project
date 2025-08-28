@@ -74,32 +74,23 @@ class ImmunizationController extends Controller
     return redirect()->back()->with('success', 'Immunization record added successfully.');
 }
 
+
 public function show_immunization()
 {
-    // Check if the user is logged in
     if (Auth::check()) {
-        $usertype = Auth::user()->usertype;
+        $usertype = Auth::user()->usertype; // if you need role/type
+        $user = Auth::user(); // logged-in user
 
-        // Optional: you can restrict access by user type if needed
-        if ($usertype == 'user' || $usertype == 'staff' || $usertype == 'immunization manager') {
-            // Fetch immunization records
-            $data = ImmunizationManagement::paginate(10);
+        $data = ImmunizationManagement::paginate(10);
 
-            // You can pass the user explicitly if you want
-            $user = Auth::user();
-
-            // Return the view with data and user
-            return view('immunization.immunization', compact('data', 'user'));
-        } else {
-            // If user type is not allowed
-            return redirect()->back()->withErrors(['error' => 'User type not recognized.']);
-        }
+        // pass user also to the view so your header/sidebar can use it
+        return view('immunization.immunization', compact('data', 'user', 'usertype'));
     } else {
-        // If not logged in
-        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
+        return redirect()->route('login')->withErrors([
+            'error' => 'Please log in first.'
+        ]);
     }
 }
-
 
     // public function show_immunization()
     // {
