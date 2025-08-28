@@ -82,8 +82,13 @@ class PopulationController extends Controller
 
 public function show_population()
 {
-    $data = PopulationStatisticsManagement::paginate(10); // Fetch population data with pagination
-    return view('populationstatistics.population', compact('data'));
+     if (Auth::guard('staff')->check()) {
+        $user = Auth::guard('staff')->user();
+        $data = PopulationStatisticsManagement::paginate(10);
+        return view('vitalstatistics.vitalstatistics', compact('data', 'user'));
+    } else {
+        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
+    }
 }
 
 

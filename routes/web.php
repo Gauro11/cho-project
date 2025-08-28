@@ -103,7 +103,7 @@ Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbid
 Route::get('/show_mortality', [MorbidityMortalityController::class, 'show_mortality']);
 // Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization']);
 //  Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
-Route::get('/show_population', [PopulationController::class, 'show_population']);
+// Route::get('/show_population', [PopulationController::class, 'show_population']);
 
 // Morbidity & Mortality
 Route::post('store/mortality', [MorbidityMortalityController::class, 'store_mortality'])->name('mortality.store');
@@ -173,6 +173,7 @@ Route::middleware('auth:staff')->group(function () {
     Route::get('/staff', [StaffController::class, 'index'])->name('staff.dashboard');
        Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization'])->name('immunization.show');
       Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
+      Route::get('/show_population', [PopulationController::class, 'show_population']);
 });
 
 
