@@ -5,27 +5,6 @@
 
     <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav align-items-center">
-            <!-- Optional: Notification dropdown (commented) -->
-            {{--
-            <li class="nav-item dropdown">
-                <a class="nav-link nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
-                    <div class="position-relative">
-                        <i class="align-middle" data-feather="bell"></i>
-                        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">4</span>
-                    </div>
-                </a>
-                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="alertsDropdown">
-                    <div class="dropdown-header fw-bold text-center py-2">Notifications</div>
-                    <div class="list-group list-group-flush">
-                        <!-- Notifications go here -->
-                    </div>
-                    <div class="dropdown-footer text-center py-2">
-                        <a href="#" class="text-muted">View all</a>
-                    </div>
-                </div>
-            </li>
-            --}}
-
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     @php
@@ -42,9 +21,8 @@
                 </a>
 
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                    <!-- <li><a class="dropdown-item" href="#"><i class="me-2" data-feather="user"></i>Profile</a></li> -->
                     <li>
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('logout') }}" id="logoutForm">
                             @csrf
                             <button type="submit" class="dropdown-item text-danger">
                                 <i class="me-2" data-feather="log-out"></i>Log Out
@@ -56,3 +34,23 @@
         </ul>
     </div>
 </nav>
+
+{{-- 🔒 Prevent back after logout --}}
+<script>
+    // When logout happens, clear history cache
+    document.getElementById('logoutForm').addEventListener('submit', function() {
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function () {
+                window.location.replace("{{ route('login') }}");
+            };
+        }
+    });
+
+    // Also block cached pages on load (for when user presses back)
+    window.onload = function() {
+        if (!@json(Auth::check())) {
+            window.location.replace("{{ route('login') }}");
+        }
+    };
+</script>
