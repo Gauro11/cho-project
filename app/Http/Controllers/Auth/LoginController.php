@@ -10,10 +10,6 @@ use App\Models\User;
 
 class LoginController extends Controller
 {
-
-
-
-
     public function login(Request $request)
     {
         // Validate form inputs
@@ -25,52 +21,36 @@ class LoginController extends Controller
         // Find user by staff_id
         $user = User::where('staff_id', $request->staff_id)->first();
 
-        // User not found
         if (!$user) {
             return back()->withErrors(['staff_id' => 'No user found with this Staff ID']);
         }
 
-        // Password incorrect
+        // Check password
         if (!Hash::check($request->password, $user->password)) {
             return back()->withErrors(['password' => 'Incorrect password']);
         }
 
-        // Choose guard based on usertype
-        $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
+        // Login with default guard
+        Auth::login($user);
 
-        // Attempt login on the correct guard
-        if (Auth::guard($guard)->attempt([
-            'staff_id' => $request->staff_id,
-            'password' => $request->password
-        ])) {
-            $request->session()->regenerate();
+        // Regenerate session for security
+        $request->session()->regenerate();
 
-            if ($guard === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } else {
-                return redirect()->route('staff.dashboard');
-            }
+        // Redirect based on usertype
+        if ($user->usertype === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('staff.dashboard');
         }
-
-        return back()->withErrors(['password' => 'Incorrect password']);
     }
 
     public function logout(Request $request)
-{
-    if (Auth::guard('admin')->check()) {
-        Auth::guard('admin')->logout();
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
-
-    if (Auth::guard('staff')->check()) {
-        Auth::guard('staff')->logout();
-    }
-
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect()->route('login'); // change to your login route
-}
-
-
-
 }
