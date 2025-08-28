@@ -42,18 +42,28 @@ class LoginController extends Controller
         return back()->withErrors(['staff_id' => 'Login failed']);
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request, $guard = null)
     {
-        if (Auth::guard('admin')->check()) {
-            Auth::guard('admin')->logout();
-        }
+        // If guard specified, logout only that guard
+        if ($guard) {
+            if (Auth::guard($guard)->check()) {
+                Auth::guard($guard)->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
+        } else {
+            // Logout both guards
+            if (Auth::guard('admin')->check()) {
+                Auth::guard('admin')->logout();
+            }
 
-        if (Auth::guard('staff')->check()) {
-            Auth::guard('staff')->logout();
-        }
+            if (Auth::guard('staff')->check()) {
+                Auth::guard('staff')->logout();
+            }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return redirect()->route('login');
     }

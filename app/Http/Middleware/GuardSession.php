@@ -1,5 +1,6 @@
 <?php
 
+// app/Http/Middleware/GuardSession.php
 namespace App\Http\Middleware;
 
 use Closure;
@@ -9,10 +10,10 @@ class GuardSession
 {
     public function handle($request, Closure $next, $guard)
     {
-        // Set session cookie name per guard before session starts
-        Config::set('session.cookie', 'laravel_session_' . $guard);
-
+        // Change session cookie name per guard
+        Config::set('session.cookie', $guard . '_session');
         return $next($request);
     }
 }
+
 

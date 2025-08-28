@@ -53,6 +53,7 @@ class Kernel extends HttpKernel
         'PreventBackHistory' => \App\Http\Middleware\PreventBackHistory::class, 
         'guard.session' => \App\Http\Middleware\GuardSession::class,
 
+
         
     ];
 }
