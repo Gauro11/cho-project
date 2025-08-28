@@ -29,14 +29,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     @php
-                       
-    $user = null;
-    if (Auth::guard('admin')->check()) {
-        $user = Auth::guard('admin')->user();
-    } elseif (Auth::guard('staff')->check()) {
-        $user = Auth::guard('staff')->user();
-    }
-@endphp
+                        $user = \Illuminate\Support\Facades\ Auth::guard('admin')->user() ?? Auth::guard('staff')->user();
                     @endphp
 
                     @if ($user)
