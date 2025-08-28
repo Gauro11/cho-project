@@ -126,7 +126,7 @@ Route::delete('/vitalstatistics/delete-all', [VitalStatisticsController::class, 
 Route::get('/vitalstatistic/template', [VitalStatisticsController::class, 'vitalstatisticTemplate'])->name('vitalstatistic.template');
 
 // Immunization
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:web'])->group(function  () {
     Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization']);
 });
 Route::post('store/immunization', [ImmunizationController::class, 'store_immunization'])->name('immunization.store');
