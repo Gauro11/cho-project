@@ -29,16 +29,22 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     @php
-                        $user = \Illuminate\Support\Facades\Auth::user();
-                    @endphp
+    $user = null;
+    if (Auth::guard('admin')->check()) {
+        $user = Auth::guard('admin')->user();
+    } elseif (Auth::guard('staff')->check()) {
+        $user = Auth::guard('staff')->user();
+    }
+@endphp
 
-                    @if ($user)
-                        <span class="fw-semibold text-dark me-2">
-                            {{ $user->last_name }}, {{ $user->first_name }}
-                        </span>
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->first_name . ' ' . $user->last_name) }}&background=0D8ABC&color=fff" 
-                             class="rounded-circle" width="32" height="32" alt="User Avatar">
-                    @endif
+                   @if ($user)
+    <span class="fw-semibold text-dark me-2">
+        {{ $user->last_name }}, {{ $user->first_name }}
+    </span>
+    <img src="https://ui-avatars.com/api/?name={{ urlencode($user->first_name . ' ' . $user->last_name) }}&background=0D8ABC&color=fff" 
+         class="rounded-circle" width="32" height="32" alt="User Avatar">
+@endif
+
                 </a>
 
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
