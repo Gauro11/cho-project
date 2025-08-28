@@ -155,5 +155,11 @@
                 toggleIcon.textContent = "👁️"; // change back when hiding
             }
         }
+          // CSRF setup for AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
     </script>
 </x-guest-layout>
