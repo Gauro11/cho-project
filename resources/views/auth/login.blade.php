@@ -91,30 +91,54 @@
         }
     </style>
 
-    <x-guest-layout>
-    <x-authentication-card>
+    <x-authentication-card class="authentication-card">
         <x-slot name="logo">
-            <img src="image/dag_logo.png" class="w-20 h-20 rounded-full mx-auto" alt="Logo">
+            <img class="w-20 h-20 rounded-full mx-auto" src="image/dag_logo.png" alt="Logo">
         </x-slot>
 
         <x-validation-errors class="mb-4" />
 
+        <div class="text-center mb-4">
+            <h2 class="text-2xl font-semibold text-gray-800">{{ __('CHO Dagupan') }}</h2>
+        </div>
+
+        @if (session('status'))
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ session('status') }}
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('login') }}">
             @csrf
-            <div>
-                <x-label for="staff_id" value="Staff ID" />
-                <x-input id="staff_id" type="text" name="staff_id" :value="old('staff_id')" required autofocus />
+
+            <div class="mb-4">
+                <x-label for="staff_id" value="{{ __('Staff ID') }}" />
+                <x-input id="staff_id" class="block mt-1 w-full rounded-md border-gray-300" 
+                         type="text" name="staff_id" :value="old('staff_id')" required autofocus />
             </div>
 
-            <div class="mt-4 relative">
-                <x-label for="password" value="Password" />
-                <x-input id="password" type="password" name="password" required />
+            <div class="mb-4 relative">
+                <x-label for="password" value="{{ __('Password') }}" />
+                <x-input id="password" class="block mt-1 w-full rounded-md border-gray-300 pr-10" 
+                         type="password" name="password" required autocomplete="current-password" />
+
+                <!-- Eye Icon -->
                 <span class="toggle-password" onclick="togglePassword()">👁️</span>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <x-button>Log in</x-button>
+            <div class="block mb-4">
+                <label for="remember_me" class="flex items-center">
+                    <x-checkbox id="remember_me" name="remember" />
+                    <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                </label>
             </div>
+
+            <div class="flex items-center justify-center mb-4">
+                <x-button>
+                    {{ __('Log in') }}
+                </x-button>
+            </div>
+
         </form>
     </x-authentication-card>
 
@@ -122,10 +146,20 @@
         function togglePassword() {
             const passwordField = document.getElementById('password');
             const toggleIcon = document.querySelector('.toggle-password');
-            if(passwordField.type === "password"){
-                passwordField.type = "text"; toggleIcon.textContent="🙈";
-            }else{ passwordField.type="password"; toggleIcon.textContent="👁️"; }
+            
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.textContent = "🙈"; // change icon when showing
+            } else {
+                passwordField.type = "password";
+                toggleIcon.textContent = "👁️"; // change back when hiding
+            }
         }
+          // CSRF setup for AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
     </script>
 </x-guest-layout>
-
