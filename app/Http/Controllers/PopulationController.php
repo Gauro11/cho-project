@@ -82,14 +82,21 @@ class PopulationController extends Controller
 
 public function show_population()
 {
-     if (Auth::guard('staff')->check()) {
+    try {
+        if (!Auth::guard('staff')->check()) {
+            return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
+        }
+
         $user = Auth::guard('staff')->user();
         $data = PopulationStatisticsManagement::paginate(10);
+
         return view('population.population', compact('data', 'user'));
-    } else {
-        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
+
+    } catch (\Exception $e) {
+        dd($e->getMessage(), $e->getTraceAsString());
     }
 }
+
 
 
 
