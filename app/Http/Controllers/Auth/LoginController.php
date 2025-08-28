@@ -18,7 +18,7 @@ class LoginController extends Controller
 
 
 
-    public function login(Request $request)
+   public function login(Request $request)
 {
     // Validate form inputs
     $request->validate([
@@ -29,28 +29,40 @@ class LoginController extends Controller
     // Find user by staff_id
     $user = User::where('staff_id', $request->staff_id)->first();
 
+    // User not found
     if (!$user) {
         return back()->withErrors(['staff_id' => 'No user found with this Staff ID']);
     }
 
+    // Password incorrect
     if (!Hash::check($request->password, $user->password)) {
         return back()->withErrors(['password' => 'Incorrect password']);
     }
 
-    // Dynamically set session cookie per usertype
-    Config::set('session.cookie', 'laravel_session_' . $user->usertype);
+    // Choose guard based on usertype
+    $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
 
-    // Attempt login using default web guard
-    $credentials = $request->only('staff_id', 'password');
-    if (Auth::attempt($credentials)) {
+    // --- FIX START: Set separate session cookie per role ---
+    \Illuminate\Support\Facades\Config::set('session.cookie', 'laravel_session_' . $user->usertype);
+    // --- FIX END ---
+
+    // Attempt login on the correct guard
+    if (Auth::guard($guard)->attempt([
+        'staff_id' => $request->staff_id,
+        'password' => $request->password
+    ])) {
         $request->session()->regenerate();
 
-        // Redirect based on usertype
-        return redirect()->route($user->usertype === 'admin' ? 'admin.dashboard' : 'staff.dashboard');
+        if ($guard === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('staff.dashboard');
+        }
     }
 
     return back()->withErrors(['password' => 'Incorrect password']);
 }
+
 
     public function logout(Request $request)
 {
