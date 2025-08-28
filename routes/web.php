@@ -34,9 +34,14 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::middleware(['web'])->group(function () {
-    Route::post('/login', [LoginController::class, 'login'])->name('login');
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::middleware(['web', 'guard.session:admin'])->group(function () {
+    Route::post('/admin/login', [LoginController::class, 'loginAdmin'])->name('admin.login');
+    Route::post('/admin/logout', [LoginController::class, 'logoutAdmin'])->name('admin.logout');
+});
+
+Route::middleware(['web', 'guard.session:staff'])->group(function () {
+    Route::post('/staff/login', [LoginController::class, 'loginStaff'])->name('staff.login');
+    Route::post('/staff/logout', [LoginController::class, 'logoutStaff'])->name('staff.logout');
 });
 
 

@@ -18,66 +18,55 @@ class LoginController extends Controller
 
 
 
-   public function login(Request $request)
+  public function loginAdmin(Request $request)
 {
-    // Validate form inputs
+    return $this->loginByGuard($request, 'admin', 'admin.dashboard');
+}
+
+public function loginStaff(Request $request)
+{
+    return $this->loginByGuard($request, 'staff', 'staff.dashboard');
+}
+
+private function loginByGuard(Request $request, $guard, $redirectRoute)
+{
     $request->validate([
         'staff_id' => 'required',
         'password' => 'required',
     ]);
 
-    // Find user by staff_id
     $user = User::where('staff_id', $request->staff_id)->first();
 
-    // User not found
-    if (!$user) {
-        return back()->withErrors(['staff_id' => 'No user found with this Staff ID']);
+    if (!$user || !\Hash::check($request->password, $user->password)) {
+        return back()->withErrors(['staff_id' => 'Invalid credentials']);
     }
 
-    // Password incorrect
-    if (!Hash::check($request->password, $user->password)) {
-        return back()->withErrors(['password' => 'Incorrect password']);
-    }
-
-    // Choose guard based on usertype
-    $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
-
-    // --- FIX START: Set separate session cookie per role ---
-    \Illuminate\Support\Facades\Config::set('session.cookie', 'laravel_session_' . $user->usertype);
-    // --- FIX END ---
-
-    // Attempt login on the correct guard
+    // Attempt login using the correct guard
     if (Auth::guard($guard)->attempt([
         'staff_id' => $request->staff_id,
         'password' => $request->password
     ])) {
         $request->session()->regenerate();
-
-        if ($guard === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } else {
-            return redirect()->route('staff.dashboard');
-        }
+        return redirect()->route($redirectRoute);
     }
 
-    return back()->withErrors(['password' => 'Incorrect password']);
+    return back()->withErrors(['staff_id' => 'Invalid credentials']);
 }
 
-
-    public function logout(Request $request)
+public function logoutAdmin(Request $request)
 {
-    if (Auth::guard('admin')->check()) {
-        Auth::guard('admin')->logout();
-    }
-
-    if (Auth::guard('staff')->check()) {
-        Auth::guard('staff')->logout();
-    }
-
+    Auth::guard('admin')->logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
+    return redirect()->route('admin.login');
+}
 
-    return redirect()->route('login'); // change to your login route
+public function logoutStaff(Request $request)
+{
+    Auth::guard('staff')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect()->route('staff.login');
 }
 
 
