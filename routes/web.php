@@ -30,7 +30,12 @@ Route::get('/', function () {
 // });
 
 
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
 Route::post('/login', [LoginController::class, 'login'])->name('login');
+
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
@@ -38,9 +43,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Route::get('/staff', [AdminController::class, 'search'])->name('data.search');
 
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
 
 
 Route::get('/public/routes', function() {
