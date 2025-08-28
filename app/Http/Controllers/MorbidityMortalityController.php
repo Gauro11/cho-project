@@ -161,13 +161,23 @@ public function update_morbidity(Request $request)
     
     public function show_morbidity()
     {
-        $data = MorbidityMortalityManagement::where('category', 'morbidity')->paginate(10);
-        return view('morbiditymortality.morbidity', compact('data'));
+       if (Auth::guard('staff')->check()) {
+        $user = Auth::guard('staff')->user();
+        $data = MorbidityMortalityManagement::paginate(10);
+        return view('vitalstatistics.vitalstatistics', compact('data', 'user'));
+    } else {
+        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
+    }
     }
     public function show_mortality()
     {
-        $data = MorbidityMortalityManagement::where('category', 'mortality')->paginate(10);
-        return view('morbiditymortality.mortality', compact('data'));
+        if (Auth::guard('staff')->check()) {
+        $user = Auth::guard('staff')->user();
+        $data = MorbidityMortalityManagement::paginate(10);
+        return view('vitalstatistics.vitalstatistics', compact('data', 'user'));
+    } else {
+        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
+    }
     }
 
     public function import(Request $request)
