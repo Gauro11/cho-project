@@ -74,11 +74,13 @@ class ImmunizationController extends Controller
     return redirect()->back()->with('success', 'Immunization record added successfully.');
 }
 
-public function show_immunization()
-{
-    $data = ImmunizationManagement::paginate(10);
-    return view('immunization.immunization', compact('data'));
-}
+ public function show_immunization()
+    {
+        $user = Auth::user(); // get logged-in user
+        $data = ImmunizationManagement::paginate(10);
+
+        return view('immunization.immunization', compact('data', 'user'));
+    }
 
     // public function show_immunization()
     // {
