@@ -214,4 +214,8 @@ return [
 
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
 
+    'guards_session' => [
+    'admin' => 'admin_session',
+    'staff' => 'staff_session',
+],
 ];
