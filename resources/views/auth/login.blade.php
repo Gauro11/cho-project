@@ -67,6 +67,17 @@
             font-weight: 500;
         }
 
+        /* Password Toggle */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 65%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+
         /* Animation */
         @keyframes fadeIn {
             from {
@@ -102,12 +113,17 @@
 
             <div class="mb-4">
                 <x-label for="staff_id" value="{{ __('Staff ID') }}" />
-                <x-input id="staff_id" class="block mt-1 w-full rounded-md border-gray-300" type="text" name="staff_id" :value="old('staff_id')" required autofocus />
+                <x-input id="staff_id" class="block mt-1 w-full rounded-md border-gray-300" 
+                         type="text" name="staff_id" :value="old('staff_id')" required autofocus />
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 relative">
                 <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full rounded-md border-gray-300" type="password" name="password" required autocomplete="current-password" />
+                <x-input id="password" class="block mt-1 w-full rounded-md border-gray-300 pr-10" 
+                         type="password" name="password" required autocomplete="current-password" />
+
+                <!-- Eye Icon -->
+                <span class="toggle-password" onclick="togglePassword()">👁️</span>
             </div>
 
             <div class="block mb-4">
@@ -124,6 +140,20 @@
             </div>
 
         </form>
-
     </x-authentication-card>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password');
+            
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.textContent = "🙈"; // change icon when showing
+            } else {
+                passwordField.type = "password";
+                toggleIcon.textContent = "👁️"; // change back when hiding
+            }
+        }
+    </script>
 </x-guest-layout>
