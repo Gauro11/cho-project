@@ -44,10 +44,16 @@
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
                     <!-- <li><a class="dropdown-item" href="#"><i class="me-2" data-feather="user"></i>Profile</a></li> -->
                     <li>
-                        <form action="{{ route('logout') }}" method="POST">
-    @csrf
-    <button type="submit">Logout</button>
-</form>
+                        <form action="{{ route('logout') }}" method="POST" class="p-0 m-0">
+                            @csrf
+                            <button type="submit" class="dropdown-item d-flex align-items-center text-danger fw-medium border-0 bg-transparent w-100 text-start px-3 py-2 transition-all" 
+                                    style="transition: all 0.2s ease-in-out;"
+                                    onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.paddingLeft='1rem';"
+                                    onmouseout="this.style.backgroundColor='transparent'; this.style.paddingLeft='0.75rem';">
+                                <i class="me-2" data-feather="log-out" style="width: 16px; height: 16px;"></i>
+                                Logout
+                            </button>
+                        </form>
                     </li>
                 </ul>
             </li>
