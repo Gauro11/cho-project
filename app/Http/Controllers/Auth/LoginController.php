@@ -18,17 +18,7 @@ class LoginController extends Controller
 
 
 
-   public function loginAdmin(Request $request)
-{
-    return $this->loginByGuard($request, 'admin', 'admin.dashboard');
-}
-
-public function loginStaff(Request $request)
-{
-    return $this->loginByGuard($request, 'staff', 'staff.dashboard');
-}
-
-private function loginByGuard(Request $request, $guard, $redirectRoute)
+    public function login(Request $request)
 {
     $request->validate([
         'staff_id' => 'required',
@@ -37,39 +27,53 @@ private function loginByGuard(Request $request, $guard, $redirectRoute)
 
     $user = User::where('staff_id', $request->staff_id)->first();
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        return back()->withErrors(['staff_id' => 'Invalid credentials']);
+    if (!$user) {
+        return back()->withErrors(['staff_id' => 'No user found with this Staff ID']);
     }
+
+    if (!Hash::check($request->password, $user->password)) {
+        return back()->withErrors(['password' => 'Incorrect password']);
+    }
+
+    $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
+
+    // Set custom session name per guard
+    Session::setId($guard . '_session_' . Session::getId());
 
     if (Auth::guard($guard)->attempt([
         'staff_id' => $request->staff_id,
         'password' => $request->password
     ])) {
-        // Only regenerate this guard's session
         $request->session()->regenerate();
 
-        return redirect()->route($redirectRoute);
+        if ($guard === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('staff.dashboard');
+        }
     }
 
-    return back()->withErrors(['staff_id' => 'Login failed']);
+    return back()->withErrors(['password' => 'Incorrect password']);
 }
 
-public function logoutAdmin(Request $request)
+
+    public function logout(Request $request)
 {
-    Auth::guard('admin')->logout();
+    if (Auth::guard('admin')->check()) {
+        Auth::guard('admin')->logout();
+        Session::forget('admin_session_' . Session::getId());
+    }
+
+    if (Auth::guard('staff')->check()) {
+        Auth::guard('staff')->logout();
+        Session::forget('staff_session_' . Session::getId());
+    }
+
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    return redirect()->route('admin.login');
-}
 
-public function logoutStaff(Request $request)
-{
-    Auth::guard('staff')->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect()->route('staff.login');
+    return redirect()->route('login');
 }
-
 
 
 
