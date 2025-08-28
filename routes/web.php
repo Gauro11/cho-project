@@ -33,12 +33,11 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
-Route::middleware(['web'])->group(function () {
-    
-    Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
-    Route::post('/logout/{guard?}', [LoginController::class, 'logout'])->name('logout');
-});
 
+Route::middleware(['web'])->group(function () {
+    Route::post('/login', [LoginController::class, 'login'])->name('login');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+});
 
 
 
