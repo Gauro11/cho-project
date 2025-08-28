@@ -91,11 +91,16 @@ public function store_vitalstatiscs(Request $request)
 
 
 
-    public function show_vital_statistics()
-    {
+   public function show_vital_statistics()
+{
+    if (Auth::guard('staff')->check()) {
+        $user = Auth::guard('staff')->user();
         $data = VitalStatisticsManagement::paginate(10);
-        return view('vitalstatistics.vitalstatistics', compact('data'));
+        return view('vitalstatistics.vitalstatistics', compact('data', 'user'));
+    } else {
+        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
     }
+}
 
       public function import(Request $request)
 {
