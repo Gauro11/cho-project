@@ -16,8 +16,9 @@ class LoginController extends Controller
 
 
 
-  public function login(Request $request)
+   public function login(Request $request)
 {
+    
     // Validate form inputs
     $request->validate([
         'staff_id' => 'required',
@@ -42,13 +43,16 @@ class LoginController extends Controller
         // Regenerate session to prevent fixation
         $request->session()->regenerate();
 
-        // Redirect based on usertype using ternary operator
-        return redirect()->route(Auth::user()->usertype === 'admin' ? 'admin.dashboard' : 'staff.dashboard');
+        // Redirect based on usertype
+        if ($user->usertype === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('staff.dashboard');
+        }
     }
 
     return back()->withErrors(['password' => 'Incorrect password']);
 }
-
 
 
     public function logout(Request $request)
