@@ -85,7 +85,7 @@ public function show_population()
      if (Auth::guard('staff')->check()) {
         $user = Auth::guard('staff')->user();
         $data = PopulationStatisticsManagement::paginate(10);
-        return view('vitalstatistics.vitalstatistics', compact('data', 'user'));
+        return view('population.population', compact('data', 'user'));
     } else {
         return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
     }
