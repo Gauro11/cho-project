@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
  use Illuminate\Support\Facades\Session;
 
-    // DEBUG: Dump all session data
-    dd(Session::all());
 
 class LoginController extends Controller
 {
