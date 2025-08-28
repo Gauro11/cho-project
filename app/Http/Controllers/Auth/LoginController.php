@@ -7,79 +7,73 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
- use Illuminate\Support\Facades\Session;
-
-use Illuminate\Support\Facades\Config;
-
 
 class LoginController extends Controller
 {
+    /**
+     * Handle login for both admin and staff
+     */
+    public function login(Request $request)
+    {
+        $request->validate([
+            'staff_id' => 'required',
+            'password' => 'required',
+        ]);
 
+        // Find user
+        $user = User::where('staff_id', $request->staff_id)->first();
 
+        if (!$user) {
+            return back()->withErrors(['staff_id' => 'No user found with this Staff ID']);
+        }
 
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Incorrect password']);
+        }
 
-   public function login(Request $request)
-{
-    // Validate form inputs
-    $request->validate([
-        'staff_id' => 'required',
-        'password' => 'required',
-    ]);
+        $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
 
-    // Find user by staff_id
-    $user = User::where('staff_id', $request->staff_id)->first();
+        // Attempt login
+        if (Auth::guard($guard)->attempt([
+            'staff_id' => $request->staff_id,
+            'password' => $request->password
+        ])) {
+            $request->session()->regenerate();
 
-    // User not found
-    if (!$user) {
-        return back()->withErrors(['staff_id' => 'No user found with this Staff ID']);
-    }
+            return $guard === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('staff.dashboard');
+        }
 
-    // Password incorrect
-    if (!Hash::check($request->password, $user->password)) {
         return back()->withErrors(['password' => 'Incorrect password']);
     }
 
-    // Choose guard based on usertype
-    $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
-
-    // --- FIX START: Set separate session cookie per role ---
-    \Illuminate\Support\Facades\Config::set('session.cookie', 'laravel_session_' . $user->usertype);
-    // --- FIX END ---
-
-    // Attempt login on the correct guard
-    if (Auth::guard($guard)->attempt([
-        'staff_id' => $request->staff_id,
-        'password' => $request->password
-    ])) {
-        $request->session()->regenerate();
-
-        if ($guard === 'admin') {
-            return redirect()->route('admin.dashboard');
+    /**
+     * Logout both admin and staff independently
+     */
+    public function logout(Request $request, $guard = null)
+    {
+        // If guard specified, logout only that guard
+        if ($guard) {
+            if (Auth::guard($guard)->check()) {
+                Auth::guard($guard)->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
         } else {
-            return redirect()->route('staff.dashboard');
+            // Logout both guards
+            if (Auth::guard('admin')->check()) {
+                Auth::guard('admin')->logout();
+            }
+
+            if (Auth::guard('staff')->check()) {
+                Auth::guard('staff')->logout();
+            }
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
         }
+
+        return redirect()->route('login');
     }
-
-    return back()->withErrors(['password' => 'Incorrect password']);
-}
-
-
-    public function logout(Request $request)
-{
-    if (Auth::guard('admin')->check()) {
-        Auth::guard('admin')->logout();
-    }
-
-    if (Auth::guard('staff')->check()) {
-        Auth::guard('staff')->logout();
-    }
-
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect()->route('login'); // change to your login route
-}
-
-
-
 }
