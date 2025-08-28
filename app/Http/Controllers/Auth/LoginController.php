@@ -13,13 +13,14 @@ class LoginController extends Controller
     /**
      * Handle login for both admin and staff
      */
-     public function login(Request $request)
+    public function login(Request $request)
     {
         $request->validate([
             'staff_id' => 'required',
             'password' => 'required',
         ]);
 
+        // Find user
         $user = User::where('staff_id', $request->staff_id)->first();
 
         if (!$user) {
@@ -32,6 +33,7 @@ class LoginController extends Controller
 
         $guard = ($user->usertype === 'admin') ? 'admin' : 'staff';
 
+        // Attempt login
         if (Auth::guard($guard)->attempt([
             'staff_id' => $request->staff_id,
             'password' => $request->password
