@@ -1,5 +1,28 @@
 <x-guest-layout>
-    <style>
+    !-- Load Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="mb-4 relative">
+    <label for="password">Password</label>
+    <input id="password" type="password" class="block mt-1 w-full rounded-md border-gray-300 pr-10" name="password" required>
+    
+    <!-- Eye Icon -->
+    <span class="toggle-password" onclick="togglePassword()">
+        <i id="eyeIcon" class="fa-solid fa-eye"></i>
+    </span>
+</div>
+
+<style>
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 65%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #6b7280;
+}
+
         /* Background */
         body {
             background: linear-gradient(135deg, #e0f2fe, #ffffff);
@@ -89,6 +112,8 @@
                 transform: translateY(0);
             }
         }
+
+        
     </style>
 
     <x-authentication-card class="authentication-card">
@@ -143,18 +168,20 @@
     </x-authentication-card>
 
     <script>
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const toggleIcon = document.querySelector('.toggle-password');
-            
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                toggleIcon.textContent = "🙈"; // change icon when showing
-            } else {
-                passwordField.type = "password";
-                toggleIcon.textContent = "👁️"; // change back when hiding
-            }
-        }
+function togglePassword() {
+    const passwordField = document.getElementById("password");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        eyeIcon.classList.replace("fa-eye", "fa-eye-slash"); // 👁️ → 🚫👁️
+    } else {
+        passwordField.type = "password";
+        eyeIcon.classList.replace("fa-eye-slash", "fa-eye"); // 🚫👁️ → 👁️
+    }
+}
+
+
           // CSRF setup for AJAX requests
         $.ajaxSetup({
             headers: {
