@@ -13,12 +13,7 @@ use Illuminate\Support\Facades\Config;
 class LoginController extends Controller
 {
 
-    public function showLoginForm()
-{
-    return view('auth.login'); // make sure you have this view
-}
-
-
+    
     public function login(Request $request)
     {
         // ✅ If already logged in, redirect to dashboard (fix back button issue)
