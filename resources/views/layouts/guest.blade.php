@@ -21,7 +21,14 @@
         @livewireStyles
     </head>
     <body>
-        <div class="font-sans text-gray-900 antialiased">
+        <div class="font-sans text-gray-900 antialiased flex flex-col items-center min-h-screen justify-center">
+            
+            <!-- 🔹 Logo -->
+            <div class="mb-6">
+                <img src="{{ asset('image/dag_logo.png') }}" alt="CHO Logo" class="w-24 h-24 rounded-full shadow">
+            </div>
+
+            <!-- Page Content -->
             {{ $slot }}
         </div>
 
