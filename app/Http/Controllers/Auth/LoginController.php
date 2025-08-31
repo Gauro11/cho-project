@@ -7,23 +7,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
- use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Config;
-
 
 class LoginController extends Controller
 {
-
-
-
-
     public function login(Request $request)
     {
-        
+        // ✅ If already logged in, redirect to dashboard (fix back button issue)
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+        if (Auth::guard('staff')->check()) {
+            return redirect()->route('staff.dashboard');
+        }
 
-    // // DEBUG: Dump all session data
-    // dd(Session::all());
         // Validate form inputs
         $request->validate([
             'staff_id' => 'required',
@@ -64,24 +62,21 @@ class LoginController extends Controller
     }
 
     public function logout(Request $request)
-{
-    if (Auth::guard('admin')->check()) {
-        Auth::guard('admin')->logout();
-        Session::forget('admin_session_' . Session::getId());
+    {
+        if (Auth::guard('admin')->check()) {
+            Auth::guard('admin')->logout();
+            Session::forget('admin_session_' . Session::getId());
+        }
+
+        if (Auth::guard('staff')->check()) {
+            Auth::guard('staff')->logout();
+            Session::forget('staff_session_' . Session::getId());
+        }
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // ✅ After logout, redirect to login
+        return redirect()->route('login');
     }
-
-    if (Auth::guard('staff')->check()) {
-        Auth::guard('staff')->logout();
-        Session::forget('staff_session_' . Session::getId());
-    }
-
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect()->route('login');
-}
-
-
-
-
 }
