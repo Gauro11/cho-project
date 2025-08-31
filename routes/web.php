@@ -31,17 +31,21 @@ Route::get('/', function () {
 
 
 Route::get('/login', function () {
-    if (Auth::guard('admin')->check()) {
-        return redirect()->route('admin.dashboard');
-    }
-    if (Auth::guard('staff')->check()) {
-        return redirect()->route('staff.dashboard');
-    }
     return view('auth.login');
 })->name('login');
 
+// Route::middleware(['web'])->group(function () {
+//     Route::post('/login', [LoginController::class, 'login'])->name('login');
+//     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+// });
+// Guest (only not logged in)
+Route::middleware(['web', 'guest:admin', 'guest:staff'])->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login'); // GET login page
+    Route::post('/login', [LoginController::class, 'login'])->name('login.attempt'); // POST login
+});
+
+// Authenticated users (admin + staff)
 Route::middleware(['web'])->group(function () {
-    Route::post('/login', [LoginController::class, 'login'])->name('login');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
