@@ -33,6 +33,12 @@ Route::get('/', function () {
 // Login routes with PreventBackHistory
 Route::middleware(['PreventBackHistory'])->group(function () {
     Route::get('/login', function () {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+        if (Auth::guard('staff')->check()) {
+            return redirect()->route('staff.dashboard');
+        }
         return view('auth.login');
     })->name('login');
 
@@ -40,15 +46,6 @@ Route::middleware(['PreventBackHistory'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-// Admin routes
-Route::middleware(['auth:admin', 'PreventBackHistory'])->group(function () {
-    Route::get('/home', [AdminController::class, 'index'])->name('admin.dashboard');
-});
-
-// Staff routes
-Route::middleware(['auth:staff', 'PreventBackHistory'])->group(function () {
-    Route::get('/staff', [StaffController::class, 'index'])->name('staff.dashboard');
-});
 
 
 
