@@ -31,6 +31,12 @@ Route::get('/', function () {
 
 
 Route::get('/login', function () {
+    if (Auth::guard('admin')->check()) {
+        return redirect()->route('admin.dashboard');
+    }
+    if (Auth::guard('staff')->check()) {
+        return redirect()->route('staff.dashboard');
+    }
     return view('auth.login');
 })->name('login');
 
