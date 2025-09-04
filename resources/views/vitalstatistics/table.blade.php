@@ -272,7 +272,7 @@
                                 $maternalMortalityRate = $births > 0 ? ($maternalDeaths / $births) * 100000 : 0;
                             @endphp
                             <tr>
-                               <td>{{ date('Y', strtotime($row->year)) }}</td>
+                               <td>{{ $row->year }}</td>
 
                               
                                 <td>{{ number_format($births) }}</td>
