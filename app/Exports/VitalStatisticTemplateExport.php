@@ -22,7 +22,7 @@ class VitalStatisticTemplateExport implements FromArray, WithHeadings
     {
         return [
             'year',
-            'total_population',
+            
             'total_live_births',
             'total_deaths',
             'infant_deaths',

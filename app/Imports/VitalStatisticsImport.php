@@ -15,7 +15,7 @@ class VitalStatisticsImport implements ToModel, WithHeadingRow
     {
         return new VitalStatisticsManagement([
             'year' => $row['year'], // make sure your Excel has a 'year' column
-            'total_population'  => $row['total_population'],
+           
             'total_live_births' => $row['total_live_births'],
             'total_deaths'      => $row['total_deaths'],
             'infant_deaths'     => $row['infant_deaths'],
