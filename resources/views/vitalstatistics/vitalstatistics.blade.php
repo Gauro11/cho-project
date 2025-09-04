@@ -1427,22 +1427,14 @@ document.addEventListener("DOMContentLoaded", function() {
                                 @csrf
 
                                 <div class="mb-3">
-                                    <label for="month_year" class="modern-form-label form-label">📅 Month & Year</label>
-                                    <select class="modern-form-control form-control" id="month_year" name="month_year"
-                                        required>
-                                        @for ($y = date('Y'); $y >= 1900; $y--)
-                                            @php
-                                                $startMonth = $y == date('Y') ? date('n') : 12;
-                                            @endphp
-                                            @for ($m = $startMonth; $m >= 1; $m--)
-                                                <option
-                                                    value="{{ $y }}-{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">
-                                                    {{ date('F', mktime(0, 0, 0, $m, 1)) }} {{ $y }}
-                                                </option>
-                                            @endfor
-                                        @endfor
-                                    </select>
-                                </div>
+    <label for="year" class="modern-form-label form-label">📅 Year</label>
+    <select class="modern-form-control form-control" id="year" name="year" required>
+        @for ($y = date('Y'); $y >= 1900; $y--)
+            <option value="{{ $y }}">{{ $y }}</option>
+        @endfor
+    </select>
+</div>
+
 
                                
 

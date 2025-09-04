@@ -54,7 +54,7 @@ class VitalStatisticsController extends Controller
 public function store_vitalstatiscs(Request $request)
 {
     $request->validate([
-        'month_year' => 'required|string',
+         'year' => 'required|digits:4|integer|min:1900|max:' . date('Y'),
        
         'total_live_births' => 'required|integer|min:0',
         'total_deaths' => 'required|integer|min:0',
@@ -63,7 +63,7 @@ public function store_vitalstatiscs(Request $request)
     ]);
 
     // Check if year already exists
-    $exists = VitalStatisticsManagement::where('year', $request->month_year)->exists();
+    $exists = VitalStatisticsManagement::where('year', $request->year)->exists();
 
     if ($exists) {
         return response()->json([
@@ -73,7 +73,7 @@ public function store_vitalstatiscs(Request $request)
     }
 
     VitalStatisticsManagement::create([
-        'year' => $request->month_year,
+        'year' => $request->year,
        
         'total_live_births' => $request->total_live_births,
         'total_deaths' => $request->total_deaths,
