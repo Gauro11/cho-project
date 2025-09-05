@@ -1138,8 +1138,6 @@ document.addEventListener("DOMContentLoaded", function() {
     <div class="dropdown-menu" id="sortDropdownMenu">
         <button class="dropdown-item" data-sort="year-oldest">📅 Year: Oldest First</button>
         <button class="dropdown-item" data-sort="year-newest">📅 Year: Newest First</button>
-        <button class="dropdown-item" data-sort="month-asc">🗓 Month: Jan → Dec</button>
-        <button class="dropdown-item" data-sort="month-desc">🗓 Month: Dec → Jan</button>
     </div>
 </div>
 
