@@ -159,19 +159,20 @@ public function update_morbidity(Request $request)
         return redirect()->back()->with('success', 'Mortality data saved successfully.');
     }
     
-   public function show_morbidity()
+  public function show_morbidity()
 {
-    if (Auth::guard('staff')->check()) {
-        $user = Auth::guard('staff')->user();
+    $user = auth()->user();
 
-        $data = MorbidityMortalityManagement::where('category', 'morbidity')
-            ->paginate(10);
-
-        return view('morbiditymortality.morbidity', compact('data', 'user'));
-    } else {
-        return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
+    if ($user->usertype !== 'staff') {
+        abort(403, 'Unauthorized action.');
     }
+
+    $data = MorbidityMortalityManagement::where('category', 'morbidity')
+        ->paginate(10);
+
+    return view('morbiditymortality.morbidity', compact('data', 'user'));
 }
+
 
 public function show_mortality()
 {
