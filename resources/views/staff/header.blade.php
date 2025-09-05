@@ -3,15 +3,21 @@
         <i class="hamburger align-self-center"></i>
     </a>
 
-    <div class="collapse navbar-collapse justify-content-end">
-        <ul class="navbar-nav align-items-center">
+    <!-- Mobile toggler -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
+    <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+        <ul class="navbar-nav align-items-center">
             <li class="nav-item dropdown">
                 @php
                     $user = \Illuminate\Support\Facades\Auth::user();
                 @endphp
 
-                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                   data-bs-toggle="dropdown" aria-expanded="false">
                     @if ($user)
                         <span class="fw-semibold text-dark me-2">
                             {{ $user->last_name }}, {{ $user->first_name }}
@@ -22,17 +28,12 @@
                 </a>
 
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                    <!-- Optional Profile Link -->
-                    <!-- <li><a class="dropdown-item" href="#"><i class="me-2" data-feather="user"></i>Profile</a></li> -->
-
                     <li>
                         <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="me-2" data-feather="log-out" style="width: 16px; height: 16px;"></i>
                             Logout
                         </a>
-
-                        <!-- Hidden logout form -->
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
