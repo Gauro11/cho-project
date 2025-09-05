@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class MorbidityMortalityManagement extends Model
 {
     use HasFactory;
+     protected $table = 'morbidity_mortality_management'; // add this if your table is singular
 
     protected $fillable = [
         'category',
