@@ -52,61 +52,62 @@
     <div class="col-12 col-lg-12 col-xxl-12 d-flex">
         <div class="card flex-fill" id="dataTable">
             <table class="table table-hover my-0">
-                <thead>
-                    <tr style="color: white;">
-                      <th>
-    <a href="{{ request()->fullUrlWithQuery([
-        'sort' => 'date',
-        'direction' => ($sort === 'date' && $direction === 'asc') ? 'desc' : 'asc'
-    ]) }}">
-        Date 
-        @if($sort === 'date')
-            {!! $direction === 'asc' ? '▲' : '▼' !!}
-        @endif
-    </a>
-</th>
+               <thead>
+    <tr>
+        <th>
+            <a href="{{ request()->fullUrlWithQuery([
+                'sort' => 'date',
+                'direction' => ($sort === 'date' && $direction === 'asc') ? 'desc' : 'asc'
+            ]) }}">
+                Date
+                @if($sort === 'date')
+                    {!! $direction === 'asc' ? '▲' : '▼' !!}
+                @endif
+            </a>
+        </th>
 
-<th>
-    <a href="{{ request()->fullUrlWithQuery([
-        'sort' => 'vaccine_name',
-        'direction' => ($sort === 'vaccine_name' && $direction === 'asc') ? 'desc' : 'asc'
-    ]) }}">
-        Vaccine Name 
-        @if($sort === 'vaccine_name')
-            {!! $direction === 'asc' ? '▲' : '▼' !!}
-        @endif
-    </a>
-</th>
+        <th>
+            <a href="{{ request()->fullUrlWithQuery([
+                'sort' => 'vaccine_name',
+                'direction' => ($sort === 'vaccine_name' && $direction === 'asc') ? 'desc' : 'asc'
+            ]) }}">
+                Vaccine Name
+                @if($sort === 'vaccine_name')
+                    {!! $direction === 'asc' ? '▲' : '▼' !!}
+                @endif
+            </a>
+        </th>
 
-<th>
-    <a href="{{ request()->fullUrlWithQuery([
-        'sort' => 'male_vaccinated',
-        'direction' => ($sort === 'male_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
-    ]) }}">
-        Male 
-        @if($sort === 'male_vaccinated')
-            {!! $direction === 'asc' ? '▲' : '▼' !!}
-        @endif
-    </a>
-</th>
+        <th>
+            <a href="{{ request()->fullUrlWithQuery([
+                'sort' => 'male_vaccinated',
+                'direction' => ($sort === 'male_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
+            ]) }}">
+                Male
+                @if($sort === 'male_vaccinated')
+                    {!! $direction === 'asc' ? '▲' : '▼' !!}
+                @endif
+            </a>
+        </th>
 
-<th>
-    <a href="{{ request()->fullUrlWithQuery([
-        'sort' => 'female_vaccinated',
-        'direction' => ($sort === 'female_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
-    ]) }}">
-        Female 
-        @if($sort === 'female_vaccinated')
-            {!! $direction === 'asc' ? '▲' : '▼' !!}
-        @endif
-    </a>
-</th>
+        <th>
+            <a href="{{ request()->fullUrlWithQuery([
+                'sort' => 'female_vaccinated',
+                'direction' => ($sort === 'female_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
+            ]) }}">
+                Female
+                @if($sort === 'female_vaccinated')
+                    {!! $direction === 'asc' ? '▲' : '▼' !!}
+                @endif
+            </a>
+        </th>
 
-                        <th>Total Vaccinated</th>
-                        <th>Coverage</th>
-                        <th class="no-print">Actions</th>
-                    </tr>
-                </thead>
+        <th>Total Vaccinated</th>
+        <th>Coverage</th>
+        <th class="no-print">Actions</th>
+    </tr>
+</thead>
+
                 <tbody style="background-color: white;">
                     @php $estimatedPopulation = 3000; @endphp
                     @foreach($data as $row)

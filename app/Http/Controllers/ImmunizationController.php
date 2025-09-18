@@ -102,6 +102,8 @@ public function show_immunization(Request $request)
 }
 
 
+
+
     // public function show_immunization()
     // {
     //     $data = MorbidityMortalityManagement::where('category', 'mortality')->paginate(10);
