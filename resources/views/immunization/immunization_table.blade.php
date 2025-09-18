@@ -53,72 +53,69 @@
         <div class="card flex-fill" id="dataTable">
             <table class="table table-hover my-0">
                 <thead>
-                    <tr>
-                        {{-- Date --}}
-                        <th>
-                            <a href="{{ request()->fullUrlWithQuery([
-                                'sort' => 'date',
-                                'direction' => ($sort === 'date' && $direction === 'asc') ? 'desc' : 'asc'
-                            ]) }}">
-                                Date
-                                @if($sort === 'date')
-                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
-                                @else
-                                    <i class="fas fa-sort sort-icon"></i>
-                                @endif
-                            </a>
-                        </th>
+    <tr>
+        <th onclick="sortTable(0, 'date')">
+            Date <i class="fas fa-sort sort-icon" id="icon-0"></i>
+        </th>
+        <th onclick="sortTable(1, 'string')">
+            Vaccine Name <i class="fas fa-sort sort-icon" id="icon-1"></i>
+        </th>
+        <th onclick="sortTable(2, 'number')">
+            Male <i class="fas fa-sort sort-icon" id="icon-2"></i>
+        </th>
+        <th onclick="sortTable(3, 'number')">
+            Female <i class="fas fa-sort sort-icon" id="icon-3"></i>
+        </th>
+        <th>Total Vaccinated</th>
+        <th>Coverage</th>
+        <th class="no-print">Actions</th>
+    </tr>
+</thead>
 
-                        {{-- Vaccine --}}
-                        <th>
-                            <a href="{{ request()->fullUrlWithQuery([
-                                'sort' => 'vaccine_name',
-                                'direction' => ($sort === 'vaccine_name' && $direction === 'asc') ? 'desc' : 'asc'
-                            ]) }}">
-                                Vaccine Name
-                                @if($sort === 'vaccine_name')
-                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
-                                @else
-                                    <i class="fas fa-sort sort-icon"></i>
-                                @endif
-                            </a>
-                        </th>
+<script>
+let sortDirections = {}; // Track sort state per column
 
-                        {{-- Male --}}
-                        <th>
-                            <a href="{{ request()->fullUrlWithQuery([
-                                'sort' => 'male_vaccinated',
-                                'direction' => ($sort === 'male_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
-                            ]) }}">
-                                Male
-                                @if($sort === 'male_vaccinated')
-                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
-                                @else
-                                    <i class="fas fa-sort sort-icon"></i>
-                                @endif
-                            </a>
-                        </th>
+function sortTable(colIndex, type = 'string') {
+    const table = document.querySelector(".table tbody");
+    const rows = Array.from(table.rows);
+    const icon = document.getElementById("icon-" + colIndex);
 
-                        {{-- Female --}}
-                        <th>
-                            <a href="{{ request()->fullUrlWithQuery([
-                                'sort' => 'female_vaccinated',
-                                'direction' => ($sort === 'female_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
-                            ]) }}">
-                                Female
-                                @if($sort === 'female_vaccinated')
-                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
-                                @else
-                                    <i class="fas fa-sort sort-icon"></i>
-                                @endif
-                            </a>
-                        </th>
+    // Toggle sort direction
+    sortDirections[colIndex] = !sortDirections[colIndex];
+    const direction = sortDirections[colIndex] ? 1 : -1;
 
-                        <th>Total Vaccinated</th>
-                        <th>Coverage</th>
-                        <th class="no-print">Actions</th>
-                    </tr>
-                </thead>
+    // Reset all icons first
+    document.querySelectorAll(".sort-icon").forEach(i => i.className = "fas fa-sort sort-icon");
+
+    // Sorting logic
+    rows.sort((a, b) => {
+        let A = a.cells[colIndex].innerText.trim();
+        let B = b.cells[colIndex].innerText.trim();
+
+        if (type === "number") {
+            A = parseFloat(A.replace(/,/g, "")) || 0;
+            B = parseFloat(B.replace(/,/g, "")) || 0;
+        } else if (type === "date") {
+            A = new Date(A);
+            B = new Date(B);
+        } else {
+            A = A.toLowerCase();
+            B = B.toLowerCase();
+        }
+
+        if (A < B) return -1 * direction;
+        if (A > B) return 1 * direction;
+        return 0;
+    });
+
+    // Re-attach sorted rows
+    rows.forEach(row => table.appendChild(row));
+
+    // Update icon
+    icon.className = "fas " + (direction === 1 ? "fa-sort-up" : "fa-sort-down") + " sort-icon";
+}
+</script>
+
 
                 <tbody style="background-color: white;">
                     @php $estimatedPopulation = 3000; @endphp
