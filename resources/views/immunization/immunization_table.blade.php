@@ -9,7 +9,6 @@
 </head>
 
 <style>
-    
     .custom-pagination .page-item { margin: 0 3px; }
     .custom-pagination .page-link { color: #4f46e5 !important; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 10px 16px; font-weight: 500; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);}
     .custom-pagination .page-link:hover { background: rgba(255, 255, 255, 1); border-color: #4f46e5; color: #4f46e5 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);}
@@ -45,6 +44,7 @@
     .table-container::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-radius: 10px;}
     .table-container::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 10px;}
     .stats-badge { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 8px 16px; color: white; font-size: 13px; font-weight: 500; margin-left: 10px;}
+    .sort-icon { margin-left: 5px; }
 </style>
 
 @if($data->isNotEmpty())
@@ -52,61 +52,73 @@
     <div class="col-12 col-lg-12 col-xxl-12 d-flex">
         <div class="card flex-fill" id="dataTable">
             <table class="table table-hover my-0">
-               <thead>
-    <tr>
-        <th>
-            <a href="{{ request()->fullUrlWithQuery([
-                'sort' => 'date',
-                'direction' => ($sort === 'date' && $direction === 'asc') ? 'desc' : 'asc'
-            ]) }}">
-                Date
-                @if($sort === 'date')
-                    {!! $direction === 'asc' ? '▲' : '▼' !!}
-                @endif
-            </a>
-        </th>
+                <thead>
+                    <tr>
+                        {{-- Date --}}
+                        <th>
+                            <a href="{{ request()->fullUrlWithQuery([
+                                'sort' => 'date',
+                                'direction' => ($sort === 'date' && $direction === 'asc') ? 'desc' : 'asc'
+                            ]) }}">
+                                Date
+                                @if($sort === 'date')
+                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
+                                @else
+                                    <i class="fas fa-sort sort-icon"></i>
+                                @endif
+                            </a>
+                        </th>
 
-        <th>
-            <a href="{{ request()->fullUrlWithQuery([
-                'sort' => 'vaccine_name',
-                'direction' => ($sort === 'vaccine_name' && $direction === 'asc') ? 'desc' : 'asc'
-            ]) }}">
-                Vaccine Name
-                @if($sort === 'vaccine_name')
-                    {!! $direction === 'asc' ? '▲' : '▼' !!}
-                @endif
-            </a>
-        </th>
+                        {{-- Vaccine --}}
+                        <th>
+                            <a href="{{ request()->fullUrlWithQuery([
+                                'sort' => 'vaccine_name',
+                                'direction' => ($sort === 'vaccine_name' && $direction === 'asc') ? 'desc' : 'asc'
+                            ]) }}">
+                                Vaccine Name
+                                @if($sort === 'vaccine_name')
+                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
+                                @else
+                                    <i class="fas fa-sort sort-icon"></i>
+                                @endif
+                            </a>
+                        </th>
 
-        <th>
-            <a href="{{ request()->fullUrlWithQuery([
-                'sort' => 'male_vaccinated',
-                'direction' => ($sort === 'male_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
-            ]) }}">
-                Male
-                @if($sort === 'male_vaccinated')
-                    {!! $direction === 'asc' ? '▲' : '▼' !!}
-                @endif
-            </a>
-        </th>
+                        {{-- Male --}}
+                        <th>
+                            <a href="{{ request()->fullUrlWithQuery([
+                                'sort' => 'male_vaccinated',
+                                'direction' => ($sort === 'male_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
+                            ]) }}">
+                                Male
+                                @if($sort === 'male_vaccinated')
+                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
+                                @else
+                                    <i class="fas fa-sort sort-icon"></i>
+                                @endif
+                            </a>
+                        </th>
 
-        <th>
-            <a href="{{ request()->fullUrlWithQuery([
-                'sort' => 'female_vaccinated',
-                'direction' => ($sort === 'female_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
-            ]) }}">
-                Female
-                @if($sort === 'female_vaccinated')
-                    {!! $direction === 'asc' ? '▲' : '▼' !!}
-                @endif
-            </a>
-        </th>
+                        {{-- Female --}}
+                        <th>
+                            <a href="{{ request()->fullUrlWithQuery([
+                                'sort' => 'female_vaccinated',
+                                'direction' => ($sort === 'female_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
+                            ]) }}">
+                                Female
+                                @if($sort === 'female_vaccinated')
+                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
+                                @else
+                                    <i class="fas fa-sort sort-icon"></i>
+                                @endif
+                            </a>
+                        </th>
 
-        <th>Total Vaccinated</th>
-        <th>Coverage</th>
-        <th class="no-print">Actions</th>
-    </tr>
-</thead>
+                        <th>Total Vaccinated</th>
+                        <th>Coverage</th>
+                        <th class="no-print">Actions</th>
+                    </tr>
+                </thead>
 
                 <tbody style="background-color: white;">
                     @php $estimatedPopulation = 3000; @endphp
@@ -147,6 +159,7 @@
                 </tbody>
             </table>
 
+            {{-- Pagination --}}
             @php
                 $start = max(1, $data->currentPage() - 2);
                 $end = min($data->lastPage(), $start + 3);
