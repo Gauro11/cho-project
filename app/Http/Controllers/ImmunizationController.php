@@ -94,7 +94,7 @@ public function show_immunization(Request $request)
         ->appends($request->only(['sort', 'direction']));
 
     if ($request->ajax()) {
-        return view('immunization.table', compact('data', 'sort', 'direction'))->render();
+        return view('immunization.partials.table', compact('data', 'sort', 'direction'))->render();
     }
 
     $user = Auth::guard('staff')->user();
