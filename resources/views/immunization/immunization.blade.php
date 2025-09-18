@@ -1398,55 +1398,7 @@
 
                                     
 
-                                    {{-- <style>
-                                        /* Dropdown container */
-                                        .dropdown {
-                                            position: relative;
-                                            display: inline-block;
-                                        }
-
-                                        /* Dropdown button */
-                                        .modern-btn.btn-sort.dropdown-toggle {
-                                            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-                                            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-                                        }
-
-                                        .modern-btn.btn-sort.dropdown-toggle:hover {
-                                            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
-                                        }
-
-                                       
-                                        .dropdown-menu {
-                                            display: none;
-                                            position: absolute;
-                                            background: black;
-                                            min-width: 180px;
-                                            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-                                            border-radius: 12px;
-                                            margin-top: 5px;
-                                            z-index: 1000;
-                                        }
-
-                                        .dropdown-menu.show {
-                                            display: block;
-                                        }
-
-                                        .dropdown-item {
-                                            padding: 10px 16px;
-                                            display: block;
-                                            width: 100%;
-                                            text-align: left;
-                                            background: none;
-                                            border: none;
-                                            cursor: pointer;
-                                            font-size: 14px;
-                                             color: white;
-                                        }
-                                        .dropdown-item:hover {
-                                            background: #000;
-                                            color: #7c3aed;
-                                        }
-                                    </style> --}}
+                                   
 
                                    
 
@@ -1807,6 +1759,252 @@
                         });
                     </script>
 
+                    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Sorting Enhancement</title>
+    <style>
+        /* Add this CSS to your existing styles */
+        
+        /* Sortable table header styling */
+        .modern-table th.sortable {
+            cursor: pointer;
+            position: relative;
+            padding-right: 30px !important;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        
+        .modern-table th.sortable:hover {
+            background: linear-gradient(135deg, #667eea 20%, #764ba2 80%);
+            transform: translateY(-1px);
+        }
+        
+        /* Sorting arrows */
+        .modern-table th.sortable::after {
+            content: '↕️';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .modern-table th.sortable.asc::after {
+            content: '↑';
+            opacity: 1;
+            color: #43e97b;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(67, 233, 123, 0.3);
+        }
+        
+        .modern-table th.sortable.desc::after {
+            content: '↓';
+            opacity: 1;
+            color: #f5576c;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(245, 87, 108, 0.3);
+        }
+        
+        .modern-table th.sortable:hover::after {
+            opacity: 0.8;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        /* Add a subtle animation for sorted rows */
+        .modern-table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .modern-table tbody tr.sorting {
+            opacity: 0.7;
+            transform: scale(0.99);
+        }
+        
+        /* Improved sorting indicator */
+        .modern-table th.sortable.active {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            box-shadow: 0 0 15px rgba(67, 233, 123, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Your existing table structure should have these classes added to headers -->
+    <div class="demo-container">
+        <h2 class="demo-title">Table Sorting Enhancement</h2>
+        <p style="color: #ccc; margin-bottom: 2rem;">Add the CSS above to your existing styles, then modify your table headers like this:</p>
+        
+        <div class="modern-table">
+            <table style="width: 100%; background: rgba(255,255,255,0.05); border-radius: 15px; overflow: hidden;">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-column="date" data-sort="asc">Date</th>
+                        <th class="sortable" data-column="vaccine" data-sort="asc">Vaccine Name</th>
+                        <th class="sortable" data-column="male" data-sort="asc">Male Vaccinated</th>
+                        <th class="sortable" data-column="female" data-sort="asc">Female Vaccinated</th>
+                        <th class="sortable" data-column="total" data-sort="asc">Total</th>
+                        <th style="padding: 1rem;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 1rem; color: white;">2024-01-15</td>
+                        <td style="padding: 1rem; color: white;">COVID-19 VACCINE</td>
+                        <td style="padding: 1rem; color: white;">25</td>
+                        <td style="padding: 1rem; color: white;">30</td>
+                        <td style="padding: 1rem; color: white;">55</td>
+                        <td style="padding: 1rem;">Actions</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem; color: white;">2024-02-10</td>
+                        <td style="padding: 1rem; color: white;">HEPATITIS B</td>
+                        <td style="padding: 1rem; color: white;">15</td>
+                        <td style="padding: 1rem; color: white;">20</td>
+                        <td style="padding: 1rem; color: white;">35</td>
+                        <td style="padding: 1rem;">Actions</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Add this JavaScript to handle the sorting functionality
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.querySelector('#dataTable'); // Your table ID
+            if (!table) return;
+            
+            const headers = table.querySelectorAll('th.sortable');
+            const tbody = table.querySelector('tbody');
+            
+            headers.forEach(header => {
+                header.addEventListener('click', function() {
+                    const column = this.dataset.column;
+                    const currentSort = this.dataset.sort;
+                    const newSort = currentSort === 'asc' ? 'desc' : 'asc';
+                    
+                    // Remove active class from all headers
+                    headers.forEach(h => {
+                        h.classList.remove('asc', 'desc', 'active');
+                        h.dataset.sort = 'asc';
+                    });
+                    
+                    // Add classes to current header
+                    this.classList.add(newSort, 'active');
+                    this.dataset.sort = newSort;
+                    
+                    // Sort the rows
+                    sortTable(column, newSort);
+                });
+            });
+            
+            function sortTable(column, direction) {
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                
+                // Add sorting animation
+                rows.forEach(row => row.classList.add('sorting'));
+                
+                setTimeout(() => {
+                    rows.sort((a, b) => {
+                        let aVal, bVal;
+                        
+                        switch(column) {
+                            case 'date':
+                                const aDateIndex = 0; // Adjust based on your table structure
+                                const bDateIndex = 0;
+                                aVal = new Date(a.children[aDateIndex].textContent.trim());
+                                bVal = new Date(b.children[bDateIndex].textContent.trim());
+                                break;
+                                
+                            case 'vaccine':
+                                const aVaccineIndex = 1; // Adjust based on your table structure
+                                const bVaccineIndex = 1;
+                                aVal = a.children[aVaccineIndex].textContent.trim();
+                                bVal = b.children[bVaccineIndex].textContent.trim();
+                                break;
+                                
+                            case 'male':
+                                const aMaleIndex = 2; // Adjust based on your table structure
+                                const bMaleIndex = 2;
+                                aVal = parseInt(a.children[aMaleIndex].textContent.trim()) || 0;
+                                bVal = parseInt(b.children[bMaleIndex].textContent.trim()) || 0;
+                                break;
+                                
+                            case 'female':
+                                const aFemaleIndex = 3; // Adjust based on your table structure
+                                const bFemaleIndex = 3;
+                                aVal = parseInt(a.children[aFemaleIndex].textContent.trim()) || 0;
+                                bVal = parseInt(b.children[bFemaleIndex].textContent.trim()) || 0;
+                                break;
+                                
+                            case 'total':
+                                const aTotalIndex = 4; // Adjust based on your table structure
+                                const bTotalIndex = 4;
+                                aVal = parseInt(a.children[aTotalIndex].textContent.trim()) || 0;
+                                bVal = parseInt(b.children[bTotalIndex].textContent.trim()) || 0;
+                                break;
+                                
+                            default:
+                                return 0;
+                        }
+                        
+                        let comparison = 0;
+                        
+                        if (column === 'vaccine') {
+                            // String comparison for vaccine names (A-Z)
+                            comparison = aVal.localeCompare(bVal);
+                        } else if (column === 'date') {
+                            // Date comparison (oldest to newest)
+                            comparison = aVal - bVal;
+                        } else {
+                            // Numeric comparison (oldest to newest / lowest to highest)
+                            comparison = aVal - bVal;
+                        }
+                        
+                        return direction === 'desc' ? -comparison : comparison;
+                    });
+                    
+                    // Re-append sorted rows
+                    rows.forEach(row => {
+                        row.classList.remove('sorting');
+                        tbody.appendChild(row);
+                    });
+                }, 150);
+            }
+        });
+    </script>
+
+    <div style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 15px; margin-top: 2rem;">
+        <h3 style="color: #43e97b; margin-bottom: 1rem;">Implementation Instructions:</h3>
+        <ol style="color: #ccc; line-height: 1.8;">
+            <li><strong>Add the CSS above</strong> to your existing stylesheet</li>
+            <li><strong>Modify your table headers</strong> to include:
+                <ul style="margin-top: 0.5rem;">
+                    <li><code>class="sortable"</code></li>
+                    <li><code>data-column="columnname"</code> (date, vaccine, male, female, total)</li>
+                    <li><code>data-sort="asc"</code></li>
+                </ul>
+            </li>
+            <li><strong>Add the JavaScript</strong> to your page (adjust the table selector if needed)</li>
+            <li><strong>Adjust column indices</strong> in the JavaScript to match your table structure</li>
+        </ol>
+        
+        <div style="background: rgba(67, 233, 123, 0.1); border-left: 4px solid #43e97b; padding: 1rem; margin-top: 1rem; border-radius: 0 8px 8px 0;">
+            <strong style="color: #43e97b;">Note:</strong> The sorting follows your requirements:
+            <ul style="margin-top: 0.5rem; color: #ccc;">
+                <li>📅 <strong>Date:</strong> Oldest to Newest</li>
+                <li>💊 <strong>Vaccine Name:</strong> A-Z alphabetical</li>
+                <li>👨👩 <strong>Male/Female/Total:</strong> Oldest to Newest (lowest to highest)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+
                     <!-- Initialize Feather Icons -->
                     <script>
                         feather.replace();
@@ -1912,6 +2110,7 @@
                             }, 100);
                         });
                     </script>
+                    
 
                     <script>
                         // Prevent selection of past dates
