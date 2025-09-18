@@ -1398,7 +1398,7 @@
 
                                     
 
-                                    <style>
+                                    {{-- <style>
                                         /* Dropdown container */
                                         .dropdown {
                                             position: relative;
@@ -1446,7 +1446,7 @@
                                             background: #000;
                                             color: #7c3aed;
                                         }
-                                    </style>
+                                    </style> --}}
 
                                    
 
