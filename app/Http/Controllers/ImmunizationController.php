@@ -77,28 +77,28 @@ class ImmunizationController extends Controller
 
 public function show_immunization(Request $request)
 {
-    if (Auth::guard('staff')->check()) {
-        // Get sorting parameters from query
-        $sort = $request->get('sort', 'date');        // default column: date
-        $direction = $request->get('direction', 'asc'); // default direction: asc
-
-        // Define allowed sortable columns
-        $allowedSorts = ['date', 'vaccine_name', 'male_vaccinated', 'female_vaccinated'];
-        if (!in_array($sort, $allowedSorts)) {
-            $sort = 'date'; // fallback if invalid column
-        }
-
-        // Fetch data with sorting + pagination
-        $data = ImmunizationManagement::orderBy($sort, $direction)
-            ->paginate(10)
-            ->appends($request->only(['sort', 'direction']));
-
-        $user = Auth::guard('staff')->user();
-
-        return view('immunization.immunization', compact('data', 'user', 'sort', 'direction'));
-    } else {
+    if (!Auth::guard('staff')->check()) {
         return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
     }
+
+    $sort = $request->get('sort', 'date');
+    $direction = $request->get('direction', 'asc');
+
+    $allowedSorts = ['date', 'vaccine_name', 'male_vaccinated', 'female_vaccinated'];
+    if (!in_array($sort, $allowedSorts)) {
+        $sort = 'date';
+    }
+
+    $data = ImmunizationManagement::orderBy($sort, $direction)
+        ->paginate(10)
+        ->appends($request->only(['sort', 'direction']));
+
+    if ($request->ajax()) {
+        return view('immunization.table', compact('data', 'sort', 'direction'))->render();
+    }
+
+    $user = Auth::guard('staff')->user();
+    return view('immunization.immunization', compact('data', 'user', 'sort', 'direction'));
 }
 
 

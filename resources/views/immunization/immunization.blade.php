@@ -1116,6 +1116,15 @@
 </head>
 
 <body>
+    <div class="card flex-fill" id="dataTable">
+    <div id="table-container">
+        @include('immunization.table', [
+            'data' => $data,
+            'sort' => $sort,
+            'direction' => $direction
+        ])
+    </div>
+</div>
     <div class="wrapper">
         @include('staff.sidebar')
         
@@ -2134,6 +2143,36 @@
                             });
                         });
                     </script>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).on("click", ".sortable", function () {
+    let column = $(this).data("column");
+    let direction = $(this).data("direction");
+
+    $.ajax({
+        url: "{{ route('show_immunization') }}",
+        type: "GET",
+        data: { sort: column, direction: direction },
+        success: function (data) {
+            $("#table-container").html(data);
+        }
+    });
+});
+
+// Handle AJAX pagination clicks
+$(document).on("click", ".pagination a", function (e) {
+    e.preventDefault();
+    let url = $(this).attr("href");
+
+    $.ajax({
+        url: url,
+        success: function (data) {
+            $("#table-container").html(data);
+        }
+    });
+});
+</script>
+
 
                     <!-- Initialize Feather Icons -->
                     <script>
@@ -2163,6 +2202,7 @@
                                 }
                             });
                         });
+                        
                     </script>
                 </div>
             </main>

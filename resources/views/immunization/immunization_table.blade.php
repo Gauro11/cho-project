@@ -52,112 +52,74 @@
     <div class="col-12 col-lg-12 col-xxl-12 d-flex">
         <div class="card flex-fill" id="dataTable">
             <table class="table table-hover my-0">
-                <thead>
-                    <tr>
-                        {{-- Date --}}
-                        <th>
-                            <a href="{{ request()->fullUrlWithQuery([
-                                'sort' => 'date',
-                                'direction' => ($sort === 'date' && $direction === 'asc') ? 'desc' : 'asc'
-                            ]) }}">
-                                Date
-                                @if($sort === 'date')
-                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
-                                @else
-                                    <i class="fas fa-sort sort-icon"></i>
-                                @endif
-                            </a>
-                        </th>
+    <thead>
+        <tr>
+            <th class="sortable" data-column="date" data-direction="{{ $sort === 'date' && $direction === 'asc' ? 'desc' : 'asc' }}">
+                Date
+                <i class="fas {{ $sort === 'date' ? ($direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort' }} sort-icon"></i>
+            </th>
+            <th class="sortable" data-column="vaccine_name" data-direction="{{ $sort === 'vaccine_name' && $direction === 'asc' ? 'desc' : 'asc' }}">
+                Vaccine Name
+                <i class="fas {{ $sort === 'vaccine_name' ? ($direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort' }} sort-icon"></i>
+            </th>
+            <th class="sortable" data-column="male_vaccinated" data-direction="{{ $sort === 'male_vaccinated' && $direction === 'asc' ? 'desc' : 'asc' }}">
+                Male
+                <i class="fas {{ $sort === 'male_vaccinated' ? ($direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort' }} sort-icon"></i>
+            </th>
+            <th class="sortable" data-column="female_vaccinated" data-direction="{{ $sort === 'female_vaccinated' && $direction === 'asc' ? 'desc' : 'asc' }}">
+                Female
+                <i class="fas {{ $sort === 'female_vaccinated' ? ($direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort' }} sort-icon"></i>
+            </th>
+            <th>Total Vaccinated</th>
+            <th>Coverage</th>
+            <th class="no-print">Actions</th>
+        </tr>
+    </thead>
+    <tbody style="background-color: white;">
+        @php $estimatedPopulation = 3000; @endphp
+        @foreach($data as $row)
+            @php
+                $totalVaccinated = $row->male_vaccinated + $row->female_vaccinated;
+                $coveragePercentage = $estimatedPopulation > 0 ? ($totalVaccinated / $estimatedPopulation) * 100 : 0;
+                $coverageClass = 'coverage-low';
+                if ($coveragePercentage >= 80) $coverageClass = 'coverage-high';
+                elseif ($coveragePercentage >= 50) $coverageClass = 'coverage-medium';
+            @endphp
+            <tr>
+                <td>{{ \Carbon\Carbon::parse($row->date)->format('m-d-Y') }}</td>
+                <td>{{ strtoupper($row->vaccine_name) }}</td>
+                <td>{{ number_format($row->male_vaccinated) }}</td>
+                <td>{{ number_format($row->female_vaccinated) }}</td>
+                <td>{{ number_format($totalVaccinated) }}</td>
+                <td>
+                    <span class="coverage-badge {{ $coverageClass }}">
+                        {{ number_format($coveragePercentage, 2) }}%
+                    </span>
+                </td>
+                <td class="no-print">
+                    <button class="btn btn-warning btn-sm edit-button"
+                        data-id="{{ $row->id }}"
+                        data-vaccine="{{ $row->vaccine_name }}"
+                        data-date="{{ $row->date }}"
+                        data-male="{{ $row->male_vaccinated }}"
+                        data-female="{{ $row->female_vaccinated }}">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm delete-button" data-id="{{ $row->id }}">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
 
-                        {{-- Vaccine --}}
-                        <th>
-                            <a href="{{ request()->fullUrlWithQuery([
-                                'sort' => 'vaccine_name',
-                                'direction' => ($sort === 'vaccine_name' && $direction === 'asc') ? 'desc' : 'asc'
-                            ]) }}">
-                                Vaccine Name
-                                @if($sort === 'vaccine_name')
-                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
-                                @else
-                                    <i class="fas fa-sort sort-icon"></i>
-                                @endif
-                            </a>
-                        </th>
+{{-- Pagination --}}
+<div class="pagination-container mt-3 no-print">
+    <p>Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} results</p>
+    {!! $data->appends(request()->except('page'))->links('pagination::bootstrap-5') !!}
+</div>
 
-                        {{-- Male --}}
-                        <th>
-                            <a href="{{ request()->fullUrlWithQuery([
-                                'sort' => 'male_vaccinated',
-                                'direction' => ($sort === 'male_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
-                            ]) }}">
-                                Male
-                                @if($sort === 'male_vaccinated')
-                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
-                                @else
-                                    <i class="fas fa-sort sort-icon"></i>
-                                @endif
-                            </a>
-                        </th>
-
-                        {{-- Female --}}
-                        <th>
-                            <a href="{{ request()->fullUrlWithQuery([
-                                'sort' => 'female_vaccinated',
-                                'direction' => ($sort === 'female_vaccinated' && $direction === 'asc') ? 'desc' : 'asc'
-                            ]) }}">
-                                Female
-                                @if($sort === 'female_vaccinated')
-                                    <i class="fas {{ $direction === 'asc' ? 'fa-sort-up' : 'fa-sort-down' }} sort-icon"></i>
-                                @else
-                                    <i class="fas fa-sort sort-icon"></i>
-                                @endif
-                            </a>
-                        </th>
-
-                        <th>Total Vaccinated</th>
-                        <th>Coverage</th>
-                        <th class="no-print">Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody style="background-color: white;">
-                    @php $estimatedPopulation = 3000; @endphp
-                    @foreach($data as $row)
-                        @php
-                            $totalVaccinated = $row->male_vaccinated + $row->female_vaccinated;
-                            $coveragePercentage = $estimatedPopulation > 0 ? ($totalVaccinated / $estimatedPopulation) * 100 : 0;
-                            $coverageClass = 'coverage-low';
-                            if ($coveragePercentage >= 80) $coverageClass = 'coverage-high';
-                            elseif ($coveragePercentage >= 50) $coverageClass = 'coverage-medium';
-                        @endphp
-                        <tr>
-                            <td>{{ \Carbon\Carbon::parse($row->date)->format('m-d-Y') }}</td>
-                            <td>{{ strtoupper($row->vaccine_name) }}</td>
-                            <td>{{ number_format($row->male_vaccinated) }}</td>
-                            <td>{{ number_format($row->female_vaccinated) }}</td>
-                            <td>{{ number_format($totalVaccinated) }}</td>
-                            <td>
-                                <span class="coverage-badge {{ $coverageClass }}">
-                                    {{ number_format($coveragePercentage, 2) }}%
-                                </span>
-                            </td>
-                            <td class="no-print">
-                                <button class="btn btn-warning btn-sm edit-button"
-                                    data-id="{{ $row->id }}"
-                                    data-vaccine="{{ $row->vaccine_name }}"
-                                    data-date="{{ $row->date }}"
-                                    data-male="{{ $row->male_vaccinated }}"
-                                    data-female="{{ $row->female_vaccinated }}">
-                                    Edit
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm delete-button" data-id="{{ $row->id }}">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
 
             {{-- Pagination --}}
             @php
