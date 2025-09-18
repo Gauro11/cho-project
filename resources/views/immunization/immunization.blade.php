@@ -1396,20 +1396,7 @@
                                             style="border-left: none;">
                                     </div>
 
-                                    <!--SORT BUTTON odlest to latest -->
-                                    <div class="dropdown">
-                                        <button class="modern-btn btn-sort btn-sm dropdown-toggle" id="sortDropdownBtn">
-                                            <i class="fas fa-sort"></i> Sort Options
-                                        </button>
-                                        <div class="dropdown-menu" id="sortDropdownMenu">
-                                            <button class="dropdown-item" data-sort="date-oldest">📅 Year: Oldest
-                                                First</button>
-                                            <button class="dropdown-item" data-sort="date-newest">📅 Year: Newest
-                                                First</button>
-                                            <button class="dropdown-item" data-sort="az">🔤 A-Z</button>
-                                            <button class="dropdown-item" data-sort="za">🔤 Z-A</button>
-                                        </div>
-                                    </div>
+                                    
 
                                     <style>
                                         /* Dropdown container */
