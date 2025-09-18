@@ -1116,14 +1116,7 @@
 </head>
 
 <body>
-    <div class="card flex-fill" id="dataTable">
-    <div id="table-container">
-        @include('immunization.partials.table', [
-            'data' => $data,
-            'sort' => $sort,
-            'direction' => $direction
-        ])
-    </div>
+    
 </div>
     <div class="wrapper">
         @include('staff.sidebar')
