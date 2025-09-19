@@ -341,6 +341,7 @@ function sortTable(colIndex, type = 'string') {
 }
 
 // Initialize
+ storeOriginalOrder(); // Save initial "oldest to newest" order
 window.onload = () => paginateTable(1);
 </script>
 
