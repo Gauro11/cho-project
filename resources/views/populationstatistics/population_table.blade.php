@@ -278,15 +278,62 @@ $barangayCoordinates = [
             <div class="card flex-fill" id="dataTable">
                 <table class="table table-hover my-0">
                     <thead>
-                        <tr style="color: white;">
-                            <th>date</th>
-                            <th>Barangay Name</th>
-                            <th>Latitude</th>
-                            <th>Longitude</th>
-                            <th>Population</th>
-                            <th class="no-print">Actions</th>
-                        </tr>
-                    </thead>
+    <tr style="color: white;">
+        <th onclick="sortTable(0, 'date')">Date <i id="icon-0" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable(1, 'string')">Barangay Name <i id="icon-1" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable(2, 'number')">Latitude <i id="icon-2" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable(3, 'number')">Longitude <i id="icon-3" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable(4, 'number')">Population <i id="icon-4" class="fas fa-sort sort-icon"></i></th>
+        <th class="no-print">Actions</th>
+    </tr>
+</thead>
+
+<script>
+let sortDirections = {};
+
+function sortTable(colIndex, type = 'string') {
+    const table = document.querySelector(".table tbody");
+    const rows = Array.from(table.rows);
+    const icon = document.getElementById("icon-" + colIndex);
+
+    // Toggle sort direction
+    sortDirections[colIndex] = !sortDirections[colIndex];
+    const direction = sortDirections[colIndex] ? 1 : -1;
+
+    // Reset all icons
+    document.querySelectorAll(".sort-icon").forEach(i => i.className = "fas fa-sort sort-icon");
+
+    rows.sort((a, b) => {
+        let A = a.cells[colIndex].innerText.trim();
+        let B = b.cells[colIndex].innerText.trim();
+
+        if (type === "number") {
+            A = parseFloat(A.replace(/,/g, "")) || 0;
+            B = parseFloat(B.replace(/,/g, "")) || 0;
+        } else if (type === "date") {
+            A = new Date(A);
+            B = new Date(B);
+        } else {
+            A = A.toLowerCase();
+            B = B.toLowerCase();
+        }
+
+        if (A < B) return -1 * direction;
+        if (A > B) return 1 * direction;
+        return 0;
+    });
+
+    // Re-attach sorted rows
+    table.innerHTML = "";
+    rows.forEach(row => table.appendChild(row));
+
+    // Update current icon
+    icon.className = "fas " + (direction === 1 ? "fa-sort-up" : "fa-sort-down") + " sort-icon";
+}
+</script>
+
+
+
                     <tbody style="background-color: white;">
                         @foreach($data as $row)
                             <tr>
