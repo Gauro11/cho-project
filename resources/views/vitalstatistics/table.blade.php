@@ -243,20 +243,108 @@
             <div class="card flex-fill" id="dataTable">
                 <table class="table table-hover my-0">
                     <thead>
-                        <tr style="color: white;">
-                            <th>Year</th>
-                           
-                            <th>Total Live Births</th>
-                            <th>Crude Birth Rate</th>
-                            <th>Total Deaths</th>
-                            <th>Crude Death Rate</th>
-                            <th>Infant Deaths</th>
-                            <th>Infant Mortality Rate</th>
-                            <th>Maternal Deaths</th>
-                            <th>Maternal Mortality Rate</th>
-                            <th class="no-print">Actions</th>
-                        </tr>
-                    </thead>
+    <tr>
+        <th onclick="sortTable(0, 'number')">Year <i class="fas fa-sort sort-icon" id="icon-0"></i></th>
+        <th onclick="sortTable(1, 'number')">Total Live Births <i class="fas fa-sort sort-icon" id="icon-1"></i></th>
+        <th onclick="sortTable(2, 'number')">Crude Birth Rate <i class="fas fa-sort sort-icon" id="icon-2"></i></th>
+        <th onclick="sortTable(3, 'number')">Total Deaths <i class="fas fa-sort sort-icon" id="icon-3"></i></th>
+        <th onclick="sortTable(4, 'number')">Crude Death Rate 
+        <th onclick="sortTable(5, 'number')">Infant Deaths <i class="fas fa-sort sort-icon" id="icon-5"></i></th>
+        <th onclick="sortTable(6, 'number')">Infant Mortality Rate
+        <th onclick="sortTable(7, 'number')">Maternal Deaths <i class="fas fa-sort sort-icon" id="icon-7"></i></th>
+        <th onclick="sortTable(8, 'number')">Maternal Mortality Rate 
+        <th class="no-print">Actions</th>
+    </tr>
+</thead>
+
+<script>
+let currentPage = 1;
+const rowsPerPage = 10;
+let sortDirections = {};
+
+function paginateTable(page) {
+    const table = document.querySelector(".table tbody");
+    const rows = Array.from(table.rows);
+
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+    currentPage = Math.min(Math.max(1, page), totalPages);
+
+    rows.forEach((row, index) => {
+        row.style.display =
+            index >= (currentPage - 1) * rowsPerPage && index < currentPage * rowsPerPage
+                ? ""
+                : "none";
+    });
+
+    renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+    const container = document.querySelector(".pagination");
+    container.innerHTML = "";
+
+    // Prev
+    container.innerHTML += `
+        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="javascript:void(0)" onclick="paginateTable(${currentPage - 1})">&laquo; Previous</a>
+        </li>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+        container.innerHTML += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+                <a class="page-link" href="javascript:void(0)" onclick="paginateTable(${i})">${i}</a>
+            </li>
+        `;
+    }
+
+    // Next
+    container.innerHTML += `
+        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="javascript:void(0)" onclick="paginateTable(${currentPage + 1})">Next &raquo;</a>
+        </li>
+    `;
+}
+
+function sortTable(colIndex, type = 'string') {
+    const table = document.querySelector(".table tbody");
+    const rows = Array.from(table.rows);
+    const icon = document.getElementById("icon-" + colIndex);
+
+    sortDirections[colIndex] = !sortDirections[colIndex];
+    const direction = sortDirections[colIndex] ? 1 : -1;
+
+    document.querySelectorAll(".sort-icon").forEach(i => i.className = "fas fa-sort sort-icon");
+
+    rows.sort((a, b) => {
+        let A = a.cells[colIndex].innerText.trim();
+        let B = b.cells[colIndex].innerText.trim();
+
+        if (type === "number") {
+            A = parseFloat(A.replace(/,/g, "")) || 0;
+            B = parseFloat(B.replace(/,/g, "")) || 0;
+        } else {
+            A = A.toLowerCase();
+            B = B.toLowerCase();
+        }
+
+        if (A < B) return -1 * direction;
+        if (A > B) return 1 * direction;
+        return 0;
+    });
+
+    rows.forEach(row => table.appendChild(row));
+
+    icon.className = "fas " + (direction === 1 ? "fa-sort-up" : "fa-sort-down") + " sort-icon";
+
+    paginateTable(currentPage); // Re-apply pagination
+}
+
+// Initialize
+window.onload = () => paginateTable(1);
+</script>
+
+
                     <tbody style="background-color: white;">
                         @foreach ($data as $row)
                             @php
