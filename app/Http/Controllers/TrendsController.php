@@ -71,14 +71,21 @@ class TrendsController extends Controller
     public function getPopulationData()
     {
         try {
-            // Replace this with your actual population data logic
-            // For now, I'll show a sample structure
             $data = $this->getPopulationStatisticsData();
+
+            // Format data for prediction generation
+            $formattedData = [];
+            foreach ($data['labels'] as $index => $date) {
+                $formattedData[] = [
+                    'date' => $date,
+                    'total' => $data['values'][$index]
+                ];
+            }
 
             return response()->json([
                 'success' => true,
                 'historical' => $data,
-                'prediction' => null
+                'prediction' => $this->generatePrediction($formattedData)
             ]);
         } catch (\Exception $e) {
             return response()->json([
