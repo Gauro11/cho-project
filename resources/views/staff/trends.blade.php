@@ -464,12 +464,18 @@
     </div>
     @include('staff.js')
 
-    <!-- Chart.js CDN with Regression Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
+  <!-- Chart.js CDN with Regression Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
 
-  <script>
+<div class="chart-container">
+    <canvas id="trendChart"></canvas>
+    <div id="predictionInfo" style="margin-top:10px;"></div>
+    <p id="formulaDisplay" style="margin-top:10px; font-weight:bold; color:#333;"></p>
+</div>
+
+<script>
 document.addEventListener("DOMContentLoaded", function() {
     const categorySelect = document.getElementById("categorySelect");
     const subCategorySelect = document.getElementById("subCategorySelect");
@@ -487,6 +493,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const ctx = document.getElementById("trendChart").getContext("2d");
     const chartTitle = document.getElementById("chartTitle");
     const predictionInfo = document.getElementById("predictionInfo");
+    const formulaDisplay = document.getElementById("formulaDisplay");
 
     let chart;
     let originalData = null; // Store the original data for filtering
@@ -609,7 +616,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 yearFilterGroup.style.display = 'block';
                 break;
             case '':
-                // Show all data - trigger reload if we have data
                 if (originalData) {
                     applyDateFilter();
                 }
@@ -624,76 +630,33 @@ document.addEventListener("DOMContentLoaded", function() {
     quarterYearPicker.addEventListener("change", applyDateFilter);
     yearPicker.addEventListener("change", applyDateFilter);
 
-    // Function to apply date filtering
-    function applyDateFilter() {
-        if (!originalData) return;
-
-        const filterType = dateFilterType.value;
-        let filteredData = {...originalData};
-
-        if (filterType === 'specific' && specificDatePicker.value) {
-            const selectedDate = specificDatePicker.value; // Format: YYYY-MM-DD
-            filteredData = filterDataBySpecificDate(originalData, selectedDate);
-        } else if (filterType === 'monthly' && monthPicker.value) {
-            const selectedMonth = monthPicker.value; // Format: YYYY-MM
-            filteredData = filterDataByMonth(originalData, selectedMonth);
-        } else if (filterType === 'quarterly' && quarterPicker.value && quarterYearPicker.value) {
-            const selectedQuarter = quarterPicker.value;
-            const selectedYear = quarterYearPicker.value;
-            filteredData = filterDataByQuarter(originalData, selectedQuarter, selectedYear);
-        } else if (filterType === 'yearly' && yearPicker.value) {
-            const selectedYear = yearPicker.value;
-            filteredData = filterDataByYear(originalData, selectedYear);
-        }
-
-        updateChart(filteredData);
-    }
-
     // Filter data by specific date
     function filterDataBySpecificDate(data, selectedDate) {
         const selectedDateObj = new Date(selectedDate);
         const filteredLabels = [];
         const filteredValues = [];
 
-        console.log("=== DEBUGGING SPECIFIC DATE FILTER ===");
-        console.log("Selected Date:", selectedDate);
-        console.log("Selected Date Object:", selectedDateObj);
-        console.log("Available Labels:", data.historical.labels);
-
         data.historical.labels.forEach((label, index) => {
             const date = parseDate(label);
-            console.log(`Label: ${label}, Parsed Date: ${date}, Same Date: ${date ? isSameDate(date, selectedDateObj) : false}`);
-            
             if (date && isSameDate(date, selectedDateObj)) {
                 filteredLabels.push(label);
                 filteredValues.push(data.historical.values[index]);
-                console.log("✅ MATCH FOUND:", label);
             }
         });
 
-        console.log("Filtered Results:", filteredLabels.length, "matches found");
-        console.log("=== END DEBUG ===");
-
         return {
             ...data,
-            historical: {
-                labels: filteredLabels,
-                values: filteredValues
-            },
-            prediction: null // Remove predictions for filtered data
+            historical: { labels: filteredLabels, values: filteredValues },
+            prediction: null
         };
     }
 
-    // Helper function to check if two dates are the same day
     function isSameDate(date1, date2) {
-        // Normalize both dates to avoid timezone issues
         const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
         const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
-        
         return d1.getTime() === d2.getTime();
     }
 
-    // Filter data by month
     function filterDataByMonth(data, selectedMonth) {
         const [selectedYear, selectedMonthNum] = selectedMonth.split('-');
         const filteredLabels = [];
@@ -709,23 +672,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         return {
             ...data,
-            historical: {
-                labels: filteredLabels,
-                values: filteredValues
-            },
-            prediction: null // Remove predictions for filtered data
+            historical: { labels: filteredLabels, values: filteredValues },
+            prediction: null
         };
     }
 
-    // Filter data by quarter
     function filterDataByQuarter(data, selectedQuarter, selectedYear) {
-        const quarterMonths = {
-            'Q1': [1, 2, 3],
-            'Q2': [4, 5, 6],
-            'Q3': [7, 8, 9],
-            'Q4': [10, 11, 12]
-        };
-
+        const quarterMonths = { 'Q1': [1,2,3], 'Q2': [4,5,6], 'Q3': [7,8,9], 'Q4': [10,11,12] };
         const months = quarterMonths[selectedQuarter];
         const filteredLabels = [];
         const filteredValues = [];
@@ -740,15 +693,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
         return {
             ...data,
-            historical: {
-                labels: filteredLabels,
-                values: filteredValues
-            },
+            historical: { labels: filteredLabels, values: filteredValues },
             prediction: null
         };
     }
 
-    // Filter data by year
     function filterDataByYear(data, selectedYear) {
         const filteredLabels = [];
         const filteredValues = [];
@@ -763,84 +712,46 @@ document.addEventListener("DOMContentLoaded", function() {
 
         return {
             ...data,
-            historical: {
-                labels: filteredLabels,
-                values: filteredValues
-            },
+            historical: { labels: filteredLabels, values: filteredValues },
             prediction: null
         };
     }
 
-    // Parse date from various formats
     function parseDate(dateString) {
         if (!dateString) return null;
-        
         let date;
-        
-        // Handle different date formats
         if (typeof dateString === 'string') {
-            // Format: YYYY-MM-DD
-            if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                date = new Date(dateString);
-            }
-            // Format: MM/DD/YYYY
+            if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) date = new Date(dateString);
             else if (dateString.includes('/')) {
                 const parts = dateString.split('/');
                 if (parts.length === 3) {
-                    // Try MM/DD/YYYY first
                     date = new Date(parts[2], parts[0] - 1, parts[1]);
-                    // If invalid, try DD/MM/YYYY
-                    if (isNaN(date.getTime())) {
-                        date = new Date(parts[2], parts[1] - 1, parts[0]);
-                    }
+                    if (isNaN(date.getTime())) date = new Date(parts[2], parts[1] - 1, parts[0]);
                 }
-            }
-            // Format: DD-MM-YYYY or similar
-            else if (dateString.includes('-') && dateString.length > 8) {
+            } else if (dateString.includes('-') && dateString.length > 8) {
                 const parts = dateString.split('-');
                 if (parts.length === 3) {
-                    // If first part is 4 digits, assume YYYY-MM-DD
-                    if (parts[0].length === 4) {
-                        date = new Date(parts[0], parts[1] - 1, parts[2]);
-                    } else {
-                        // Otherwise assume DD-MM-YYYY
-                        date = new Date(parts[2], parts[1] - 1, parts[0]);
-                    }
+                    if (parts[0].length === 4) date = new Date(parts[0], parts[1] - 1, parts[2]);
+                    else date = new Date(parts[2], parts[1] - 1, parts[0]);
                 }
-            }
-            // Format: ISO string or other standard formats
-            else {
-                date = new Date(dateString);
-            }
-        }
-        // Handle timestamp (number)
-        else if (typeof dateString === 'number') {
-            // If it's a timestamp (seconds), convert to milliseconds
+            } else date = new Date(dateString);
+        } else if (typeof dateString === 'number') {
             date = dateString > 10000000000 ? new Date(dateString) : new Date(dateString * 1000);
-        }
-        // Fallback
-        else {
+        } else {
             date = new Date(dateString);
         }
-        
         return isNaN(date.getTime()) ? null : date;
     }
 
-    // Update chart with filtered data
+    // Update chart
     function updateChart(data) {
         const formatDate = (dateString) => {
             if (!dateString) return 'Unknown';
-            let date;
-            if (dateString.includes('-')) date = new Date(dateString);
-            else if (dateString.includes('/')) date = new Date(dateString);
-            else if (typeof dateString === 'number') date = new Date(dateString * 1000);
-            else date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            let date = new Date(dateString);
+            return isNaN(date.getTime()) ? dateString : date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
         };
 
         const formattedHistoricalLabels = data.historical.labels.map(formatDate);
-        
         chart.data.labels = formattedHistoricalLabels;
         chart.data.datasets[0].data = data.historical.values;
 
@@ -848,9 +759,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const formattedPredictionLabels = data.prediction.labels.map(formatDate);
             const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
             chart.data.labels = allLabels;
-            chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(
-                data.prediction.values
-            );
+            chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(data.prediction.values);
             chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
             chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
         } else {
@@ -866,27 +775,30 @@ document.addEventListener("DOMContentLoaded", function() {
                 predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
             });
             predictionInfo.innerHTML = predictionText;
+
+            // 🔹 Show formula
+            if (data.prediction.formula) {
+                formulaDisplay.textContent = "📐 Formula: " + data.prediction.formula;
+            } else {
+                formulaDisplay.textContent = "";
+            }
         } else {
             predictionInfo.innerHTML = dateFilterType.value ? "📊 Filtered data - predictions not available for filtered views." : "❌ No prediction available for this dataset.";
+            formulaDisplay.textContent = "";
         }
     }
-    
 
     initChart();
     populateYearDropdowns();
 
-    // Category change handler
     categorySelect.addEventListener("change", async function() {
         const selectedCategory = categorySelect.value;
-
         if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
             subCategorySelect.style.display = 'block';
             subCategorySelect.innerHTML = '<option value="">Loading cases...</option>';
-
             try {
                 const response = await fetch(`/public/api/case-types/${selectedCategory}`);
                 const data = await response.json();
-
                 if (data.success) {
                     subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
                     data.cases.forEach(caseName => {
@@ -905,17 +817,14 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Sub-category change handler
     subCategorySelect.addEventListener("change", function() {
         const selectedCategory = categorySelect.value;
         const selectedSubCategory = subCategorySelect.value;
-
         if ((selectedCategory === "morbidity" || selectedCategory === "mortality") && selectedSubCategory) {
             loadChartData(selectedCategory, selectedSubCategory);
         }
     });
 
-    // Function to load chart data
     async function loadChartData(category, subCategory = null) {
         try {
             chartTitle.textContent = `Loading ${category} data...`;
@@ -929,17 +838,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const response = await fetch(url);
             const data = await response.json();
-
             if (!data.success) throw new Error(data.message || 'Failed to load data');
 
-            // Store original data for filtering
             originalData = data;
-
             chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis`;
-
-            // Apply current filter if any
             applyDateFilter();
-
         } catch (error) {
             console.error("Error loading chart data:", error);
             chartTitle.textContent = "❌ Error Loading Data";
@@ -948,6 +851,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+
 
 </body>
 
