@@ -111,24 +111,37 @@ class TrendsController extends Controller
         }
 
         // Simple linear regression for next 2 months
-        $lastValue = end($historicalData)['total'];
-        $secondLastValue = prev($historicalData)['total'];
-        $trend = $lastValue - $secondLastValue;
+        $values = array_column($historicalData, 'total');
+        $n = count($values);
+        
+        // Calculate trend using last 3 data points for better accuracy
+        $recentValues = array_slice($values, -3);
+        $trend = 0;
+        
+        if (count($recentValues) >= 2) {
+            // Calculate average trend from recent data points
+            for ($i = 1; $i < count($recentValues); $i++) {
+                $trend += $recentValues[$i] - $recentValues[$i-1];
+            }
+            $trend = $trend / (count($recentValues) - 1);
+        }
 
+        $lastValue = end($values);
         $lastDate = new \DateTime(end($historicalData)['date']);
         
         $predictions = [];
+        $predictionLabels = [];
+        
         for ($i = 1; $i <= 2; $i++) {
             $nextDate = clone $lastDate;
             $nextDate->add(new \DateInterval("P{$i}M"));
-            $predictions[] = max(0, $lastValue + ($trend * $i));
+            
+            $predictionLabels[] = $nextDate->format('Y-m-d');
+            $predictions[] = max(0, round($lastValue + ($trend * $i)));
         }
 
         return [
-            'labels' => [
-                $lastDate->add(new \DateInterval('P1M'))->format('Y-m-d'),
-                $lastDate->add(new \DateInterval('P1M'))->format('Y-m-d')
-            ],
+            'labels' => $predictionLabels,
             'values' => $predictions,
             'trend' => $trend > 0 ? 'increasing' : ($trend < 0 ? 'decreasing' : 'stable')
         ];
