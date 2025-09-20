@@ -496,49 +496,78 @@ document.addEventListener("DOMContentLoaded", function() {
         if (chart) {
             chart.destroy();
         }
-// Example data from backend (historical + regression)
-const chartData = @json($data); 
-// Make sure $data['labels'], $data['values'], $data['predictions'] exist
 
-const ctx = document.getElementById('myChart').getContext('2d');
-
-new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: [
-            ...chartData.labels,            // Historical dates
-            ...chartData.predictions.labels // Future prediction dates
-        ],
-        datasets: [
-            {
-                label: 'Historical Data',
-                data: chartData.values,     // Historical values
-                borderColor: 'blue',
-                fill: false,
-                tension: 0.1
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                        label: 'Historical Data',
+                        data: [],
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        color: 'white',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Prediction',
+                        data: [],
+                        borderColor: '#ff6384',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
             },
-            {
-                label: 'Predicted Trend',
-                data: [
-                    ...Array(chartData.values.length - 1).fill(null), // pad so prediction starts after history
-                    ...chartData.predictions.values
-                ],
-                borderColor: 'red',
-                borderDash: [5, 5],
-                fill: false,
-                tension: 0.1
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#333' },
+                        title: { display: true, text: 'Count', color: '#333' }
+                    },
+                    x: {
+                        ticks: { color: '#333' },
+                        title: { display: true, text: 'Time Period', color: '#333' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#333', font: { size: 14, weight: 'bold' } }
+                    },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                yMin: 0,
+                                yMax: 0,
+                                borderColor: 'rgb(255, 99, 132)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                label: { content: 'Prediction Start', enabled: true, position: 'right', color: '#333' }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) label += context.parsed.y;
+                                return label;
+                            }
+                        }
+                    }
+                }
             }
-        ]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: { position: 'top' },
-            title: { display: true, text: 'Historical vs Predicted (Linear Regression)' }
-        }
+        });
     }
-});
-
 
     // Populate year dropdowns
     function populateYearDropdowns() {
@@ -798,65 +827,125 @@ new Chart(ctx, {
     }
 
     // Update chart with filtered data
-   function updateChart(data) {
-    const formatDate = (dateString) => {
-        if (!dateString) return 'Unknown';
-        let date = new Date(dateString);
-        if (isNaN(date.getTime())) return dateString;
-        return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    };
+    function updateChart(data) {
+        const formatDate = (dateString) => {
+            if (!dateString) return 'Unknown';
+            let date;
+            if (dateString.includes('-')) date = new Date(dateString);
+            else if (dateString.includes('/')) date = new Date(dateString);
+            else if (typeof dateString === 'number') date = new Date(dateString * 1000);
+            else date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        };
 
-    const formattedHistoricalLabels = data.historical.labels.map(formatDate);
+        const formattedHistoricalLabels = data.historical.labels.map(formatDate);
+        
+        chart.data.labels = formattedHistoricalLabels;
+        chart.data.datasets[0].data = data.historical.values;
 
-    chart.data.labels = [...formattedHistoricalLabels];
+        if (data.prediction) {
+            const formattedPredictionLabels = data.prediction.labels.map(formatDate);
+            const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
+            chart.data.labels = allLabels;
+            chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(
+                data.prediction.values
+            );
+            chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
+            chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
+        } else {
+            chart.data.datasets[1].data = [];
+        }
 
-    // Historical data
-    chart.data.datasets[0].data = data.historical.values;
+        chart.update();
 
-    // Regression line (only if slope & intercept available)
-    if (data.prediction && data.prediction.slope !== undefined) {
-        const m = data.prediction.slope;
-        const b = data.prediction.intercept;
-        const regressionValues = data.historical.values.map((_, i) => {
-            const x = i + 1; // index starting at 1
-            return Math.round(m * x + b);
-        });
-        chart.data.datasets[1].data = regressionValues;
-    } else {
-        chart.data.datasets[1].data = [];
+        // Update prediction info
+        if (data.prediction) {
+            let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
+            data.prediction.labels.forEach((month, index) => {
+                predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
+            });
+            predictionInfo.innerHTML = predictionText;
+        } else {
+            predictionInfo.innerHTML = dateFilterType.value ? "📊 Filtered data - predictions not available for filtered views." : "❌ No prediction available for this dataset.";
+        }
     }
+    
 
-    // Prediction (future months)
-    if (data.prediction) {
-        const formattedPredictionLabels = data.prediction.labels.map(formatDate);
-        chart.data.labels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
+    initChart();
+    populateYearDropdowns();
 
-        chart.data.datasets[2].data = Array(data.historical.values.length).fill(null).concat(
-            data.prediction.values
-        );
+    // Category change handler
+    categorySelect.addEventListener("change", async function() {
+        const selectedCategory = categorySelect.value;
 
-        chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
-        chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
-    } else {
-        chart.data.datasets[2].data = [];
+        if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
+            subCategorySelect.style.display = 'block';
+            subCategorySelect.innerHTML = '<option value="">Loading cases...</option>';
+
+            try {
+                const response = await fetch(`/public/api/case-types/${selectedCategory}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
+                    data.cases.forEach(caseName => {
+                        subCategorySelect.innerHTML += `<option value="${caseName}">${caseName}</option>`;
+                    });
+                } else {
+                    subCategorySelect.innerHTML = '<option value="">No cases found</option>';
+                }
+            } catch (error) {
+                console.error(error);
+                subCategorySelect.innerHTML = '<option value="">Error loading cases</option>';
+            }
+        } else {
+            subCategorySelect.style.display = 'none';
+            loadChartData(selectedCategory);
+        }
+    });
+
+    // Sub-category change handler
+    subCategorySelect.addEventListener("change", function() {
+        const selectedCategory = categorySelect.value;
+        const selectedSubCategory = subCategorySelect.value;
+
+        if ((selectedCategory === "morbidity" || selectedCategory === "mortality") && selectedSubCategory) {
+            loadChartData(selectedCategory, selectedSubCategory);
+        }
+    });
+
+    // Function to load chart data
+    async function loadChartData(category, subCategory = null) {
+        try {
+            chartTitle.textContent = `Loading ${category} data...`;
+            chart.data.labels = [];
+            chart.data.datasets[0].data = [];
+            chart.data.datasets[1].data = [];
+            chart.update();
+
+            let url = `/public/api/trend-data/${category}`;
+            if (subCategory) url += `?sub_category=${encodeURIComponent(subCategory)}`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (!data.success) throw new Error(data.message || 'Failed to load data');
+
+            // Store original data for filtering
+            originalData = data;
+
+            chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis`;
+
+            // Apply current filter if any
+            applyDateFilter();
+
+        } catch (error) {
+            console.error("Error loading chart data:", error);
+            chartTitle.textContent = "❌ Error Loading Data";
+            predictionInfo.innerHTML = `Error: ${error.message}`;
+        }
     }
-
-    chart.update();
-
-    // Prediction info text
-    if (data.prediction) {
-        let predictionText = `<strong>🔮 Next 2 Months Prediction (Regression):</strong><br>`;
-        data.prediction.labels.forEach((month, index) => {
-            predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
-        });
-        predictionInfo.innerHTML = predictionText;
-    } else {
-        predictionInfo.innerHTML = dateFilterType.value
-            ? "📊 Filtered data - predictions not available for filtered views."
-            : "❌ No prediction available for this dataset.";
-    }
-}
-
 });
 </script>
 
