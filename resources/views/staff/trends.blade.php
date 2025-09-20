@@ -121,7 +121,7 @@
             z-index: 2;
         }
 
-        .form-select {
+        .form-select, .form-control {
             background: rgba(128, 128, 128, 0.2) !important;
             backdrop-filter: blur(10px) !important;
             border: 1px solid rgba(128, 128, 128, 0.3) !important;
@@ -132,13 +132,13 @@
             font-family: 'Inter', sans-serif !important;
         }
 
-        .form-select:hover {
+        .form-select:hover, .form-control:hover {
             background: rgba(128, 128, 128, 0.3) !important;
             border-color: rgba(128, 128, 128, 0.5) !important;
             transform: translateY(-1px);
         }
 
-        .form-select:focus {
+        .form-select:focus, .form-control:focus {
             background: rgba(128, 128, 128, 0.35) !important;
             border-color: #667eea !important;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
@@ -257,6 +257,30 @@
             border-style: dashed;
         }
 
+        /* Date filter styles */
+        .date-filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .date-filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .date-filter-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        #monthPicker, #quarterPicker, #yearPicker {
+            min-width: 150px;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -308,6 +332,15 @@
             .col-6 {
                 width: 100% !important;
             }
+
+            .date-filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #monthPicker, #quarterPicker, #yearPicker {
+                min-width: auto;
+            }
         }
     </style>
 </head>
@@ -329,26 +362,70 @@
                     <div class="mb-3">
                         <h1 class="section-title pulse-animation">Trends Prediction</h1>
                         
-                        <div class="col-6 col-lg-6 card-enter">
+                        <div class="col-12 col-lg-12 card-enter">
                             <div class="card glass-card">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">🎯 Select Filters</h5>
                                 </div>
-                                <div class="card-body d-flex gap-2">
-                                    <!-- Select Category Dropdown -->
-                                    <select id="categorySelect" class="form-select">
-                                        <option selected>Select Category</option>
-                                        <option value="morbidity">Morbidity</option>
-                                        <option value="mortality">Mortality</option>
-                                        <!-- <option value="vital_statistics">Vital Statistics</option> -->
-                                        <option value="population_statistics">Population Statistics</option>
-                                        <!-- <option value="immunization">Immunization</option> -->
-                                    </select>
+                                <div class="card-body">
+                                    <!-- First Row: Category and Sub-category -->
+                                    <div class="d-flex gap-2 mb-3">
+                                        <select id="categorySelect" class="form-select">
+                                            <option selected>Select Category</option>
+                                            <option value="morbidity">Morbidity</option>
+                                            <option value="mortality">Mortality</option>
+                                            <option value="population_statistics">Population Statistics</option>
+                                        </select>
+                                        
+                                        <select id="subCategorySelect" class="form-select" style="display: none;">
+                                            <option value="">Select Case</option>
+                                        </select>
+                                    </div>
                                     
-                                    <!-- Sub-category for Morbidity/Mortality -->
-                                    <select id="subCategorySelect" class="form-select" style="display: none;">
-                                        <option value="">Select Case</option>
-                                    </select>
+                                    <!-- Second Row: Date Filters -->
+                                    <div class="date-filter-row">
+                                        <div class="date-filter-group">
+                                            <label class="date-filter-label">📅 Filter Type</label>
+                                            <select id="dateFilterType" class="form-select">
+                                                <option value="">All Data</option>
+                                                <option value="monthly">Monthly</option>
+                                                <option value="quarterly">Quarterly</option>
+                                                <option value="yearly">Yearly</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="date-filter-group" id="monthFilterGroup" style="display: none;">
+                                            <label class="date-filter-label">📆 Select Month</label>
+                                            <input type="month" id="monthPicker" class="form-control">
+                                        </div>
+                                        
+                                        <div class="date-filter-group" id="quarterFilterGroup" style="display: none;">
+                                            <label class="date-filter-label">📊 Select Quarter</label>
+                                            <select id="quarterPicker" class="form-select">
+                                                <option value="">Select Quarter</option>
+                                                <option value="Q1">Q1 (Jan-Mar)</option>
+                                                <option value="Q2">Q2 (Apr-Jun)</option>
+                                                <option value="Q3">Q3 (Jul-Sep)</option>
+                                                <option value="Q4">Q4 (Oct-Dec)</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="date-filter-group" id="yearFilterGroup" style="display: none;">
+                                            <label class="date-filter-label">🗓️ Select Year</label>
+                                            <select id="yearPicker" class="form-select">
+                                                <option value="">Select Year</option>
+                                                <!-- Years will be populated dynamically -->
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="date-filter-group" id="quarterYearGroup" style="display: none;">
+                                            <label class="date-filter-label">🗓️ Select Year</label>
+                                            <select id="quarterYearPicker" class="form-select">
+                                                <option value="">Select Year</option>
+                                                <!-- Years will be populated dynamically -->
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -389,11 +466,21 @@
 document.addEventListener("DOMContentLoaded", function() {
     const categorySelect = document.getElementById("categorySelect");
     const subCategorySelect = document.getElementById("subCategorySelect");
+    const dateFilterType = document.getElementById("dateFilterType");
+    const monthFilterGroup = document.getElementById("monthFilterGroup");
+    const quarterFilterGroup = document.getElementById("quarterFilterGroup");
+    const yearFilterGroup = document.getElementById("yearFilterGroup");
+    const quarterYearGroup = document.getElementById("quarterYearGroup");
+    const monthPicker = document.getElementById("monthPicker");
+    const quarterPicker = document.getElementById("quarterPicker");
+    const yearPicker = document.getElementById("yearPicker");
+    const quarterYearPicker = document.getElementById("quarterYearPicker");
     const ctx = document.getElementById("trendChart").getContext("2d");
     const chartTitle = document.getElementById("chartTitle");
     const predictionInfo = document.getElementById("predictionInfo");
 
     let chart;
+    let originalData = null; // Store the original data for filtering
 
     // Initialize the chart
     function initChart() {
@@ -473,7 +560,226 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Populate year dropdowns
+    function populateYearDropdowns() {
+        const currentYear = new Date().getFullYear();
+        const startYear = 2020; // Adjust based on your data range
+        
+        [yearPicker, quarterYearPicker].forEach(picker => {
+            picker.innerHTML = '<option value="">Select Year</option>';
+            for (let year = currentYear; year >= startYear; year--) {
+                picker.innerHTML += `<option value="${year}">${year}</option>`;
+            }
+        });
+    }
+
+    // Date filter type change handler
+    dateFilterType.addEventListener("change", function() {
+        const filterType = dateFilterType.value;
+        
+        // Hide all filter groups
+        monthFilterGroup.style.display = 'none';
+        quarterFilterGroup.style.display = 'none';
+        yearFilterGroup.style.display = 'none';
+        quarterYearGroup.style.display = 'none';
+        
+        // Show relevant filter group
+        switch(filterType) {
+            case 'monthly':
+                monthFilterGroup.style.display = 'block';
+                break;
+            case 'quarterly':
+                quarterFilterGroup.style.display = 'block';
+                quarterYearGroup.style.display = 'block';
+                break;
+            case 'yearly':
+                yearFilterGroup.style.display = 'block';
+                break;
+            case '':
+                // Show all data - trigger reload if we have data
+                if (originalData) {
+                    applyDateFilter();
+                }
+                break;
+        }
+    });
+
+    // Date filter change handlers
+    monthPicker.addEventListener("change", applyDateFilter);
+    quarterPicker.addEventListener("change", applyDateFilter);
+    quarterYearPicker.addEventListener("change", applyDateFilter);
+    yearPicker.addEventListener("change", applyDateFilter);
+
+    // Function to apply date filtering
+    function applyDateFilter() {
+        if (!originalData) return;
+
+        const filterType = dateFilterType.value;
+        let filteredData = {...originalData};
+
+        if (filterType === 'monthly' && monthPicker.value) {
+            const selectedMonth = monthPicker.value; // Format: YYYY-MM
+            filteredData = filterDataByMonth(originalData, selectedMonth);
+        } else if (filterType === 'quarterly' && quarterPicker.value && quarterYearPicker.value) {
+            const selectedQuarter = quarterPicker.value;
+            const selectedYear = quarterYearPicker.value;
+            filteredData = filterDataByQuarter(originalData, selectedQuarter, selectedYear);
+        } else if (filterType === 'yearly' && yearPicker.value) {
+            const selectedYear = yearPicker.value;
+            filteredData = filterDataByYear(originalData, selectedYear);
+        }
+
+        updateChart(filteredData);
+    }
+
+    // Filter data by month
+    function filterDataByMonth(data, selectedMonth) {
+        const [selectedYear, selectedMonthNum] = selectedMonth.split('-');
+        const filteredLabels = [];
+        const filteredValues = [];
+
+        data.historical.labels.forEach((label, index) => {
+            const date = parseDate(label);
+            if (date && date.getFullYear() == selectedYear && (date.getMonth() + 1) == parseInt(selectedMonthNum)) {
+                filteredLabels.push(label);
+                filteredValues.push(data.historical.values[index]);
+            }
+        });
+
+        return {
+            ...data,
+            historical: {
+                labels: filteredLabels,
+                values: filteredValues
+            },
+            prediction: null // Remove predictions for filtered data
+        };
+    }
+
+    // Filter data by quarter
+    function filterDataByQuarter(data, selectedQuarter, selectedYear) {
+        const quarterMonths = {
+            'Q1': [1, 2, 3],
+            'Q2': [4, 5, 6],
+            'Q3': [7, 8, 9],
+            'Q4': [10, 11, 12]
+        };
+
+        const months = quarterMonths[selectedQuarter];
+        const filteredLabels = [];
+        const filteredValues = [];
+
+        data.historical.labels.forEach((label, index) => {
+            const date = parseDate(label);
+            if (date && date.getFullYear() == selectedYear && months.includes(date.getMonth() + 1)) {
+                filteredLabels.push(label);
+                filteredValues.push(data.historical.values[index]);
+            }
+        });
+
+        return {
+            ...data,
+            historical: {
+                labels: filteredLabels,
+                values: filteredValues
+            },
+            prediction: null
+        };
+    }
+
+    // Filter data by year
+    function filterDataByYear(data, selectedYear) {
+        const filteredLabels = [];
+        const filteredValues = [];
+
+        data.historical.labels.forEach((label, index) => {
+            const date = parseDate(label);
+            if (date && date.getFullYear() == selectedYear) {
+                filteredLabels.push(label);
+                filteredValues.push(data.historical.values[index]);
+            }
+        });
+
+        return {
+            ...data,
+            historical: {
+                labels: filteredLabels,
+                values: filteredValues
+            },
+            prediction: null
+        };
+    }
+
+    // Parse date from various formats
+    function parseDate(dateString) {
+        if (!dateString) return null;
+        
+        let date;
+        if (dateString.includes('-')) {
+            date = new Date(dateString);
+        } else if (dateString.includes('/')) {
+            // Handle MM/DD/YYYY or DD/MM/YYYY format
+            const parts = dateString.split('/');
+            if (parts.length === 3) {
+                // Assuming MM/DD/YYYY format
+                date = new Date(parts[2], parts[0] - 1, parts[1]);
+            }
+        } else if (typeof dateString === 'number') {
+            date = new Date(dateString * 1000);
+        } else {
+            date = new Date(dateString);
+        }
+        
+        return isNaN(date.getTime()) ? null : date;
+    }
+
+    // Update chart with filtered data
+    function updateChart(data) {
+        const formatDate = (dateString) => {
+            if (!dateString) return 'Unknown';
+            let date;
+            if (dateString.includes('-')) date = new Date(dateString);
+            else if (dateString.includes('/')) date = new Date(dateString);
+            else if (typeof dateString === 'number') date = new Date(dateString * 1000);
+            else date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        };
+
+        const formattedHistoricalLabels = data.historical.labels.map(formatDate);
+        
+        chart.data.labels = formattedHistoricalLabels;
+        chart.data.datasets[0].data = data.historical.values;
+
+        if (data.prediction) {
+            const formattedPredictionLabels = data.prediction.labels.map(formatDate);
+            const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
+            chart.data.labels = allLabels;
+            chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(
+                data.prediction.values
+            );
+            chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
+            chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
+        } else {
+            chart.data.datasets[1].data = [];
+        }
+
+        chart.update();
+
+        // Update prediction info
+        if (data.prediction) {
+            let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
+            data.prediction.labels.forEach((month, index) => {
+                predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
+            });
+            predictionInfo.innerHTML = predictionText;
+        } else {
+            predictionInfo.innerHTML = dateFilterType.value ? "📊 Filtered data - predictions not available for filtered views." : "❌ No prediction available for this dataset.";
+        }
+    }
+
     initChart();
+    populateYearDropdowns();
 
     // Category change handler
     categorySelect.addEventListener("change", async function() {
@@ -500,13 +806,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 subCategorySelect.innerHTML = '<option value="">Error loading cases</option>';
             }
         } else {
-            // For population or other categories without sub-categories
             subCategorySelect.style.display = 'none';
-            loadChartData(selectedCategory); // <-- population loads here
+            loadChartData(selectedCategory);
         }
     });
 
-    // Sub-category change handler (only for morbidity/mortality)
+    // Sub-category change handler
     subCategorySelect.addEventListener("change", function() {
         const selectedCategory = categorySelect.value;
         const selectedSubCategory = subCategorySelect.value;
@@ -533,45 +838,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (!data.success) throw new Error(data.message || 'Failed to load data');
 
-            const formatDate = (dateString) => {
-                if (!dateString) return 'Unknown';
-                let date;
-                if (dateString.includes('-')) date = new Date(dateString);
-                else if (dateString.includes('/')) date = new Date(dateString);
-                else if (typeof dateString === 'number') date = new Date(dateString * 1000);
-                else date = new Date(dateString);
-                if (isNaN(date.getTime())) return dateString;
-                return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-            };
-
-            const formattedHistoricalLabels = data.historical.labels.map(formatDate);
+            // Store original data for filtering
+            originalData = data;
 
             chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis`;
-            chart.data.labels = formattedHistoricalLabels;
-            chart.data.datasets[0].data = data.historical.values;
 
-            if (data.prediction) {
-                const formattedPredictionLabels = data.prediction.labels.map(formatDate);
-                const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
-                chart.data.labels = allLabels;
-                chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(
-                    data.prediction.values
-                );
-                chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
-                chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
-            }
-
-            chart.update();
-
-            if (data.prediction) {
-                let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
-                data.prediction.labels.forEach((month, index) => {
-                    predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
-                });
-                predictionInfo.innerHTML = predictionText;
-            } else {
-                predictionInfo.innerHTML = "❌ No prediction available for this dataset.";
-            }
+            // Apply current filter if any
+            applyDateFilter();
 
         } catch (error) {
             console.error("Error loading chart data:", error);
