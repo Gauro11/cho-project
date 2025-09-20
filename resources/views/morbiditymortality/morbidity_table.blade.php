@@ -4,16 +4,61 @@
                 <div class="table flex-fill" id="dataTable">
                     <table class="table table-hover my-0">
                         <thead>
-                            <tr style="color: white;">
-                                 <th>DATE</th>
-                                <th>CASES</th>
-                                <th>MALE COUNT</th>
-                                <th>FEMALE COUNT</th>
-                                <th>TOTAL COUNT</th>
-                                <th>PERCENTAGE</th>
-                                <th>ACTIONS</th>
-                            </tr>
-                        </thead>
+    <tr style="color: white;">
+        <th onclick="sortTable2(0,'date')">DATE <i id="icon2-0" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable2(1,'string')">CASES <i id="icon2-1" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable2(2,'number')">MALE COUNT <i id="icon2-2" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable2(3,'number')">FEMALE COUNT <i id="icon2-3" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable2(4,'number')">TOTAL COUNT <i id="icon2-4" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable2(5,'number')">PERCENTAGE <i id="icon2-5" class="fas fa-sort sort-icon"></i></th>
+        <th>ACTIONS</th>
+    </tr>
+</thead>
+
+<script>
+let sortDirections2 = {};
+
+function sortTable2(colIndex, type = 'string') {
+    const table = document.querySelector("#dataTable tbody");
+    const rows = Array.from(table.rows);
+    const icon = document.getElementById("icon2-" + colIndex);
+
+    // Toggle sort direction
+    sortDirections2[colIndex] = !sortDirections2[colIndex];
+    const direction = sortDirections2[colIndex] ? 1 : -1;
+
+    // Reset all icons
+    document.querySelectorAll("[id^='icon2-']").forEach(i => i.className = "fas fa-sort sort-icon");
+
+    rows.sort((a, b) => {
+        let A = a.cells[colIndex].innerText.trim().replace('%','');
+        let B = b.cells[colIndex].innerText.trim().replace('%','');
+
+        if (type === "number") {
+            A = parseFloat(A.replace(/,/g, "")) || 0;
+            B = parseFloat(B.replace(/,/g, "")) || 0;
+        } else if (type === "date") {
+            A = new Date(A);
+            B = new Date(B);
+        } else {
+            A = A.toLowerCase();
+            B = B.toLowerCase();
+        }
+
+        if (A < B) return -1 * direction;
+        if (A > B) return 1 * direction;
+        return 0;
+    });
+
+    // Re-attach sorted rows
+    table.innerHTML = "";
+    rows.forEach(row => table.appendChild(row));
+
+    
+    icon.className = "fas " + (direction === 1 ? "fa-sort-up" : "fa-sort-down") + " sort-icon";
+}
+</script>
+
                         <tbody style="background-color: white;">
                             @foreach($data as $row)
                                                             <tr>
