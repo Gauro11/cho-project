@@ -464,25 +464,14 @@
     </div>
     @include('staff.js')
 
-  <!-- Chart.js & Plugins -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
+ <!-- Chart.js & Plugins -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.1"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const categorySelect = document.getElementById("categorySelect");
     const subCategorySelect = document.getElementById("subCategorySelect");
-    const dateFilterType = document.getElementById("dateFilterType");
-    const specificDateGroup = document.getElementById("specificDateGroup");
-    const monthFilterGroup = document.getElementById("monthFilterGroup");
-    const quarterFilterGroup = document.getElementById("quarterFilterGroup");
-    const yearFilterGroup = document.getElementById("yearFilterGroup");
-    const quarterYearGroup = document.getElementById("quarterYearGroup");
-    const specificDatePicker = document.getElementById("specificDatePicker");
-    const monthPicker = document.getElementById("monthPicker");
-    const quarterPicker = document.getElementById("quarterPicker");
-    const yearPicker = document.getElementById("yearPicker");
-    const quarterYearPicker = document.getElementById("quarterYearPicker");
     const ctx = document.getElementById("trendChart").getContext("2d");
     const chartTitle = document.getElementById("chartTitle");
     const predictionInfo = document.getElementById("predictionInfo");
@@ -539,17 +528,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         labels: { color: '#333', font: { size: 14, weight: 'bold' } }
                     },
                     annotation: {
-                        annotations: {
-                            predictionStart: {
-                                type: 'line',
-                                xMin: 0,
-                                xMax: 0,
-                                borderColor: 'rgb(255, 99, 132)',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: { content: 'Prediction Start', enabled: true, position: 'end' }
-                            }
-                        }
+                        annotations: {}
                     },
                     tooltip: {
                         callbacks: {
@@ -568,6 +547,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Update chart with backend data
     function updateChart(data) {
+        if (!data || !data.historical) {
+            console.error("❌ Invalid data format:", data);
+            chartTitle.textContent = "❌ No Data Available";
+            return;
+        }
+
         const formatDate = (dateString) => {
             if (!dateString) return 'Unknown';
             let date = new Date(dateString);
@@ -575,32 +560,41 @@ document.addEventListener("DOMContentLoaded", function() {
             return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
         };
 
-        // Format labels
         const histLabels = data.historical.labels.map(formatDate);
         const histValues = data.historical.values;
 
         chart.data.labels = histLabels;
         chart.data.datasets[0].data = histValues;
 
-        if (data.prediction) {
+        if (data.prediction && data.prediction.labels && data.prediction.values) {
             const predLabels = data.prediction.labels.map(formatDate);
             const allLabels = [...histLabels, ...predLabels];
             chart.data.labels = allLabels;
 
-            // Align predictions so they appear after historical
             chart.data.datasets[1].data = [
                 ...Array(histValues.length).fill(null),
                 ...data.prediction.values
             ];
 
-            // Update annotation line at prediction start
-            chart.options.plugins.annotation.annotations.predictionStart.xMin = histLabels.length - 0.5;
-            chart.options.plugins.annotation.annotations.predictionStart.xMax = histLabels.length - 0.5;
+            // Add annotation line for prediction start
+            chart.options.plugins.annotation.annotations.predictionStart = {
+                type: 'line',
+                xMin: histLabels.length - 0.5,
+                xMax: histLabels.length - 0.5,
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                label: {
+                    content: 'Prediction Start',
+                    enabled: true,
+                    position: 'end'
+                }
+            };
 
-            // Update prediction info box
+            // Prediction info box
             let predictionText = `<strong>🔮 Next ${data.prediction.labels.length} Months Prediction:</strong><br>`;
             data.prediction.labels.forEach((month, i) => {
-                predictionText += `📅 ${formatDate(month)}: ${data.prediction.values[i]} (${data.prediction.trend})<br>`;
+                predictionText += `📅 ${formatDate(month)}: ${data.prediction.values[i]} (${data.prediction.trend || ''})<br>`;
             });
             predictionInfo.innerHTML = predictionText;
         } else {
@@ -673,6 +667,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+
 
 
 </body>

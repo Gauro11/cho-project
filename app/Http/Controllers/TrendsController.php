@@ -111,7 +111,7 @@ class TrendsController extends Controller
         ];
     }
 
-   private function generatePrediction($historicalData)
+  private function generatePrediction($historicalData)
 {
     if (count($historicalData) < 2) {
         return null;
@@ -142,8 +142,8 @@ class TrendsController extends Controller
     // Last date
     $lastDate = new \DateTime(end($historicalData)['date']);
 
-    $predictions = [];
     $predictionLabels = [];
+    $predictionValues = [];
 
     // Predict for next 2 months
     for ($i = 1; $i <= 2; $i++) {
@@ -154,16 +154,28 @@ class TrendsController extends Controller
         $nextDate->add(new \DateInterval("P{$i}M"));
 
         $predictionLabels[] = $nextDate->format('Y-m-d');
-        $predictions[] = max(0, round($predictedY));
+        $predictionValues[] = max(0, round($predictedY));
+    }
+
+    // Regression values for all points (historical + prediction)
+    $regressionValues = [];
+    for ($i = 1; $i <= $n + 2; $i++) {
+        $regressionValues[] = round($m * $i + $b);
     }
 
     return [
-        'labels' => $predictionLabels,
-        'values' => $predictions,
-        'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable'),
-        'slope' => $m,
-        'intercept' => $b
+        'prediction' => [
+            'labels' => $predictionLabels,
+            'values' => $predictionValues,
+            'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable'),
+            'slope' => $m,
+            'intercept' => $b
+        ],
+        'regression' => [
+            'values' => $regressionValues
+        ]
     ];
 }
+
 
 }
