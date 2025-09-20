@@ -349,13 +349,19 @@
                                     <select id="subCategorySelect" class="form-select" style="display: none;">
                                         <option value="">Select Case</option>
                                     </select>
-
                                     <!-- Filter by time period -->
 <select id="filterSelect" class="form-select">
     <option value="monthly" selected>Monthly</option>
     <option value="quarterly">Quarterly</option>
     <option value="yearly">Yearly</option>
+    <option value="specific">Specific Date</option>
 </select>
+
+<!-- Specific Date Picker -->
+<input type="date" id="specificDate" class="form-select" style="display:none; margin-left:10px;">
+
+
+            
 
                                 </div>
                             </div>
@@ -396,6 +402,7 @@
   <script>
 document.addEventListener("DOMContentLoaded", function() {
     const filterSelect = document.getElementById("filterSelect");
+    const specificDate = document.getElementById("specificDate");
     const categorySelect = document.getElementById("categorySelect");
     const subCategorySelect = document.getElementById("subCategorySelect");
     const ctx = document.getElementById("trendChart").getContext("2d");
@@ -405,8 +412,43 @@ document.addEventListener("DOMContentLoaded", function() {
     let chart;
 
     filterSelect.addEventListener("change", function () {
-    const selectedCategory = categorySelect.value;
-    const selectedSubCategory = subCategorySelect.value;
+    if (filterSelect.value === "specific") {
+        specificDate.style.display = "block";
+    } else {
+        specificDate.style.display = "none";
+        loadChartData(categorySelect.value, subCategorySelect.value || null);
+    }
+});
+
+// When user picks a date
+specificDate.addEventListener("change", function () {
+    loadChartData(categorySelect.value, subCategorySelect.value || null);
+});
+
+async function loadChartData(category, subCategory = null) {
+    try {
+        chartTitle.textContent = `Loading ${category} data...`;
+
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        chart.data.datasets[1].data = [];
+        chart.update();
+
+        const filter = filterSelect.value;
+        let url = `/public/api/trend-data/${category}?filter=${filter}`;
+
+        if (subCategory) url += `&sub_category=${encodeURIComponent(subCategory)}`;
+        if (filter === "specific" && specificDate.value) {
+            url += `&date=${specificDate.value}`;
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+        ...
+    } catch (error) {
+        console.error("Error loading chart data:", error);
+    }
+}
 
     if (selectedCategory) {
         loadChartData(selectedCategory, selectedSubCategory || null);
