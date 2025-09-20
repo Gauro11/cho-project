@@ -111,63 +111,46 @@ class TrendsController extends Controller
         ];
     }
 
-   private function generatePrediction($historicalData)
-{
-    if (count($historicalData) < 2) {
-        return null;
+    private function generatePrediction($historicalData)
+    {
+        if (count($historicalData) < 2) {
+            return null;
+        }
+
+        // Simple linear regression for next 2 months
+        $values = array_column($historicalData, 'total');
+        $n = count($values);
+        
+        // Calculate trend using last 3 data points for better accuracy
+        $recentValues = array_slice($values, -3);
+        $trend = 0;
+        
+        if (count($recentValues) >= 2) {
+            // Calculate average trend from recent data points
+            for ($i = 1; $i < count($recentValues); $i++) {
+                $trend += $recentValues[$i] - $recentValues[$i-1];
+            }
+            $trend = $trend / (count($recentValues) - 1);
+        }
+
+        $lastValue = end($values);
+        $lastDate = new \DateTime(end($historicalData)['date']);
+        
+        $predictions = [];
+        $predictionLabels = [];
+        
+        for ($i = 1; $i <= 2; $i++) {
+            $nextDate = clone $lastDate;
+            $nextDate->add(new \DateInterval("P{$i}M"));
+            
+            $predictionLabels[] = $nextDate->format('Y-m-d');
+            $predictions[] = max(0, round($lastValue + ($trend * $i)));
+        }
+
+        return [
+            'labels' => $predictionLabels,
+            'values' => $predictions,
+            'trend' => $trend > 0 ? 'increasing' : ($trend < 0 ? 'decreasing' : 'stable')
+        ];
     }
-
-    // Extract values
-    $values = array_column($historicalData, 'total');
-    $n = count($values);
-
-    // X values = 1..n (time steps)
-    $x = range(1, $n);
-    $y = $values;
-
-    // Compute sums for regression
-    $sumX = array_sum($x);
-    $sumY = array_sum($y);
-    $sumXY = 0;
-    $sumXX = 0;
-
-    for ($i = 0; $i < $n; $i++) {
-        $sumXY += $x[$i] * $y[$i];
-        $sumXX += $x[$i] * $x[$i];
-    }
-
-    // Calculate slope (m) and intercept (b)
-    $denominator = ($n * $sumXX - $sumX * $sumX);
-    if ($denominator == 0) {
-        return null; // avoid divide by zero
-    }
-
-    $m = ($n * $sumXY - $sumX * $sumY) / $denominator;
-    $b = ($sumY - $m * $sumX) / $n;
-
-    // Last known date
-    $lastDate = new \DateTime(end($historicalData)['date']);
-
-    // Predict next 2 months
-    $predictions = [];
-    $predictionLabels = [];
-
-    for ($i = 1; $i <= 2; $i++) {
-        $nextDate = clone $lastDate;
-        $nextDate->add(new \DateInterval("P{$i}M"));
-
-        // Regression predicts for x = n + i
-        $predictedValue = $m * ($n + $i) + $b;
-
-        $predictionLabels[] = $nextDate->format('Y-m-d');
-        $predictions[] = max(0, round($predictedValue));
-    }
-
-    return [
-        'labels' => $predictionLabels,
-        'values' => $predictions,
-        'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable')
-    ];
-}
-
 }
