@@ -66,7 +66,27 @@
             margin-bottom: 2rem !important;
         }
 
+        .glass-card::before {
+            display: none;
+        }
+
         .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5) !important;
+        }
+
+        .card {
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(16px) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 20px !important;
+            box-shadow: var(--shadow-glow) !important;
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+            overflow: hidden !important;
+            position: relative !important;
+        }
+
+        .card:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5) !important;
         }
@@ -80,6 +100,18 @@
             overflow: hidden !important;
         }
 
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
         .card-title {
             font-weight: 600 !important;
             font-size: 1.25rem !important;
@@ -89,8 +121,7 @@
             z-index: 2;
         }
 
-        .form-select,
-        .form-control {
+        .form-select {
             background: rgba(128, 128, 128, 0.2) !important;
             backdrop-filter: blur(10px) !important;
             border: 1px solid rgba(128, 128, 128, 0.3) !important;
@@ -101,9 +132,24 @@
             font-family: 'Inter', sans-serif !important;
         }
 
+        .form-select:hover {
+            background: rgba(128, 128, 128, 0.3) !important;
+            border-color: rgba(128, 128, 128, 0.5) !important;
+            transform: translateY(-1px);
+        }
+
+        .form-select:focus {
+            background: rgba(128, 128, 128, 0.35) !important;
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+            color: var(--text-primary) !important;
+            transform: translateY(-1px);
+        }
+
         .form-select option {
             background: #1a1a2e !important;
             color: var(--text-primary) !important;
+            padding: 0.5rem !important;
         }
 
         .chart-container {
@@ -114,6 +160,101 @@
             margin: 1rem !important;
             position: relative !important;
             overflow: hidden !important;
+        }
+
+        .chart-container::before {
+            display: none;
+        }
+
+        .card-footer {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-top: 1px solid var(--glass-border) !important;
+            color: #333 !important;
+            padding: 1.5rem !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        .card-enter {
+            animation: slideInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .card-enter:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .card-enter:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .half-width {
+            width: 48%;
+        }
+
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 4%;
+        }
+
+        .save-button {
+            margin-top: 20px;
+        }
+
+        /* Initially hide the form and table */
+        #dataTable, #dataForm {
+            display: none;
+        }
+        
+        .prediction-line {
+            border-color: #ff6384;
+            border-width: 2px;
+            border-style: dashed;
         }
 
         @keyframes fadeInUp {
@@ -127,10 +268,43 @@
             }
         }
 
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
+        }
+
         @media (max-width: 768px) {
             .section-title {
                 font-size: 1.5rem;
             }
+            
             .col-6 {
                 width: 100% !important;
             }
@@ -139,83 +313,58 @@
 </head>
 
 <body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
     <div class="wrapper">
         @include('staff.sidebar')
+
         <div class="main">
             @include('staff.header')
             <main class="content">
                 <div class="container-fluid p-0">
                     <div class="mb-3">
                         <h1 class="section-title pulse-animation">Trends Prediction</h1>
-
-                        <div class="col-12 card-enter">
+                        
+                        <div class="col-6 col-lg-6 card-enter">
                             <div class="card glass-card">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">🎯 Select Filters</h5>
                                 </div>
-                                <div class="card-body d-flex flex-wrap gap-2">
-                                    <!-- Category -->
+                                <div class="card-body d-flex gap-2">
+                                    <!-- Select Category Dropdown -->
                                     <select id="categorySelect" class="form-select">
                                         <option selected>Select Category</option>
                                         <option value="morbidity">Morbidity</option>
                                         <option value="mortality">Mortality</option>
+                                        <!-- <option value="vital_statistics">Vital Statistics</option> -->
                                         <option value="population_statistics">Population Statistics</option>
+                                        <!-- <option value="immunization">Immunization</option> -->
                                     </select>
-
-                                    <!-- Subcategory -->
-                                    <select id="subCategorySelect" class="form-select" style="display:none;">
+                                    
+                                    <!-- Sub-category for Morbidity/Mortality -->
+                                    <select id="subCategorySelect" class="form-select" style="display: none;">
                                         <option value="">Select Case</option>
                                     </select>
 
-                                    <!-- Filter type -->
-                                    <select id="filterSelect" class="form-select">
-                                        <option value="monthly" selected>Monthly</option>
-                                        <option value="quarterly">Quarterly</option>
-                                        <option value="yearly">Yearly</option>
-                                        <option value="date">Specific Date</option>
-                                    </select>
+                                    <!-- Filter by time period -->
+<select id="filterSelect" class="form-select">
+    <option value="monthly" selected>Monthly</option>
+    <option value="quarterly">Quarterly</option>
+    <option value="yearly">Yearly</option>
+</select>
 
-                                    <!-- Month -->
-                                    <select id="monthSelect" class="form-select">
-                                        <option value="">Month</option>
-                                        <option value="1">January</option>
-                                        <option value="2">February</option>
-                                        <option value="3">March</option>
-                                        <option value="4">April</option>
-                                        <option value="5">May</option>
-                                        <option value="6">June</option>
-                                        <option value="7">July</option>
-                                        <option value="8">August</option>
-                                        <option value="9">September</option>
-                                        <option value="10">October</option>
-                                        <option value="11">November</option>
-                                        <option value="12">December</option>
-                                    </select>
-
-                                    <!-- Year -->
-                                    <input type="number" id="yearInput" class="form-control" placeholder="Year" value="2025">
-
-                                    <!-- Quarter -->
-                                    <select id="quarterSelect" class="form-select">
-                                        <option value="">Quarter</option>
-                                        <option value="1">Q1</option>
-                                        <option value="2">Q2</option>
-                                        <option value="3">Q3</option>
-                                        <option value="4">Q4</option>
-                                    </select>
-
-                                    <!-- Specific Date -->
-                                    <input type="date" id="specificDate" class="form-control">
-
-                                    <button class="btn btn-primary" onclick="applyFilter()">Apply</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Chart -->
+                    <!-- Trend Line Chart -->
                     <div class="row">
-                        <div class="col-12 card-enter">
+                        <div class="col-xl-12 col-xxl-12 card-enter">
                             <div class="card glass-card flex-fill w-100">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0" id="chartTitle">📊 Trend Analysis</h5>
@@ -225,10 +374,13 @@
                                         <canvas id="trendChart"></canvas>
                                     </div>
                                 </div>
-                                <div class="card-footer" id="predictionInfo"></div>
+                                <div class="card-footer" id="predictionInfo">
+                                    <!-- Prediction information will be displayed here -->
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </main>
             @include('staff.footer')
@@ -236,96 +388,221 @@
     </div>
     @include('staff.js')
 
+    <!-- Chart.js CDN with Regression Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
 
-    <script>
-        const ctx = document.getElementById("trendChart").getContext("2d");
-        let chart;
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const filterSelect = document.getElementById("filterSelect");
+    const categorySelect = document.getElementById("categorySelect");
+    const subCategorySelect = document.getElementById("subCategorySelect");
+    const ctx = document.getElementById("trendChart").getContext("2d");
+    const chartTitle = document.getElementById("chartTitle");
+    const predictionInfo = document.getElementById("predictionInfo");
 
-        function initChart() {
-            if (chart) chart.destroy();
-            chart = new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: [],
-                    datasets: [
-                        { label: "Historical Data", data: [], borderColor: "#007bff", backgroundColor: "rgba(0,123,255,0.2)", fill: true, tension: 0.4 },
-                        { label: "Prediction", data: [], borderColor: "#ff6384", backgroundColor: "rgba(255,99,132,0.2)", borderDash: [5,5], fill: false, tension: 0.4 }
-                    ]
+    let chart;
+
+    filterSelect.addEventListener("change", function () {
+    const selectedCategory = categorySelect.value;
+    const selectedSubCategory = subCategorySelect.value;
+
+    if (selectedCategory) {
+        loadChartData(selectedCategory, selectedSubCategory || null);
+    }
+});
+
+    // Initialize the chart
+    function initChart() {
+        if (chart) {
+            chart.destroy();
+        }
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                        label: 'Historical Data',
+                        data: [],
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        color: 'white',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Prediction',
+                        data: [],
+                        borderColor: '#ff6384',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#333' },
+                        title: { display: true, text: 'Count', color: '#333' }
+                    },
+                    x: {
+                        ticks: { color: '#333' },
+                        title: { display: true, text: 'Time Period', color: '#333' }
+                    }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        annotation: {
-                            annotations: {
-                                line1: { type: "line", xMin: 0, xMax: 0, borderColor: "red", borderWidth: 2, borderDash: [5,5] }
+                plugins: {
+                    legend: {
+                        labels: { color: '#333', font: { size: 14, weight: 'bold' } }
+                    },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                yMin: 0,
+                                yMax: 0,
+                                borderColor: 'rgb(255, 99, 132)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                label: { content: 'Prediction Start', enabled: true, position: 'right', color: '#333' }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) label += context.parsed.y;
+                                return label;
                             }
                         }
                     }
                 }
-            });
-        }
-        initChart();
+            }
+        });
+    }
 
-        async function loadChartData(params) {
+    initChart();
+
+    // Category change handler
+    categorySelect.addEventListener("change", async function() {
+        const selectedCategory = categorySelect.value;
+
+        if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
+            subCategorySelect.style.display = 'block';
+            subCategorySelect.innerHTML = '<option value="">Loading cases...</option>';
+
             try {
-                const url = `/public/api/trend-data/${params.category}?` + new URLSearchParams(params);
-                const response = await fetch(url);
+                const response = await fetch(`/public/api/case-types/${selectedCategory}`);
                 const data = await response.json();
-                if (!data.success) throw new Error("Failed to load");
 
-                const histLabels = data.historical.labels;
-                const histValues = data.historical.values;
-                const predLabels = data.prediction?.labels || [];
-                const predValues = data.prediction?.values || [];
-
-                chart.data.labels = [...histLabels, ...predLabels];
-                chart.data.datasets[0].data = histValues;
-                chart.data.datasets[1].data = Array(histValues.length).fill(null).concat(predValues);
-
-                chart.options.plugins.annotation.annotations.line1.xMin = histLabels.length - 1;
-                chart.options.plugins.annotation.annotations.line1.xMax = histLabels.length - 1;
-
-                chart.update();
-
-                let info = "";
-                if (data.prediction) {
-                    data.prediction.labels.forEach((lbl, i) => {
-                        info += `📅 ${lbl}: ${Math.round(data.prediction.values[i])}<br>`;
+                if (data.success) {
+                    subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
+                    data.cases.forEach(caseName => {
+                        subCategorySelect.innerHTML += `<option value="${caseName}">${caseName}</option>`;
                     });
                 } else {
-                    info = "❌ No prediction available";
+                    subCategorySelect.innerHTML = '<option value="">No cases found</option>';
                 }
-                document.getElementById("predictionInfo").innerHTML = info;
-
-            } catch (e) {
-                console.error(e);
+            } catch (error) {
+                console.error(error);
+                subCategorySelect.innerHTML = '<option value="">Error loading cases</option>';
             }
+        } else {
+            // For population or other categories without sub-categories
+            subCategorySelect.style.display = 'none';
+            loadChartData(selectedCategory); // <-- population loads here
+        }
+    });
+
+    // Sub-category change handler (only for morbidity/mortality)
+    subCategorySelect.addEventListener("change", function() {
+        const selectedCategory = categorySelect.value;
+        const selectedSubCategory = subCategorySelect.value;
+
+        if ((selectedCategory === "morbidity" || selectedCategory === "mortality") && selectedSubCategory) {
+            loadChartData(selectedCategory, selectedSubCategory);
+        }
+    });
+
+    // Function to load chart data
+   async function loadChartData(category, subCategory = null) {
+    try {
+        chartTitle.textContent = `Loading ${category} data...`;
+
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        chart.data.datasets[1].data = [];
+        chart.update();
+
+        const filter = filterSelect.value; // 👈 get selected filter
+
+        let url = `/public/api/trend-data/${category}?filter=${filter}`;
+        if (subCategory) url += `&sub_category=${encodeURIComponent(subCategory)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.success) throw new Error(data.message || 'Failed to load data');
+
+        const formatDate = (dateString) => {
+            if (!dateString) return 'Unknown';
+            return dateString; // backend already sends "Mar 2025", "Aug 2025", etc.
+        };
+
+        const formattedHistoricalLabels = data.historical.labels.map(formatDate);
+
+        chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis (${filter})`;
+        chart.data.labels = formattedHistoricalLabels;
+        chart.data.datasets[0].data = data.historical.values;
+
+        if (data.prediction) {
+            const formattedPredictionLabels = data.prediction.labels.map(formatDate);
+            const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
+            chart.data.labels = allLabels;
+            chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(data.prediction.values);
+
+            chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
+            chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
         }
 
-        function applyFilter() {
-            const category = document.getElementById("categorySelect").value;
-            const subCategory = document.getElementById("subCategorySelect").value;
-            const filter = document.getElementById("filterSelect").value;
-            const month = document.getElementById("monthSelect").value;
-            const year = document.getElementById("yearInput").value;
-            const quarter = document.getElementById("quarterSelect").value;
-            const specificDate = document.getElementById("specificDate").value;
+        chart.update();
 
-            if (!category) return alert("Select a category first");
-
-            let params = { category, filter };
-            if (subCategory) params.sub_category = subCategory;
-
-            if (filter === "monthly" && month && year) { params.month = month; params.year = year; }
-            if (filter === "quarterly" && quarter && year) { params.quarter = quarter; params.year = year; }
-            if (filter === "yearly" && year) { params.year = year; }
-            if (filter === "date" && specificDate) { params.date = specificDate; }
-
-            loadChartData(params);
+        if (data.prediction) {
+            let predictionText = `<strong>🔮 Prediction (${filter}):</strong><br>`;
+            data.prediction.labels.forEach((month, index) => {
+                predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
+            });
+            predictionInfo.innerHTML = predictionText;
+        } else {
+            predictionInfo.innerHTML = "❌ No prediction available for this dataset.";
         }
-    </script>
+
+    } catch (error) {
+        console.error("Error loading chart data:", error);
+        chartTitle.textContent = "❌ Error Loading Data";
+        predictionInfo.innerHTML = `Error: ${error.message}`;
+    }
+}
+
+});
+</script>
+
 </body>
+
+@if(session('success'))
+<script>
+    alert("{{ session('success') }}");
+</script>
+@endif
+
 </html>
