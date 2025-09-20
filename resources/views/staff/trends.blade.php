@@ -388,10 +388,16 @@
                                             <label class="date-filter-label">📅 Filter Type</label>
                                             <select id="dateFilterType" class="form-select">
                                                 <option value="">All Data</option>
+                                                <option value="specific">Specific Date</option>
                                                 <option value="monthly">Monthly</option>
                                                 <option value="quarterly">Quarterly</option>
                                                 <option value="yearly">Yearly</option>
                                             </select>
+                                        </div>
+                                        
+                                        <div class="date-filter-group" id="specificDateGroup" style="display: none;">
+                                            <label class="date-filter-label">📆 Select Specific Date</label>
+                                            <input type="date" id="specificDatePicker" class="form-control">
                                         </div>
                                         
                                         <div class="date-filter-group" id="monthFilterGroup" style="display: none;">
@@ -467,10 +473,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const categorySelect = document.getElementById("categorySelect");
     const subCategorySelect = document.getElementById("subCategorySelect");
     const dateFilterType = document.getElementById("dateFilterType");
+    const specificDateGroup = document.getElementById("specificDateGroup");
     const monthFilterGroup = document.getElementById("monthFilterGroup");
     const quarterFilterGroup = document.getElementById("quarterFilterGroup");
     const yearFilterGroup = document.getElementById("yearFilterGroup");
     const quarterYearGroup = document.getElementById("quarterYearGroup");
+    const specificDatePicker = document.getElementById("specificDatePicker");
     const monthPicker = document.getElementById("monthPicker");
     const quarterPicker = document.getElementById("quarterPicker");
     const yearPicker = document.getElementById("yearPicker");
@@ -578,6 +586,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const filterType = dateFilterType.value;
         
         // Hide all filter groups
+        specificDateGroup.style.display = 'none';
         monthFilterGroup.style.display = 'none';
         quarterFilterGroup.style.display = 'none';
         yearFilterGroup.style.display = 'none';
@@ -585,6 +594,9 @@ document.addEventListener("DOMContentLoaded", function() {
         
         // Show relevant filter group
         switch(filterType) {
+            case 'specific':
+                specificDateGroup.style.display = 'block';
+                break;
             case 'monthly':
                 monthFilterGroup.style.display = 'block';
                 break;
@@ -605,6 +617,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Date filter change handlers
+    specificDatePicker.addEventListener("change", applyDateFilter);
     monthPicker.addEventListener("change", applyDateFilter);
     quarterPicker.addEventListener("change", applyDateFilter);
     quarterYearPicker.addEventListener("change", applyDateFilter);
@@ -617,7 +630,10 @@ document.addEventListener("DOMContentLoaded", function() {
         const filterType = dateFilterType.value;
         let filteredData = {...originalData};
 
-        if (filterType === 'monthly' && monthPicker.value) {
+        if (filterType === 'specific' && specificDatePicker.value) {
+            const selectedDate = specificDatePicker.value; // Format: YYYY-MM-DD
+            filteredData = filterDataBySpecificDate(originalData, selectedDate);
+        } else if (filterType === 'monthly' && monthPicker.value) {
             const selectedMonth = monthPicker.value; // Format: YYYY-MM
             filteredData = filterDataByMonth(originalData, selectedMonth);
         } else if (filterType === 'quarterly' && quarterPicker.value && quarterYearPicker.value) {
@@ -630,6 +646,37 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         updateChart(filteredData);
+    }
+
+    // Filter data by specific date
+    function filterDataBySpecificDate(data, selectedDate) {
+        const selectedDateObj = new Date(selectedDate);
+        const filteredLabels = [];
+        const filteredValues = [];
+
+        data.historical.labels.forEach((label, index) => {
+            const date = parseDate(label);
+            if (date && isSameDate(date, selectedDateObj)) {
+                filteredLabels.push(label);
+                filteredValues.push(data.historical.values[index]);
+            }
+        });
+
+        return {
+            ...data,
+            historical: {
+                labels: filteredLabels,
+                values: filteredValues
+            },
+            prediction: null // Remove predictions for filtered data
+        };
+    }
+
+    // Helper function to check if two dates are the same day
+    function isSameDate(date1, date2) {
+        return date1.getFullYear() === date2.getFullYear() &&
+               date1.getMonth() === date2.getMonth() &&
+               date1.getDate() === date2.getDate();
     }
 
     // Filter data by month
