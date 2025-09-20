@@ -90,24 +90,13 @@ class TrendsController extends Controller
 
     private function getPopulationStatisticsData()
     {
-        // Option 1: If population data is in the same morbidity_mortality_management table
-        $data = DB::table('morbidity_mortality_management')
-            ->selectRaw('DATE(`date`) as date, SUM(male_count + female_count) as total')
-            ->whereRaw('LOWER(category) = ?', ['population_statistics'])
+        $data = DB::table('population_statistics_management')
+            ->selectRaw('DATE(`date`) as date, SUM(population) as total')
             ->whereNotNull('date')
+            ->where('date', '!=', '') // Exclude empty string dates
             ->groupBy('date')
             ->orderBy('date')
             ->get();
-
-        // If no data found, try without category filter
-        if ($data->isEmpty()) {
-            $data = DB::table('morbidity_mortality_management')
-                ->selectRaw('DATE(`date`) as date, SUM(male_count + female_count) as total')
-                ->whereNotNull('date')
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
-        }
 
         return [
             'labels' => $data->pluck('date')->toArray(),
