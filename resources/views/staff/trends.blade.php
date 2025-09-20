@@ -496,89 +496,49 @@ document.addEventListener("DOMContentLoaded", function() {
         if (chart) {
             chart.destroy();
         }
+// Example data from backend (historical + regression)
+const chartData = @json($data); 
+// Make sure $data['labels'], $data['values'], $data['predictions'] exist
 
-        chart = new Chart(ctx, {
+const ctx = document.getElementById('myChart').getContext('2d');
+
+new Chart(ctx, {
     type: 'line',
     data: {
-        labels: [],
+        labels: [
+            ...chartData.labels,            // Historical dates
+            ...chartData.predictions.labels // Future prediction dates
+        ],
         datasets: [
             {
                 label: 'Historical Data',
-                data: [],
-                borderColor: '#007bff',
-                backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            },
-            {
-                label: 'Regression Line',
-                data: [],
-                borderColor: '#ffa500',
-                backgroundColor: 'transparent',
-                borderWidth: 2,
-                borderDash: [2, 2], // make it dashed if you want
+                data: chartData.values,     // Historical values
+                borderColor: 'blue',
                 fill: false,
-                tension: 0
+                tension: 0.1
             },
             {
-                label: 'Prediction',
-                data: [],
-                borderColor: '#ff6384',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 2,
+                label: 'Predicted Trend',
+                data: [
+                    ...Array(chartData.values.length - 1).fill(null), // pad so prediction starts after history
+                    ...chartData.predictions.values
+                ],
+                borderColor: 'red',
                 borderDash: [5, 5],
                 fill: false,
-                tension: 0.4
+                tension: 0.1
             }
         ]
     },
-
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: '#333' },
-                        title: { display: true, text: 'Count', color: '#333' }
-                    },
-                    x: {
-                        ticks: { color: '#333' },
-                        title: { display: true, text: 'Time Period', color: '#333' }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        labels: { color: '#333', font: { size: 14, weight: 'bold' } }
-                    },
-                    annotation: {
-                        annotations: {
-                            line1: {
-                                type: 'line',
-                                yMin: 0,
-                                yMax: 0,
-                                borderColor: 'rgb(255, 99, 132)',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: { content: 'Prediction Start', enabled: true, position: 'right', color: '#333' }
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) label += ': ';
-                                if (context.parsed.y !== null) label += context.parsed.y;
-                                return label;
-                            }
-                        }
-                    }
-                }
-            }
-        });
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' },
+            title: { display: true, text: 'Historical vs Predicted (Linear Regression)' }
+        }
     }
+});
+
 
     // Populate year dropdowns
     function populateYearDropdowns() {
