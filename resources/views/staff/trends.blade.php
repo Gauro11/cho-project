@@ -349,20 +349,6 @@
                                     <select id="subCategorySelect" class="form-select" style="display: none;">
                                         <option value="">Select Case</option>
                                     </select>
-                                    <!-- Filter by time period -->
-<select id="filterSelect" class="form-select">
-    <option value="monthly" selected>Monthly</option>
-    <option value="quarterly">Quarterly</option>
-    <option value="yearly">Yearly</option>
-    <option value="specific">Specific Date</option>
-</select>
-
-<!-- Specific Date Picker -->
-<input type="date" id="specificDate" class="form-select" style="display:none; margin-left:10px;">
-
-
-            
-
                                 </div>
                             </div>
                         </div>
@@ -401,8 +387,6 @@
 
   <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const filterSelect = document.getElementById("filterSelect");
-    const specificDate = document.getElementById("specificDate");
     const categorySelect = document.getElementById("categorySelect");
     const subCategorySelect = document.getElementById("subCategorySelect");
     const ctx = document.getElementById("trendChart").getContext("2d");
@@ -410,50 +394,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const predictionInfo = document.getElementById("predictionInfo");
 
     let chart;
-
-    filterSelect.addEventListener("change", function () {
-    if (filterSelect.value === "specific") {
-        specificDate.style.display = "block";
-    } else {
-        specificDate.style.display = "none";
-        loadChartData(categorySelect.value, subCategorySelect.value || null);
-    }
-});
-
-// When user picks a date
-specificDate.addEventListener("change", function () {
-    loadChartData(categorySelect.value, subCategorySelect.value || null);
-});
-
-async function loadChartData(category, subCategory = null) {
-    try {
-        chartTitle.textContent = `Loading ${category} data...`;
-
-        chart.data.labels = [];
-        chart.data.datasets[0].data = [];
-        chart.data.datasets[1].data = [];
-        chart.update();
-
-        const filter = filterSelect.value;
-        let url = `/public/api/trend-data/${category}?filter=${filter}`;
-
-        if (subCategory) url += `&sub_category=${encodeURIComponent(subCategory)}`;
-        if (filter === "specific" && specificDate.value) {
-            url += `&date=${specificDate.value}`;
-        }
-
-        const response = await fetch(url);
-        const data = await response.json();
-        ...
-    } catch (error) {
-        console.error("Error loading chart data:", error);
-    }
-}
-
-    if (selectedCategory) {
-        loadChartData(selectedCategory, selectedSubCategory || null);
-    }
-});
 
     // Initialize the chart
     function initChart() {
@@ -577,65 +517,68 @@ async function loadChartData(category, subCategory = null) {
     });
 
     // Function to load chart data
-   async function loadChartData(category, subCategory = null) {
-    try {
-        chartTitle.textContent = `Loading ${category} data...`;
+    async function loadChartData(category, subCategory = null) {
+        try {
+            chartTitle.textContent = `Loading ${category} data...`;
+            chart.data.labels = [];
+            chart.data.datasets[0].data = [];
+            chart.data.datasets[1].data = [];
+            chart.update();
 
-        chart.data.labels = [];
-        chart.data.datasets[0].data = [];
-        chart.data.datasets[1].data = [];
-        chart.update();
+            let url = `/public/api/trend-data/${category}`;
+            if (subCategory) url += `?sub_category=${encodeURIComponent(subCategory)}`;
 
-        const filter = filterSelect.value; // 👈 get selected filter
+            const response = await fetch(url);
+            const data = await response.json();
 
-        let url = `/public/api/trend-data/${category}?filter=${filter}`;
-        if (subCategory) url += `&sub_category=${encodeURIComponent(subCategory)}`;
+            if (!data.success) throw new Error(data.message || 'Failed to load data');
 
-        const response = await fetch(url);
-        const data = await response.json();
+            const formatDate = (dateString) => {
+                if (!dateString) return 'Unknown';
+                let date;
+                if (dateString.includes('-')) date = new Date(dateString);
+                else if (dateString.includes('/')) date = new Date(dateString);
+                else if (typeof dateString === 'number') date = new Date(dateString * 1000);
+                else date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString;
+                return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            };
 
-        if (!data.success) throw new Error(data.message || 'Failed to load data');
+            const formattedHistoricalLabels = data.historical.labels.map(formatDate);
 
-        const formatDate = (dateString) => {
-            if (!dateString) return 'Unknown';
-            return dateString; // backend already sends "Mar 2025", "Aug 2025", etc.
-        };
+            chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis`;
+            chart.data.labels = formattedHistoricalLabels;
+            chart.data.datasets[0].data = data.historical.values;
 
-        const formattedHistoricalLabels = data.historical.labels.map(formatDate);
+            if (data.prediction) {
+                const formattedPredictionLabels = data.prediction.labels.map(formatDate);
+                const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
+                chart.data.labels = allLabels;
+                chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(
+                    data.prediction.values
+                );
+                chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
+                chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
+            }
 
-        chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis (${filter})`;
-        chart.data.labels = formattedHistoricalLabels;
-        chart.data.datasets[0].data = data.historical.values;
+            chart.update();
 
-        if (data.prediction) {
-            const formattedPredictionLabels = data.prediction.labels.map(formatDate);
-            const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
-            chart.data.labels = allLabels;
-            chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(data.prediction.values);
+            if (data.prediction) {
+                let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
+                data.prediction.labels.forEach((month, index) => {
+                    predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
+                });
+                predictionInfo.innerHTML = predictionText;
+            } else {
+                predictionInfo.innerHTML = "❌ No prediction available for this dataset.";
+            }
 
-            chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
-            chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
+        } catch (error) {
+            console.error("Error loading chart data:", error);
+            chartTitle.textContent = "❌ Error Loading Data";
+            predictionInfo.innerHTML = `Error: ${error.message}`;
         }
-
-        chart.update();
-
-        if (data.prediction) {
-            let predictionText = `<strong>🔮 Prediction (${filter}):</strong><br>`;
-            data.prediction.labels.forEach((month, index) => {
-                predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
-            });
-            predictionInfo.innerHTML = predictionText;
-        } else {
-            predictionInfo.innerHTML = "❌ No prediction available for this dataset.";
-        }
-
-    } catch (error) {
-        console.error("Error loading chart data:", error);
-        chartTitle.textContent = "❌ Error Loading Data";
-        predictionInfo.innerHTML = `Error: ${error.message}`;
     }
-}
-
 });
 </script>
 
