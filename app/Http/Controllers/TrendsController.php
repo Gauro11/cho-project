@@ -111,7 +111,7 @@ class TrendsController extends Controller
         ];
     }
 
-    private function generatePrediction($historicalData)
+   private function generatePrediction($historicalData)
 {
     if (count($historicalData) < 2) {
         return null;
@@ -120,15 +120,12 @@ class TrendsController extends Controller
     $values = array_column($historicalData, 'total');
     $n = count($values);
 
-    // Represent x as time steps (1, 2, ..., n)
     $x = range(1, $n);
     $y = $values;
 
-    // Compute means
     $meanX = array_sum($x) / $n;
     $meanY = array_sum($y) / $n;
 
-    // Compute slope (m) and intercept (b)
     $num = 0;
     $den = 0;
     for ($i = 0; $i < $n; $i++) {
@@ -138,7 +135,6 @@ class TrendsController extends Controller
     $m = $den == 0 ? 0 : $num / $den; // slope
     $b = $meanY - $m * $meanX;        // intercept
 
-    // Last date
     $lastDate = new \DateTime(end($historicalData)['date']);
 
     $predictions = [];
@@ -148,7 +144,7 @@ class TrendsController extends Controller
         $nextDate = clone $lastDate;
         $nextDate->add(new \DateInterval("P{$i}M"));
 
-        $xNext = $n + $i; // next time step
+        $xNext = $n + $i;
         $yNext = round($m * $xNext + $b);
 
         $predictionLabels[] = $nextDate->format('Y-m-d');
@@ -158,8 +154,10 @@ class TrendsController extends Controller
     return [
         'labels' => $predictionLabels,
         'values' => $predictions,
-        'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable')
+        'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable'),
+        'formula' => "y = " . round($m, 2) . "x + " . round($b, 2) // 👈 return regression formula
     ];
 }
+
 
 }

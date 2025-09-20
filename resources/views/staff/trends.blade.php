@@ -860,15 +860,24 @@ document.addEventListener("DOMContentLoaded", function() {
         chart.update();
 
         // Update prediction info
-        if (data.prediction) {
-            let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
-            data.prediction.labels.forEach((month, index) => {
-                predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
-            });
-            predictionInfo.innerHTML = predictionText;
-        } else {
-            predictionInfo.innerHTML = dateFilterType.value ? "📊 Filtered data - predictions not available for filtered views." : "❌ No prediction available for this dataset.";
-        }
+if (data.prediction) {
+    let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
+    data.prediction.labels.forEach((month, index) => {
+        predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
+    });
+
+    // 👇 Add formula
+    if (data.prediction.formula) {
+        predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
+    }
+
+    predictionInfo.innerHTML = predictionText;
+} else {
+    predictionInfo.innerHTML = dateFilterType.value ? 
+        "📊 Filtered data - predictions not available for filtered views." : 
+        "❌ No prediction available for this dataset.";
+}
+
     }
     
 
