@@ -543,26 +543,34 @@
                         }
                     };
 
-                    const labels = data.trend.map(item => formatDate(item.date));
-                    const historicalData = data.trend.map(item => item.count);
-                    const predictionData = data.prediction.map(item => item.count);
-                    const predictionLabels = data.prediction.map(item => formatDate(item.date));
+                    // Extract historical data
+const labels = Array.isArray(data.historical.labels) ? data.historical.labels : [];
+const historicalData = Array.isArray(data.historical.values) ? data.historical.values : [];
 
-                    chart.data.labels = [...labels, ...predictionLabels];
-                    chart.data.datasets[0].data = [...historicalData, ...Array(predictionData.length).fill(null)];
-                    chart.data.datasets[1].data = [...Array(historicalData.length).fill(null), ...predictionData];
+// Extract prediction data
+const predictionLabels = Array.isArray(data.prediction.labels) ? data.prediction.labels : [];
+const predictionData = Array.isArray(data.prediction.values) ? data.prediction.values : [];
 
-                    chart.options.plugins.annotation.annotations.line1.xMin = labels.length - 0.5;
-                    chart.options.plugins.annotation.annotations.line1.xMax = labels.length - 0.5;
-                    chart.update();
+// Update chart datasets
+chart.data.labels = [...labels, ...predictionLabels];
+chart.data.datasets[0].data = [...historicalData, ...Array(predictionData.length).fill(null)];
+chart.data.datasets[1].data = [...Array(historicalData.length).fill(null), ...predictionData];
 
-                    chartTitle.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Trend Analysis (${filter.charAt(0).toUpperCase() + filter.slice(1)})`;
+// Update vertical line annotation (separates history vs prediction)
+chart.options.plugins.annotation.annotations.line1.xMin = labels.length - 0.5;
+chart.options.plugins.annotation.annotations.line1.xMax = labels.length - 0.5;
+chart.update();
 
-                    predictionInfo.innerHTML = `
-                        <strong>📈 Prediction Info:</strong> 
-                        Next period (${predictionLabels[0]}) value is <strong>${predictionData[0]}</strong> 
-                        (based on historical trends).
-                    `;
+// Update title & info
+chartTitle.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Trend Analysis (${filter.charAt(0).toUpperCase() + filter.slice(1)})`;
+
+predictionInfo.innerHTML = `
+    <strong>📈 Prediction Info:</strong> 
+    Next periods: ${predictionLabels.join(", ")} <br>
+    Predicted values: <strong>${predictionData.map(v => v.toFixed(2)).join(", ")}</strong> <br>
+    Trend: <strong>${data.prediction.trend}</strong>
+`;
+
                 } catch (error) {
                     console.error("Error loading chart data:", error);
                     chartTitle.textContent = "Error loading data";
