@@ -654,13 +654,24 @@ document.addEventListener("DOMContentLoaded", function() {
         const filteredLabels = [];
         const filteredValues = [];
 
+        console.log("=== DEBUGGING SPECIFIC DATE FILTER ===");
+        console.log("Selected Date:", selectedDate);
+        console.log("Selected Date Object:", selectedDateObj);
+        console.log("Available Labels:", data.historical.labels);
+
         data.historical.labels.forEach((label, index) => {
             const date = parseDate(label);
+            console.log(`Label: ${label}, Parsed Date: ${date}, Same Date: ${date ? isSameDate(date, selectedDateObj) : false}`);
+            
             if (date && isSameDate(date, selectedDateObj)) {
                 filteredLabels.push(label);
                 filteredValues.push(data.historical.values[index]);
+                console.log("✅ MATCH FOUND:", label);
             }
         });
+
+        console.log("Filtered Results:", filteredLabels.length, "matches found");
+        console.log("=== END DEBUG ===");
 
         return {
             ...data,
@@ -674,9 +685,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Helper function to check if two dates are the same day
     function isSameDate(date1, date2) {
-        return date1.getFullYear() === date2.getFullYear() &&
-               date1.getMonth() === date2.getMonth() &&
-               date1.getDate() === date2.getDate();
+        // Normalize both dates to avoid timezone issues
+        const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+        const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+        
+        return d1.getTime() === d2.getTime();
     }
 
     // Filter data by month
@@ -762,18 +775,50 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!dateString) return null;
         
         let date;
-        if (dateString.includes('-')) {
-            date = new Date(dateString);
-        } else if (dateString.includes('/')) {
-            // Handle MM/DD/YYYY or DD/MM/YYYY format
-            const parts = dateString.split('/');
-            if (parts.length === 3) {
-                // Assuming MM/DD/YYYY format
-                date = new Date(parts[2], parts[0] - 1, parts[1]);
+        
+        // Handle different date formats
+        if (typeof dateString === 'string') {
+            // Format: YYYY-MM-DD
+            if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                date = new Date(dateString);
             }
-        } else if (typeof dateString === 'number') {
-            date = new Date(dateString * 1000);
-        } else {
+            // Format: MM/DD/YYYY
+            else if (dateString.includes('/')) {
+                const parts = dateString.split('/');
+                if (parts.length === 3) {
+                    // Try MM/DD/YYYY first
+                    date = new Date(parts[2], parts[0] - 1, parts[1]);
+                    // If invalid, try DD/MM/YYYY
+                    if (isNaN(date.getTime())) {
+                        date = new Date(parts[2], parts[1] - 1, parts[0]);
+                    }
+                }
+            }
+            // Format: DD-MM-YYYY or similar
+            else if (dateString.includes('-') && dateString.length > 8) {
+                const parts = dateString.split('-');
+                if (parts.length === 3) {
+                    // If first part is 4 digits, assume YYYY-MM-DD
+                    if (parts[0].length === 4) {
+                        date = new Date(parts[0], parts[1] - 1, parts[2]);
+                    } else {
+                        // Otherwise assume DD-MM-YYYY
+                        date = new Date(parts[2], parts[1] - 1, parts[0]);
+                    }
+                }
+            }
+            // Format: ISO string or other standard formats
+            else {
+                date = new Date(dateString);
+            }
+        }
+        // Handle timestamp (number)
+        else if (typeof dateString === 'number') {
+            // If it's a timestamp (seconds), convert to milliseconds
+            date = dateString > 10000000000 ? new Date(dateString) : new Date(dateString * 1000);
+        }
+        // Fallback
+        else {
             date = new Date(dateString);
         }
         
