@@ -232,12 +232,36 @@
             animation-delay: 0.2s;
         }
 
+        .half-width {
+            width: 48%;
+        }
+
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 4%;
+        }
+
+        .save-button {
+            margin-top: 20px;
+        }
+
+        /* Initially hide the form and table */
+        #dataTable, #dataForm {
+            display: none;
+        }
+        
+        .prediction-line {
+            border-color: #ff6384;
+            border-width: 2px;
+            border-style: dashed;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -249,7 +273,6 @@
                 opacity: 0;
                 transform: translateY(50px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -257,11 +280,9 @@
         }
 
         @keyframes float {
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateY(0px) rotate(0deg);
             }
-
             50% {
                 transform: translateY(-20px) rotate(180deg);
             }
@@ -271,11 +292,9 @@
             0% {
                 box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
             }
-
             70% {
                 box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
             }
-
             100% {
                 box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
             }
@@ -285,7 +304,7 @@
             .section-title {
                 font-size: 1.5rem;
             }
-
+            
             .col-6 {
                 width: 100% !important;
             }
@@ -309,7 +328,7 @@
                 <div class="container-fluid p-0">
                     <div class="mb-3">
                         <h1 class="section-title pulse-animation">Trends Prediction</h1>
-
+                        
                         <div class="col-6 col-lg-6 card-enter">
                             <div class="card glass-card">
                                 <div class="card-header">
@@ -321,20 +340,23 @@
                                         <option selected>Select Category</option>
                                         <option value="morbidity">Morbidity</option>
                                         <option value="mortality">Mortality</option>
+                                        <!-- <option value="vital_statistics">Vital Statistics</option> -->
                                         <option value="population_statistics">Population Statistics</option>
+                                        <!-- <option value="immunization">Immunization</option> -->
                                     </select>
-
+                                    
                                     <!-- Sub-category for Morbidity/Mortality -->
                                     <select id="subCategorySelect" class="form-select" style="display: none;">
                                         <option value="">Select Case</option>
                                     </select>
 
-                                    <!-- Time Filter Dropdown -->
-                                    <select id="timeFilter" class="form-select">
-                                        <option value="monthly" selected>Monthly</option>
-                                        <option value="quarterly">Quarterly</option>
-                                        <option value="yearly">Yearly</option>
-                                    </select>
+                                    <!-- Filter by time period -->
+<select id="filterSelect" class="form-select">
+    <option value="monthly" selected>Monthly</option>
+    <option value="quarterly">Quarterly</option>
+    <option value="yearly">Yearly</option>
+</select>
+
                                 </div>
                             </div>
                         </div>
@@ -371,213 +393,216 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.1"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const categorySelect = document.getElementById("categorySelect");
-            const subCategorySelect = document.getElementById("subCategorySelect");
-            const timeFilter = document.getElementById("timeFilter");
-            const ctx = document.getElementById("trendChart").getContext("2d");
-            const chartTitle = document.getElementById("chartTitle");
-            const predictionInfo = document.getElementById("predictionInfo");
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const filterSelect = document.getElementById("filterSelect");
+    const categorySelect = document.getElementById("categorySelect");
+    const subCategorySelect = document.getElementById("subCategorySelect");
+    const ctx = document.getElementById("trendChart").getContext("2d");
+    const chartTitle = document.getElementById("chartTitle");
+    const predictionInfo = document.getElementById("predictionInfo");
 
-            let chart;
+    let chart;
 
-            // Initialize chart
-            function initChart() {
-                if (chart) {
-                    chart.destroy();
-                }
+    filterSelect.addEventListener("change", function () {
+    const selectedCategory = categorySelect.value;
+    const selectedSubCategory = subCategorySelect.value;
 
-                chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets: [{
-                            label: 'Historical Data',
-                            data: [],
-                            borderColor: '#007bff',
-                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Prediction',
-                            data: [],
-                            borderColor: '#ff6384',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            fill: false,
-                            tension: 0.4
-                        }]
+    if (selectedCategory) {
+        loadChartData(selectedCategory, selectedSubCategory || null);
+    }
+});
+
+    // Initialize the chart
+    function initChart() {
+        if (chart) {
+            chart.destroy();
+        }
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                        label: 'Historical Data',
+                        data: [],
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        color: 'white',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { color: '#333' },
-                                title: { display: true, text: 'Count', color: '#333' }
-                            },
-                            x: {
-                                ticks: { color: '#333' },
-                                title: { display: true, text: 'Time Period', color: '#333' }
+                    {
+                        label: 'Prediction',
+                        data: [],
+                        borderColor: '#ff6384',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#333' },
+                        title: { display: true, text: 'Count', color: '#333' }
+                    },
+                    x: {
+                        ticks: { color: '#333' },
+                        title: { display: true, text: 'Time Period', color: '#333' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#333', font: { size: 14, weight: 'bold' } }
+                    },
+                    annotation: {
+                        annotations: {
+                            line1: {
+                                type: 'line',
+                                yMin: 0,
+                                yMax: 0,
+                                borderColor: 'rgb(255, 99, 132)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                label: { content: 'Prediction Start', enabled: true, position: 'right', color: '#333' }
                             }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: { color: '#333', font: { size: 14, weight: 'bold' } }
-                            },
-                            annotation: {
-                                annotations: {
-                                    line1: {
-                                        type: 'line',
-                                        yMin: 0,
-                                        yMax: 0,
-                                        borderColor: 'rgb(255, 99, 132)',
-                                        borderWidth: 2,
-                                        borderDash: [5, 5],
-                                        label: { content: 'Prediction Start', enabled: true, position: 'right', color: '#333' }
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) label += ': ';
-                                        if (context.parsed.y !== null) label += context.parsed.y;
-                                        return label;
-                                    }
-                                }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) label += context.parsed.y;
+                                return label;
                             }
                         }
                     }
-                });
-            }
-
-            initChart();
-
-            // Category change
-            categorySelect.addEventListener("change", async function () {
-                const selectedCategory = categorySelect.value;
-
-                if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
-                    subCategorySelect.style.display = 'block';
-                    subCategorySelect.innerHTML = '<option value="">Loading cases...</option>';
-
-                    try {
-                        const response = await fetch(`/public/api/case-types/${selectedCategory}`);
-                        const data = await response.json();
-
-                        if (data.success) {
-                            subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
-                            data.cases.forEach(caseName => {
-                                subCategorySelect.innerHTML += `<option value="${caseName}">${caseName}</option>`;
-                            });
-                        } else {
-                            subCategorySelect.innerHTML = '<option value="">No cases found</option>';
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        subCategorySelect.innerHTML = '<option value="">Error loading cases</option>';
-                    }
-                } else {
-                    subCategorySelect.style.display = 'none';
-                    loadChartData(selectedCategory);
-                }
-            });
-
-            // Sub-category change
-            subCategorySelect.addEventListener("change", function () {
-                const selectedCategory = categorySelect.value;
-                const selectedSubCategory = subCategorySelect.value;
-
-                if ((selectedCategory === "morbidity" || selectedCategory === "mortality") && selectedSubCategory) {
-                    loadChartData(selectedCategory, selectedSubCategory);
-                }
-            });
-
-            // Time filter change
-            timeFilter.addEventListener("change", function () {
-                const selectedCategory = categorySelect.value;
-                const selectedSubCategory = subCategorySelect.value;
-
-                if (selectedCategory) {
-                    loadChartData(selectedCategory, selectedSubCategory || null);
-                }
-            });
-
-            // Load chart data
-            async function loadChartData(category, subCategory = null) {
-                try {
-                    chartTitle.textContent = `Loading ${category} data...`;
-                    chart.data.labels = [];
-                    chart.data.datasets[0].data = [];
-                    chart.data.datasets[1].data = [];
-                    chart.update();
-
-                    const filter = timeFilter.value;
-                    let url = `/public/api/trend-data/${category}?time_filter=${filter}`;
-                    if (subCategory) url += `&sub_category=${encodeURIComponent(subCategory)}`;
-
-                    const response = await fetch(url);
-                    const data = await response.json();
-
-                    if (!data.success) throw new Error(data.message || 'Failed to load data');
-
-                    const formatDate = (dateString) => {
-                        if (!dateString) return 'Unknown';
-                        let date = new Date(dateString);
-                        if (isNaN(date.getTime())) return dateString;
-
-                        if (filter === "yearly") {
-                            return date.getFullYear();
-                        } else if (filter === "quarterly") {
-                            const quarter = Math.floor(date.getMonth() / 3) + 1;
-                            return `Q${quarter} ${date.getFullYear()}`;
-                        } else {
-                            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-                        }
-                    };
-
-                    // Extract historical data
-const labels = Array.isArray(data.historical.labels) ? data.historical.labels : [];
-const historicalData = Array.isArray(data.historical.values) ? data.historical.values : [];
-
-// Extract prediction data
-const predictionLabels = Array.isArray(data.prediction.labels) ? data.prediction.labels : [];
-const predictionData = Array.isArray(data.prediction.values) ? data.prediction.values : [];
-
-// Update chart datasets
-chart.data.labels = [...labels, ...predictionLabels];
-chart.data.datasets[0].data = [...historicalData, ...Array(predictionData.length).fill(null)];
-chart.data.datasets[1].data = [...Array(historicalData.length).fill(null), ...predictionData];
-
-// Update vertical line annotation (separates history vs prediction)
-chart.options.plugins.annotation.annotations.line1.xMin = labels.length - 0.5;
-chart.options.plugins.annotation.annotations.line1.xMax = labels.length - 0.5;
-chart.update();
-
-// Update title & info
-chartTitle.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Trend Analysis (${filter.charAt(0).toUpperCase() + filter.slice(1)})`;
-
-predictionInfo.innerHTML = `
-    <strong>📈 Prediction Info:</strong> 
-    Next periods: ${predictionLabels.join(", ")} <br>
-    Predicted values: <strong>${predictionData.map(v => v.toFixed(2)).join(", ")}</strong> <br>
-    Trend: <strong>${data.prediction.trend}</strong>
-`;
-
-                } catch (error) {
-                    console.error("Error loading chart data:", error);
-                    chartTitle.textContent = "Error loading data";
-                    predictionInfo.innerHTML = `<span style="color:red;">⚠️ Error: ${error.message}</span>`;
                 }
             }
         });
-    </script>
+    }
+
+    initChart();
+
+    // Category change handler
+    categorySelect.addEventListener("change", async function() {
+        const selectedCategory = categorySelect.value;
+
+        if (selectedCategory === "morbidity" || selectedCategory === "mortality") {
+            subCategorySelect.style.display = 'block';
+            subCategorySelect.innerHTML = '<option value="">Loading cases...</option>';
+
+            try {
+                const response = await fetch(`/public/api/case-types/${selectedCategory}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    subCategorySelect.innerHTML = '<option value="">Select Case Type</option>';
+                    data.cases.forEach(caseName => {
+                        subCategorySelect.innerHTML += `<option value="${caseName}">${caseName}</option>`;
+                    });
+                } else {
+                    subCategorySelect.innerHTML = '<option value="">No cases found</option>';
+                }
+            } catch (error) {
+                console.error(error);
+                subCategorySelect.innerHTML = '<option value="">Error loading cases</option>';
+            }
+        } else {
+            // For population or other categories without sub-categories
+            subCategorySelect.style.display = 'none';
+            loadChartData(selectedCategory); // <-- population loads here
+        }
+    });
+
+    // Sub-category change handler (only for morbidity/mortality)
+    subCategorySelect.addEventListener("change", function() {
+        const selectedCategory = categorySelect.value;
+        const selectedSubCategory = subCategorySelect.value;
+
+        if ((selectedCategory === "morbidity" || selectedCategory === "mortality") && selectedSubCategory) {
+            loadChartData(selectedCategory, selectedSubCategory);
+        }
+    });
+
+    // Function to load chart data
+   async function loadChartData(category, subCategory = null) {
+    try {
+        chartTitle.textContent = `Loading ${category} data...`;
+
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        chart.data.datasets[1].data = [];
+        chart.update();
+
+        const filter = filterSelect.value; // 👈 get selected filter
+
+        let url = `/public/api/trend-data/${category}?filter=${filter}`;
+        if (subCategory) url += `&sub_category=${encodeURIComponent(subCategory)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.success) throw new Error(data.message || 'Failed to load data');
+
+        const formatDate = (dateString) => {
+            if (!dateString) return 'Unknown';
+            return dateString; // backend already sends "Mar 2025", "Aug 2025", etc.
+        };
+
+        const formattedHistoricalLabels = data.historical.labels.map(formatDate);
+
+        chartTitle.textContent = `📊 ${subCategory || category} Trend Analysis (${filter})`;
+        chart.data.labels = formattedHistoricalLabels;
+        chart.data.datasets[0].data = data.historical.values;
+
+        if (data.prediction) {
+            const formattedPredictionLabels = data.prediction.labels.map(formatDate);
+            const allLabels = [...formattedHistoricalLabels, ...formattedPredictionLabels];
+            chart.data.labels = allLabels;
+            chart.data.datasets[1].data = Array(data.historical.values.length).fill(null).concat(data.prediction.values);
+
+            chart.options.plugins.annotation.annotations.line1.xMin = data.historical.labels.length - 1;
+            chart.options.plugins.annotation.annotations.line1.xMax = data.historical.labels.length - 1;
+        }
+
+        chart.update();
+
+        if (data.prediction) {
+            let predictionText = `<strong>🔮 Prediction (${filter}):</strong><br>`;
+            data.prediction.labels.forEach((month, index) => {
+                predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
+            });
+            predictionInfo.innerHTML = predictionText;
+        } else {
+            predictionInfo.innerHTML = "❌ No prediction available for this dataset.";
+        }
+
+    } catch (error) {
+        console.error("Error loading chart data:", error);
+        chartTitle.textContent = "❌ Error Loading Data";
+        predictionInfo.innerHTML = `Error: ${error.message}`;
+    }
+}
+
+});
+</script>
+
 </body>
+
+@if(session('success'))
+<script>
+    alert("{{ session('success') }}");
+</script>
+@endif
+
 </html>
