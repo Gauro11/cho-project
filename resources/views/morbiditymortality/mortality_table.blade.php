@@ -260,7 +260,7 @@
         <th onclick="sortTable2(2,'number')">MALE COUNT <i id="icon2-2" class="fas fa-sort sort-icon"></i></th>
         <th onclick="sortTable2(3,'number')">FEMALE COUNT <i id="icon2-3" class="fas fa-sort sort-icon"></i></th>
         <th onclick="sortTable2(4,'number')">TOTAL COUNT <i id="icon2-4" class="fas fa-sort sort-icon"></i></th>
-        <th onclick="sortTable2(5,'number')">PERCENTAGE <i id="icon2-5" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable2(5,'number')">PERCENTAGE 
         <th>ACTIONS</th>
     </tr>
 </thead>
