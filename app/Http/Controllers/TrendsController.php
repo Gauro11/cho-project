@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\MorbidityMortalityManagement; 
-use App\Models\PopulationStatisticsManagement; 
 
 class TrendsController extends Controller
 {
@@ -51,53 +50,20 @@ class TrendsController extends Controller
 
 public function getPopulationData()
 {
-    $filter = $request->get('filter', 'monthly');
-    $date = $request->get('date');
+    try {
+        $data = $this->getPopulationStatisticsData();
 
-    $query = PopulationStatisticsManagement::select('date', 'population')
-        ->orderBy('date', 'asc');
-
-    if ($filter === 'specific' && $date) {
-        $query->whereDate('date', $date);
+        return response()->json([
+            'success' => true,
+            'historical' => $data,
+            'prediction' => null
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
     }
-
-    $records = $query->get();
-
-    $labels = [];
-    $values = [];
-
-    if ($filter === 'monthly') {
-        $grouped = $records->groupBy(function($item) {
-            return \Carbon\Carbon::parse($item->date)->format('M Y');
-        });
-    } elseif ($filter === 'quarterly') {
-        $grouped = $records->groupBy(function($item) {
-            $quarter = ceil(\Carbon\Carbon::parse($item->date)->month / 3);
-            return 'Q'.$quarter.' '.\Carbon\Carbon::parse($item->date)->year;
-        });
-    } elseif ($filter === 'yearly') {
-        $grouped = $records->groupBy(function($item) {
-            return \Carbon\Carbon::parse($item->date)->year;
-        });
-    } elseif ($filter === 'specific' && $date) {
-        $grouped = $records->groupBy(function($item) {
-            return \Carbon\Carbon::parse($item->date)->toFormattedDateString();
-        });
-    }
-
-    foreach ($grouped as $label => $items) {
-        $labels[] = $label;
-        $values[] = $items->avg('population'); // or sum, depends on your requirement
-    }
-
-    return response()->json([
-        'success' => true,
-        'historical' => [
-            'labels' => $labels,
-            'values' => $values,
-        ],
-        // You can keep prediction logic here if needed
-    ]);
 }
 
 
