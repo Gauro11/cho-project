@@ -1646,12 +1646,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Confirm Add
-    confirmAddBtn.addEventListener("click", function () {
-        let addValue = parseInt(addValueInput.value) || 0;
-        let currentValue = parseInt(targetInput.value) || 0;
-       
-        addModal.style.display = "none";
-    });
+   // Confirm Add
+confirmAddBtn.addEventListener("click", function () {
+    let addValue = parseInt(addValueInput.value) || 0;
+    targetInput.value = addValue; // ✅ Only send "amount to add"
+    addModal.style.display = "none";
+});
+
 
     // Cancel & Close
     document.getElementById("cancelAddModal").addEventListener("click", function () {
