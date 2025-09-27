@@ -48,8 +48,8 @@ class ImmunizationController extends Controller
     $immunization->date = $request->date;
 
     // ✅ Add to existing totals instead of replacing
-    $immunization->male_vaccinated += $request->male_vaccinated;
-    $immunization->female_vaccinated += $request->female_vaccinated;
+    $immunization->male_vaccinated = $request->male_vaccinated;
+    $immunization->female_vaccinated = $request->female_vaccinated;
 
     $immunization->save();
 
