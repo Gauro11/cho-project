@@ -1649,7 +1649,7 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmAddBtn.addEventListener("click", function () {
         let addValue = parseInt(addValueInput.value) || 0;
         let currentValue = parseInt(targetInput.value) || 0;
-        targetInput.value = currentValue + addValue;
+       
         addModal.style.display = "none";
     });
 
