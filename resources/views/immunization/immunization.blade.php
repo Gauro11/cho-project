@@ -1145,7 +1145,7 @@
                                     </button>
 
 
-                                    <button class="modern-btn btn-danger btn-sm" id="deleteAllBtn">
+                                    {{-- <button class="modern-btn btn-danger btn-sm" id="deleteAllBtn">
                                         <i data-feather="trash-2"></i> Delete All
                                     </button>
 
@@ -1385,7 +1385,7 @@
                                                 };
                                             }
                                         });
-                                    </script>
+                                    </script> --}}
 
 
                                     <span class="separator">|</span>
