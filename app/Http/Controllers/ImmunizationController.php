@@ -31,7 +31,7 @@ class ImmunizationController extends Controller
         return response()->json(['success' => true]);
     }
 
-   public function update_immunization(Request $request)
+      public function update_immunization(Request $request)
 {
     $request->validate([
         'id' => 'required|exists:immunization_management,id',
@@ -53,7 +53,6 @@ class ImmunizationController extends Controller
 
     return response()->json(['success' => true]);
 }
-
 
     public function store_immunization(Request $request)
 {

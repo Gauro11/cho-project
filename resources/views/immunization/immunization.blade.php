@@ -1573,36 +1573,23 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="edit_male" class="modern-form-label form-label">👨 Male
-                                        Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_male"
-                                        name="male_vaccinated" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="edit_female" class="modern-form-label form-label">👩 Female
-                                        Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_female"
-                                        name="female_vaccinated" required>
-                                </div>
-
-                                <div class="mb-3">
-    <label for="edit_male" class="modern-form-label form-label">
-        👨 Male Vaccinated (Enter amount to ADD)
-    </label>
-    <input type="number" class="modern-form-control form-control" id="edit_male"
-           name="male_vaccinated" required>
+    <label for="edit_male" class="modern-form-label form-label">👨 Male Vaccinated</label>
+    <div class="input-group">
+        <input type="number" class="modern-form-control form-control" id="edit_male"
+               name="male_vaccinated" required>
+        <button type="button" class="modern-btn btn-success" id="addMaleBtn">➕</button>
+    </div>
 </div>
 
 <div class="mb-3">
-    <label for="edit_female" class="modern-form-label form-label">
-        👩 Female Vaccinated (Enter amount to ADD)
-    </label>
-    <input type="number" class="modern-form-control form-control" id="edit_female"
-           name="female_vaccinated" required>
+    <label for="edit_female" class="modern-form-label form-label">👩 Female Vaccinated</label>
+    <div class="input-group">
+        <input type="number" class="modern-form-control form-control" id="edit_female"
+               name="female_vaccinated" required>
+        <button type="button" class="modern-btn btn-success" id="addFemaleBtn">➕</button>
+    </div>
 </div>
-
-                                
+                            
 
 
                                 <div class="modern-modal-footer modal-footer">
@@ -1613,6 +1600,68 @@
                             </form>
                         </div>
                     </div>
+
+                    <!-- Small Add Modal -->
+<div id="addModal" class="modern-modal modal" style="display: none;">
+    <div class="modern-modal-content modal-content" style="max-width: 400px;">
+        <span class="modern-close close" id="closeAddModal">&times;</span>
+        <h3 id="addModalTitle">➕ Add Value</h3>
+
+        <div class="mb-3">
+            <label id="addLabel" class="modern-form-label form-label"></label>
+            <input type="number" class="modern-form-control form-control" id="addValue">
+        </div>
+
+        <div class="modern-modal-footer modal-footer">
+            <button type="button" class="modern-btn btn-secondary" id="cancelAddModal">❌ Cancel</button>
+            <button type="button" class="modern-btn btn-primary" id="confirmAddBtn">✅ Add</button>
+        </div>
+    </div>
+</div>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const addModal = document.getElementById("addModal");
+    const addValueInput = document.getElementById("addValue");
+    const confirmAddBtn = document.getElementById("confirmAddBtn");
+    const addModalTitle = document.getElementById("addModalTitle");
+    const addLabel = document.getElementById("addLabel");
+    let targetInput = null;
+
+    // Open modal for Male
+    document.getElementById("addMaleBtn").addEventListener("click", function () {
+        targetInput = document.getElementById("edit_male");
+        addModalTitle.textContent = "➕ Add Male Vaccinated";
+        addLabel.textContent = "Enter number to add to current Male total (" + (targetInput.value || 0) + ")";
+        addValueInput.value = "";
+        addModal.style.display = "block";
+    });
+
+    // Open modal for Female
+    document.getElementById("addFemaleBtn").addEventListener("click", function () {
+        targetInput = document.getElementById("edit_female");
+        addModalTitle.textContent = "➕ Add Female Vaccinated";
+        addLabel.textContent = "Enter number to add to current Female total (" + (targetInput.value || 0) + ")";
+        addValueInput.value = "";
+        addModal.style.display = "block";
+    });
+
+    // Confirm Add
+    confirmAddBtn.addEventListener("click", function () {
+        let addValue = parseInt(addValueInput.value) || 0;
+        let currentValue = parseInt(targetInput.value) || 0;
+        targetInput.value = currentValue + addValue;
+        addModal.style.display = "none";
+    });
+
+    // Cancel & Close
+    document.getElementById("cancelAddModal").addEventListener("click", function () {
+        addModal.style.display = "none";
+    });
+    document.getElementById("closeAddModal").addEventListener("click", function () {
+        addModal.style.display = "none";
+    });
+});
+ </script>
                     
 
                     <script>
