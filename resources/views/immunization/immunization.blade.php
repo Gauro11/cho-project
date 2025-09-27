@@ -1649,14 +1649,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let addValue = parseInt(addValueInput.value) || 0;
     let currentValue = parseInt(targetInput.value) || 0;
 
-    // Update input field so user sees new total immediately
+    // ✅ i-add sa current total
     targetInput.value = currentValue + addValue;
-
-    // Also store only the "add value" in a hidden field for backend
-    targetInput.setAttribute("data-add", addValue);
 
     addModal.style.display = "none";
 });
+
+
 
 
 
