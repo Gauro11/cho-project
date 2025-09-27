@@ -1585,10 +1585,24 @@
                                     <input type="number" class="modern-form-control form-control" id="edit_female"
                                         name="female_vaccinated" required>
                                 </div>
+
                                 <div class="mb-3">
-    <input type="checkbox" id="addMode" name="addMode">
-    <label for="addMode">➕ Add to existing counts instead of replacing</label>
+    <label for="edit_male" class="modern-form-label form-label">
+        👨 Male Vaccinated (Enter amount to ADD)
+    </label>
+    <input type="number" class="modern-form-control form-control" id="edit_male"
+           name="male_vaccinated" required>
 </div>
+
+<div class="mb-3">
+    <label for="edit_female" class="modern-form-label form-label">
+        👩 Female Vaccinated (Enter amount to ADD)
+    </label>
+    <input type="number" class="modern-form-control form-control" id="edit_female"
+           name="female_vaccinated" required>
+</div>
+
+                                
 
 
                                 <div class="modern-modal-footer modal-footer">
@@ -2111,48 +2125,35 @@
                                 }
                             });
 
-                           // Handle form submission with AJAX
-document.getElementById("updateForm").addEventListener("submit", function(event) {
-    event.preventDefault();
+                            // Handle form submission with AJAX
+                            document.getElementById("updateForm").addEventListener("submit", function(event) {
+                                event.preventDefault();
 
-    let formData = new FormData(this);
-    formData.append('_method', 'PUT');
+                                let formData = new FormData(this);
+                                formData.append('_method', 'PUT');
 
-    // Get current values from input
-    let maleInput = document.getElementById("edit_male");
-    let femaleInput = document.getElementById("edit_female");
+                                fetch(`/public/immunization/update`, {
+                                        method: "POST",
+                                        headers: {
+                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                                            "X-Requested-With": "XMLHttpRequest",
+                                        },
+                                        body: formData,
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
 
-    // If "Add Mode" is checked, sum them up
-    if (document.getElementById("addMode").checked) {
-        let oldMale = parseInt(maleInput.getAttribute("data-old")) || 0;
-        let oldFemale = parseInt(femaleInput.getAttribute("data-old")) || 0;
-
-        maleInput.value = oldMale + parseInt(maleInput.value || 0);
-        femaleInput.value = oldFemale + parseInt(femaleInput.value || 0);
-    }
-
-    fetch(`/public/immunization/update`, {
-        method: "POST",
-        headers: {
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-            "X-Requested-With": "XMLHttpRequest",
-        },
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert("Failed to update record: " + (data.message || "Unknown error."));
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("An error occurred while updating the record.");
-    });
-});
-
+                                            location.reload();
+                                        } else {
+                                            alert("Failed to update record: " + (data.message || "Unknown error."));
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Error:", error);
+                                        alert("An error occurred while updating the record.");
+                                    });
+                            });
                         });
                     </script>
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

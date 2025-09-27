@@ -31,7 +31,7 @@ class ImmunizationController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function update_immunization(Request $request)
+   public function update_immunization(Request $request)
 {
     $request->validate([
         'id' => 'required|exists:immunization_management,id',
@@ -42,15 +42,18 @@ class ImmunizationController extends Controller
     ]);
 
     $immunization = ImmunizationManagement::findOrFail($request->id);
-    $immunization->update([
-        'vaccine_name' => $request->vaccine_name,
-        'date' => $request->date,
-        'male_vaccinated' => $request->male_vaccinated,
-        'female_vaccinated' => $request->female_vaccinated,
-    ]);
+
+    // Add to existing totals
+    $immunization->vaccine_name = $request->vaccine_name;
+    $immunization->date = $request->date;
+    $immunization->male_vaccinated += $request->male_vaccinated;
+    $immunization->female_vaccinated += $request->female_vaccinated;
+
+    $immunization->save();
 
     return response()->json(['success' => true]);
 }
+
 
     public function store_immunization(Request $request)
 {
