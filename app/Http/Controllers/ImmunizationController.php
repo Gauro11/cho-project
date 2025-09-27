@@ -133,15 +133,23 @@ public function immunizationTemplate()
     return Excel::download(new ImmunizationTemplateExport, 'immunization_template.xlsx');
 }
 
-public function deleteAll()
+public function deleteSelected(Request $request)
 {
     try {
-        $deletedCount = ImmunizationManagement::count(); // Get count before deletion
-        ImmunizationManagement::truncate(); // Deletes all records
-        
+        $ids = $request->input('ids'); // dapat array ng mga ID
+
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No records selected for deletion'
+            ], 400);
+        }
+
+        $deletedCount = ImmunizationManagement::whereIn('id', $ids)->delete();
+
         return response()->json([
             'success' => true,
-            'message' => 'All records deleted successfully',
+            'message' => "Selected records deleted successfully",
             'deleted_count' => $deletedCount
         ]);
     } catch (\Exception $e) {
@@ -151,6 +159,7 @@ public function deleteAll()
         ], 500);
     }
 }
+
 
 }
 
