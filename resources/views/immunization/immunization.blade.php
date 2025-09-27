@@ -1645,13 +1645,19 @@ document.addEventListener("DOMContentLoaded", function () {
         addModal.style.display = "block";
     });
 
-    // Confirm Add
-   // Confirm Add
-confirmAddBtn.addEventListener("click", function () {
+  confirmAddBtn.addEventListener("click", function () {
     let addValue = parseInt(addValueInput.value) || 0;
-    targetInput.value = addValue; // ✅ Only send "amount to add"
+    let currentValue = parseInt(targetInput.value) || 0;
+
+    // Update input field so user sees new total immediately
+    targetInput.value = currentValue + addValue;
+
+    // Also store only the "add value" in a hidden field for backend
+    targetInput.setAttribute("data-add", addValue);
+
     addModal.style.display = "none";
 });
+
 
 
     // Cancel & Close
@@ -2178,6 +2184,16 @@ confirmAddBtn.addEventListener("click", function () {
                             // Handle form submission with AJAX
                             document.getElementById("updateForm").addEventListener("submit", function(event) {
                                 event.preventDefault();
+                                let maleInput = document.getElementById("edit_male");
+    let femaleInput = document.getElementById("edit_female");
+
+    // Use data-add if available, otherwise keep the current value
+    if (maleInput.hasAttribute("data-add")) {
+        maleInput.value = maleInput.getAttribute("data-add");
+    }
+    if (femaleInput.hasAttribute("data-add")) {
+        femaleInput.value = femaleInput.getAttribute("data-add");
+    }
 
                                 let formData = new FormData(this);
                                 formData.append('_method', 'PUT');
