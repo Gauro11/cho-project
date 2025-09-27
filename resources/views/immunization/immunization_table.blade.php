@@ -497,7 +497,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelBtn.disabled = true;
 
                 // Make the delete selected request
-                fetch("{{ url('/immunization/delete-selected') }}", {
+                fetch("{{ url('/immunization/delete-all') }}", {
                         method: "DELETE",
                         headers: {
                             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
