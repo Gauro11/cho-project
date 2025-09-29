@@ -21,95 +21,95 @@ class TrendsController extends Controller
         ]);
     }
 
-    public function getTrendData(Request $request, $category)
-    {
-        try {
-            // Handle different categories
-            if ($category === 'population_statistics') {
-                return $this->getPopulationData();
-            }
-
-            // Handle morbidity/mortality
-            $caseName = $request->query('sub_category');
-
-            $data = DB::table('morbidity_mortality_management')
-                ->selectRaw('DATE(`date`) as date, SUM(male_count + female_count) as total')
-                ->whereRaw('LOWER(category) = ?', [strtolower($category)])
-                ->when($caseName, function ($query) use ($caseName) {
-                    return $query->where('case_name', $caseName);
-                })
-                ->whereNotNull('date') // Exclude null dates
-                ->groupBy('date')
-                ->orderBy('date')
-                ->get();
-
-            // Format dates consistently
-            $formattedData = $data->map(function ($item) {
-                return [
-                    'date' => $item->date, // Should be in YYYY-MM-DD format
-                    'total' => (int) $item->total
-                ];
-            });
-
-            return response()->json([
-                'success' => true,
-                'historical' => [
-                    'labels' => $formattedData->pluck('date')->toArray(),
-                    'values' => $formattedData->pluck('total')->toArray(),
-                ],
-                'prediction' => $this->generatePrediction($formattedData->toArray())
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
+   public function getTrendData(Request $request, $category)
+{
+    try {
+        // Handle Population Statistics separately
+        if ($category === 'population_statistics') {
+            return $this->getPopulationData();
         }
-    }
 
-    public function getPopulationData()
-    {
-        try {
-            $data = $this->getPopulationStatisticsData();
+        // Handle morbidity/mortality
+        $caseName = $request->query('sub_category');
 
-            // Format data for prediction generation
-            $formattedData = [];
-            foreach ($data['labels'] as $index => $date) {
-                $formattedData[] = [
-                    'date' => $date,
-                    'total' => $data['values'][$index]
-                ];
-            }
-
-            return response()->json([
-                'success' => true,
-                'historical' => $data,
-                'prediction' => $this->generatePrediction($formattedData)
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
-    }
-
-    private function getPopulationStatisticsData()
-    {
-        $data = DB::table('population_statistics_management')
-            ->selectRaw('DATE(`date`) as date, SUM(population) as total')
+        $data = DB::table('morbidity_mortality_management')
+            ->selectRaw('DATE(`date`) as date, SUM(male_count + female_count) as total')
+            ->whereRaw('LOWER(category) = ?', [strtolower($category)])
+            ->when($caseName, function ($query) use ($caseName) {
+                return $query->where('case_name', $caseName);
+            })
             ->whereNotNull('date')
-            ->where('date', '!=', '') // Exclude empty string dates
             ->groupBy('date')
             ->orderBy('date')
             ->get();
 
-        return [
-            'labels' => $data->pluck('date')->toArray(),
-            'values' => $data->pluck('total')->toArray()
-        ];
+        // Format dates consistently
+        $formattedData = $data->map(function ($item) {
+            return [
+                'date' => $item->date, // YYYY-MM-DD
+                'total' => (int) $item->total
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'historical' => [
+                'labels' => $formattedData->pluck('date')->toArray(),
+                'values' => $formattedData->pluck('total')->toArray(),
+            ],
+            'prediction' => $this->generatePrediction($formattedData->toArray())
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
     }
+}
+
+public function getPopulationData()
+{
+    try {
+        $data = $this->getPopulationStatisticsData();
+
+        // Format for prediction
+        $formattedData = [];
+        foreach ($data['labels'] as $index => $year) {
+            $formattedData[] = [
+                'date' => $year, // keep "year" in "date" for consistency
+                'total' => $data['values'][$index]
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'historical' => $data,
+            'prediction' => $this->generatePrediction($formattedData)
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+private function getPopulationStatisticsData()
+{
+    $data = DB::table('population_statistics_management')
+        ->selectRaw('year, SUM(population) as total')
+        ->whereNotNull('year')
+        ->groupBy('year')
+        ->orderBy('year')
+        ->get();
+
+    return [
+        'labels' => $data->pluck('year')->toArray(),  // years as labels
+        'values' => $data->pluck('total')->toArray()  // totals per year
+    ];
+}
+
 
    private function generatePrediction($historicalData)
 {
