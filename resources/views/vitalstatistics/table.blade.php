@@ -569,7 +569,9 @@
         </button>
     </div>
 @else
-    <p class="text-center mt-4" style="color: #000957; font-size: 18px;">No data available.</p>
+    <div class="no-data-message">
+        <p>No data available.</p>
+    </div>
 @endif
 
 <script>
