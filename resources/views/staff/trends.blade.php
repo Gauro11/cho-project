@@ -860,49 +860,47 @@ document.addEventListener("DOMContentLoaded", function() {
         chart.update();
 
         // Update prediction info
-// Update prediction info with automated interpretation
+// Update prediction info with automated interpretation (narrative style)
 if (data.prediction) {
     let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
     data.prediction.labels.forEach((month, index) => {
-        predictionText += `📅 <strong>${month}</strong>: 
-            <span style="color:#007bff;font-weight:bold;">${Math.round(data.prediction.values[index])}</span><br>`;
+        const value = Math.round(data.prediction.values[index]);
+        const trend = (index > 0 && data.prediction.values[index] > data.prediction.values[index - 1])
+            ? "increased"
+            : (index > 0 && data.prediction.values[index] < data.prediction.values[index - 1])
+                ? "decreased"
+                : "stable";
+
+        predictionText += `📅 <strong>${month}</strong>: ${value} (${trend})<br>`;
     });
 
-    // 👇 Plain text regression formula
+    // Regression Formula (plain)
     if (data.prediction.formula) {
         predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
     }
 
-    // 👇 Narrative Interpretation
+    // Narrative Interpretation
     const labels = data.prediction.labels;
     const values = data.prediction.values;
     let interpretation = "";
 
     if (values.length >= 2) {
         const firstLabel = labels[0];
-        const lastLabel = labels[labels.length - 1];
-        const firstValue = values[0];
-        const lastValue = values[values.length - 1];
+        const secondLabel = labels[1];
+        const firstValue = Math.round(values[0]);
+        const secondValue = Math.round(values[1]);
 
-        if (lastValue < firstValue) {
-            // Decreasing narrative
-            interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">consistent decrease</span> 
-                from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
-                Based on the regression model, the forecast predicts cases will decline to 
-                <strong>${Math.round(values[values.length - 2])}</strong> by <strong>${labels[labels.length - 2]}</strong> 
-                and may reach <strong>${Math.round(lastValue)}</strong> by <strong>${lastLabel}</strong>.`;
-        } else if (lastValue > firstValue) {
-            // Increasing narrative
-            interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">consistent increase</span> 
-                from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
-                Based on the regression model, the forecast predicts cases will rise to 
-                <strong>${Math.round(values[values.length - 2])}</strong> by <strong>${labels[labels.length - 2]}</strong> 
-                and reach <strong>${Math.round(lastValue)}</strong> by <strong>${lastLabel}</strong>.`;
+        if (secondValue > firstValue) {
+            interpretation = `📈 The prediction shows a consistent increase from ${firstLabel} to ${secondLabel}. 
+                Based on the regression model, the forecast predicts cases will rise to ${firstValue} by ${firstLabel} 
+                and reach ${secondValue} by ${secondLabel}.`;
+        } else if (secondValue < firstValue) {
+            interpretation = `📉 The prediction shows a consistent decrease from ${firstLabel} to ${secondLabel}. 
+                Based on the regression model, the forecast predicts cases will decline to ${firstValue} by ${firstLabel} 
+                and drop to ${secondValue} by ${secondLabel}.`;
         } else {
-            // Stable narrative
-            interpretation = `➖ The prediction indicates a <span style="color:gray;font-weight:bold;">stable trend</span>, 
-                with <strong>no significant change</strong> expected from 
-                <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>.`;
+            interpretation = `➖ The prediction indicates stability between ${firstLabel} and ${secondLabel}, 
+                with values holding at ${firstValue}.`;
         }
     }
 
