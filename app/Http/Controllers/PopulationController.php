@@ -115,7 +115,7 @@ public function import(Request $request)
  public function getBarangays()
     {
         try {
-            $data = PopulationStatisticsManagement::select('location', 'population', 'date')
+            $data = PopulationStatisticsManagement::select('location', 'population', 'year')
                 ->orderBy('location', 'asc')
                 ->get();
 
