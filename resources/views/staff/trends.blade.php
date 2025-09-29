@@ -860,12 +860,17 @@ document.addEventListener("DOMContentLoaded", function() {
         chart.update();
 
         // Update prediction info
-// Update prediction info with automated interpretation
 if (data.prediction) {
     let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
     data.prediction.labels.forEach((month, index) => {
-        predictionText += `📅 <strong>${month}</strong>: 
-            <span style="color:#007bff;font-weight:bold;">${Math.round(data.prediction.values[index])}</span><br>`;
+        const value = Math.round(data.prediction.values[index]);
+        const trend = (index > 0 && data.prediction.values[index] > data.prediction.values[index - 1])
+            ? "increased"
+            : (index > 0 && data.prediction.values[index] < data.prediction.values[index - 1])
+                ? "decreased"
+                : "stable";
+
+        predictionText += `📅 <strong>${month}</strong>: ${value} (${trend})<br>`;
     });
 
     // 👇 Plain text regression formula
