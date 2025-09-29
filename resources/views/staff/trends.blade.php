@@ -876,8 +876,8 @@ if (data.prediction) {
 
         predictionText += `📅 <strong>${month}</strong>: ${value}${trend ? " (" + trend + ")" : ""}<br>`;
     });
-}
-;
+
+
 
     // 👇 Plain text regression formula
     if (data.prediction.formula) {
