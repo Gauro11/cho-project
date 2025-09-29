@@ -913,10 +913,7 @@
                                     <button class="modern-btn btn-success btn-sm" id="openModal">
                                         ➕ Add New Record
                                     </button>
-
-                                    
-
-
+                                     <span class="separator">|</span>
 
 
                                     <!-- Search Input -->
@@ -928,12 +925,6 @@
                                             style="border-left: none;">
                                     </div>
 
-
-
-                                   
-
-                                
-                                         
 
 
                                     <span class="separator">|</span>
