@@ -279,7 +279,7 @@ $barangayCoordinates = [
                 <table class="table table-hover my-0">
                     <thead>
     <tr style="color: white;">
-        <th onclick="sortTable(0, 'date')">Date <i id="icon-0" class="fas fa-sort sort-icon"></i></th>
+        <th onclick="sortTable(0, 'year')">Year <i id="icon-0" class="fas fa-sort sort-icon"></i></th>
         <th onclick="sortTable(1, 'string')">Barangay Name <i id="icon-1" class="fas fa-sort sort-icon"></i></th>
         <th onclick="sortTable(2, 'number')">Latitude <i id="icon-2" class="fas fa-sort sort-icon"></i></th>
         <th onclick="sortTable(3, 'number')">Longitude <i id="icon-3" class="fas fa-sort sort-icon"></i></th>
