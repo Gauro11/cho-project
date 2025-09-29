@@ -132,21 +132,32 @@ function sortTable2(colIndex, type = 'string') {
 @endif
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const percentageCells = document.querySelectorAll(".percentage-cell");
-        let totalSum = 0;
+document.addEventListener("DOMContentLoaded", function () {
+    const rows = document.querySelectorAll("#dataTable tbody tr");
 
-        // Calculate the total sum of all male and female counts
-        percentageCells.forEach(cell => {
-            const total = parseInt(cell.getAttribute("data-total")) || 0;
-            totalSum += total;
-        });
+    // Step 1: group totals by case_name
+    let caseTotals = {};
+    rows.forEach(row => {
+        const caseName = row.cells[1].innerText.trim(); // "CASES" column
+        const total = parseInt(row.querySelector(".percentage-cell").dataset.total) || 0;
 
-        // Calculate and update the percentage for each row
-        percentageCells.forEach(cell => {
-            const rowTotal = parseInt(cell.getAttribute("data-total")) || 0;
-            const percentage = totalSum > 0 ? ((rowTotal / totalSum) * 100).toFixed(2) : 0;
-            cell.textContent = `${percentage}%`;
-        });
+        if (!caseTotals[caseName]) {
+            caseTotals[caseName] = 0;
+        }
+        caseTotals[caseName] += total;
     });
+
+    // Step 2: compute percentage for each row within its case group
+    rows.forEach(row => {
+        const caseName = row.cells[1].innerText.trim();
+        const cell = row.querySelector(".percentage-cell");
+        const rowTotal = parseInt(cell.dataset.total) || 0;
+
+        const percentage = caseTotals[caseName] > 0
+            ? ((rowTotal / caseTotals[caseName]) * 100).toFixed(2)
+            : 0;
+
+        cell.textContent = `${percentage}%`;
+    });
+});
 </script>
