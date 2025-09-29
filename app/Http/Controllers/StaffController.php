@@ -27,8 +27,8 @@ public function index()
 
         if ($usertype == 'user' || $usertype == 'staff') {
            $barangays = DB::table('population_statistics_management')
-    ->orderBy('date', 'asc')
-    ->select('date', 'population')
+    ->orderBy('year', 'asc')
+    ->select('year', 'population')
     ->get();
 
     $totalPopulation = DB::table('population_statistics_management')->sum('population');
