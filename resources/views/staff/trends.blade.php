@@ -864,14 +864,20 @@ if (data.prediction) {
     let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
     data.prediction.labels.forEach((month, index) => {
         const value = Math.round(data.prediction.values[index]);
-        const trend = (index > 0 && data.prediction.values[index] > data.prediction.values[index - 1])
-            ? "increased"
-            : (index > 0 && data.prediction.values[index] < data.prediction.values[index - 1])
-                ? "decreased"
-                : "stable";
+        let trend = "";
 
-        predictionText += `📅 <strong>${month}</strong>: ${value} (${trend})<br>`;
+        if (index > 0) {
+            if (data.prediction.values[index] > data.prediction.values[index - 1]) {
+                trend = "increased";
+            } else if (data.prediction.values[index] < data.prediction.values[index - 1]) {
+                trend = "decreased";
+            }
+        }
+
+        predictionText += `📅 <strong>${month}</strong>: ${value}${trend ? " (" + trend + ")" : ""}<br>`;
     });
+}
+;
 
     // 👇 Plain text regression formula
     if (data.prediction.formula) {
