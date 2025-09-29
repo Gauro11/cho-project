@@ -919,7 +919,7 @@ if (data.prediction) {
         "❌ No prediction available for this dataset.";
 }
 
-    
+    }
 
     initChart();
     populateYearDropdowns();
