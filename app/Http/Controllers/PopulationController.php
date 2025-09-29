@@ -12,6 +12,7 @@ use App\Exports\PopulationTemplateExport;
 
 
 
+
 class PopulationController extends Controller
 {
 
@@ -150,7 +151,7 @@ public function deleteSelected(Request $request)
             ], 400);
         }
 
-        $deletedCount = PopulationManagement::whereIn('id', $ids)->delete();
+        $deletedCount = PopulationStatisticsManagement::whereIn('id', $ids)->delete();
 
         return response()->json([
             'success' => true,

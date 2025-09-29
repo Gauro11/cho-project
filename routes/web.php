@@ -12,6 +12,7 @@ use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TrendsController;
 
+
 // ✅ Root route to fix 404 on http://127.0.0.1:8000/
 Route::get('/', function () {
     return redirect('/home'); // Or change to view('welcome');
