@@ -1348,7 +1348,7 @@
                                         required>
                                 </div>
 
-                               <div class="mb-3">
+                              <div class="mb-3">
     <label for="edit_male_count" class="form-label modern-form-label">👨 Male Count</label>
     <div class="input-group">
         <input type="number" class="form-control modern-form-control" id="edit_male_count" name="male_count" required>
@@ -1366,10 +1366,7 @@
 
 <div class="mb-3">
     <label for="edit_total" class="form-label modern-form-label">📊 Total</label>
-    <div class="input-group">
-        <input type="number" class="form-control modern-form-control" id="edit_total" readonly>
-        
-    </div>
+    <input type="number" class="form-control modern-form-control" id="edit_total" readonly>
 </div>
 
 <div class="modal-footer modern-modal-footer">
@@ -1461,15 +1458,6 @@ document.addEventListener("DOMContentLoaded", function () {
         addModal.style.display = "block";
     });
 
-    // Open modal for Total
-    document.getElementById("addTotalBtn").addEventListener("click", function () {
-        targetInput = totalInput;
-        addModalTitle.textContent = "➕ Add to Total";
-        addLabel.textContent = "Enter number to add to current Total (" + (targetInput.value || 0) + ")";
-        addValueInput.value = "";
-        addModal.style.display = "block";
-    });
-
     // Confirm Add
     confirmAddBtn.addEventListener("click", function () {
         let addValue = parseInt(addValueInput.value) || 0;
@@ -1497,6 +1485,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
 
 
                     <!-- Initialize Feather Icons -->
