@@ -1606,7 +1606,7 @@
 
 #addModal .popup-top-right {
     max-width: 350px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 18px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
