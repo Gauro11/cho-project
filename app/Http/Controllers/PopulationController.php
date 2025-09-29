@@ -150,11 +150,11 @@ public function deleteSelected(Request $request)
             ], 400);
         }
 
-        $deletedCount = PopulationStatisticsManagement::whereIn('id', $ids)->delete();
+        $deletedCount = PopulationManagement::whereIn('id', $ids)->delete();
 
         return response()->json([
             'success' => true,
-            'message' => "Selected records deleted successfully",
+            'message' => "Selected population records deleted successfully",
             'deleted_count' => $deletedCount
         ]);
     } catch (\Exception $e) {
@@ -164,6 +164,8 @@ public function deleteSelected(Request $request)
         ], 500);
     }
 }
+
+
 
 
 

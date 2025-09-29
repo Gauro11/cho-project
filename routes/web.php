@@ -161,8 +161,9 @@ Route::get('/immunization/template', [ImmunizationController::class, 'immunizati
 Route::post('store/population', [PopulationController::class, 'store_population'])->name('population.store');
 Route::put('/population/update', [PopulationController::class, 'update_population'])->name('population.update');
 Route::delete('/population/delete/{id}', [PopulationController::class, 'delete_population'])->name('population.delete');
-Route::delete('/population/delete-selected', [ImmunizationController::class, 'deleteSelected'])
+Route::delete('/population/delete-selected', [PopulationController::class, 'deleteSelected'])
     ->name('population.deleteSelected');
+
 Route::get('/population/template', [PopulationController::class, 'downloadTemplate'])->name('population.template');
 
 
