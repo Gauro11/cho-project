@@ -138,7 +138,32 @@ public function downloadTemplate()
 }
 
 
+public function deleteSelected(Request $request)
+{
+    try {
+        $ids = $request->input('ids'); // dapat array ng mga ID
 
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No records selected for deletion'
+            ], 400);
+        }
+
+        $deletedCount = PopulationStatisticsManagement::whereIn('id', $ids)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Selected records deleted successfully",
+            'deleted_count' => $deletedCount
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to delete records: ' . $e->getMessage()
+        ], 500);
+    }
+}
 
 
 
