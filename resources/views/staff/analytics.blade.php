@@ -388,7 +388,7 @@
                     <tr>
                         <th>Barangay</th>
                         <th>Population</th>
-                        <th>Date</th>
+                        <th>Year</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -433,7 +433,7 @@
                             <tr>
                                 <td class="fw-semibold">${row.location}</td>
                                 <td>${row.population.toLocaleString()}</td>
-                                <td>${new Date(row.date).toLocaleDateString()}</td>
+                                <td>${new Year(row.year).toLocaleDateString()}</td>
                             </tr>
                         `;
                     });
@@ -530,7 +530,7 @@
         
 
       // Sort population data by date
-let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
+let sortedPopulation = barangays.sort((a, b) => new Year(a.year) - new Year(b.year));
 
   // ✅ Calculate total population
   let totalPopulation = sortedPopulation.reduce((sum, item) => sum + parseInt(item.population), 0);
@@ -541,7 +541,7 @@ let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.da
 new Chart(document.getElementById("populationChart"), {
       type: "line",
     data: {
-        labels: sortedPopulation.map(item => item.date),
+        labels: sortedPopulation.map(item => item.year),
         datasets: [
             {
                 label: "Total Population (" + totalPopulation.toLocaleString() + ")", // 👈 add total here
@@ -572,7 +572,7 @@ new Chart(document.getElementById("populationChart"), {
             x: {
                 title: {
                     display: true,
-                    text: "Date" // ✅ corrected label
+                    text: "Year" // ✅ corrected label
                 }
             },
             y: {
