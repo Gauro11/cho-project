@@ -337,7 +337,7 @@ function sortTable(colIndex, type = 'string') {
                     <tbody style="background-color: white;">
                         @foreach($data as $row)
                             <tr>
-                                <td>{{ \Carbon\Carbon::parse($row->date)->format('Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($row->year)->format('Y') }}</td>
                                 <td>{{ $row->location }}</td>
 
                                 <td>
@@ -350,7 +350,7 @@ function sortTable(colIndex, type = 'string') {
                                 <td>{{ number_format($row->population) }}</td>
                                 <td class="no-print">
                                     <button class="btn btn-warning btn-sm edit-button" data-bs-toggle="modal"
-                                        data-bs-target="#editModal" data-id="{{ $row->id }}" data-year="{{ $row->date }}"
+                                        data-bs-target="#editModal" data-id="{{ $row->id }}" data-year="{{ $row->year }}"
                                         data-population="{{ $row->population }}" data-location="{{ $row->location }}">
                                         Edit
                                     </button>
