@@ -501,28 +501,38 @@ function sortTable2(colIndex, type = 'string') {
 @endif
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const percentageCells = document.querySelectorAll(".percentage-cell");
-        let totalSum = 0;
+   document.addEventListener("DOMContentLoaded", function () {
+    const rows = document.querySelectorAll("#dataTable tbody tr");
 
-        percentageCells.forEach(cell => {
-            const total = parseInt(cell.getAttribute("data-total")) || 0;
-            totalSum += total;
-        });
+    // Step 1: calculate totals per case_name
+    let caseTotals = {};
+    rows.forEach(row => {
+        let caseName = row.cells[1].innerText.trim().toUpperCase(); // normalize
+        const total = parseInt(row.querySelector(".percentage-cell").dataset.total) || 0;
 
-        percentageCells.forEach(cell => {
-            const rowTotal = parseInt(cell.getAttribute("data-total")) || 0;
-            const percentage = totalSum > 0 ? ((rowTotal / totalSum) * 100).toFixed(2) : 0;
-            
-            let colorClass = 'percentage-low';
-            if (percentage >= 30) {
-                colorClass = 'percentage-high';
-            } else if (percentage >= 15) {
-                colorClass = 'percentage-medium';
-            }
-            
-            cell.innerHTML = `<span class="percentage-badge ${colorClass}">${percentage}%</span>`;
-        });
+        caseTotals[caseName] = (caseTotals[caseName] || 0) + total;
+    });
+
+    // Step 2: update percentage per row based on its own case_name total
+    rows.forEach(row => {
+        let caseName = row.cells[1].innerText.trim().toUpperCase();
+        const cell = row.querySelector(".percentage-cell");
+        const rowTotal = parseInt(cell.dataset.total) || 0;
+
+        const percentage = caseTotals[caseName] > 0
+            ? ((rowTotal / caseTotals[caseName]) * 100).toFixed(2)
+            : 0;
+
+        // Decide color class
+        let colorClass = 'percentage-low';
+        if (percentage >= 30) {
+            colorClass = 'percentage-high';
+        } else if (percentage >= 15) {
+            colorClass = 'percentage-medium';
+        }
+
+        cell.innerHTML = `<span class="percentage-badge ${colorClass}">${percentage}%</span>`;
+    });
 
         // Bulk delete functionality
         const selectAllCheckbox = document.getElementById('selectAll');
