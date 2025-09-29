@@ -1058,7 +1058,7 @@
             if (y === currentYear) option.selected = true; // default to current year
             yearSelect.appendChild(option);
         }
-
+         
     });
 </script>
 
@@ -1192,15 +1192,15 @@
 
                                 <!-- Date -->
                                 <div class="mb-3">
-    <label for="year" class="modern-form-label form-label">📅 Year</label>
-    <select class="modern-form-control form-control" id="year" name="year" required>
+    <label for="edit_year" class="modern-form-label form-label">📅 Year</label>
+    <select class="modern-form-control form-control" id="edit_year" name="year" required>
         <option value="">-- Select Year --</option>
     </select>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const yearSelect = document.getElementById("year");
+        const yearSelect = document.getElementById("edit_year");
         const currentYear = new Date().getFullYear();
         const startYear = 2000;
         const endYear = 2099;
@@ -1212,9 +1212,9 @@
             if (y === currentYear) option.selected = true; // default to current year
             yearSelect.appendChild(option);
         }
-         
     });
 </script>
+
 
                                 <!-- Total Population -->
                                 <div class="mb-3">
