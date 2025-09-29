@@ -21,17 +21,16 @@ class PopulationImport implements ToModel, WithHeadingRow
         ]);
     }
 
-    private function transformDate($value)
-    {
-        try {
-            // If it's a numeric Excel serial (e.g. 45963)
-            if (is_numeric($value)) {
-                return Carbon::instance(ExcelDate::excelToDateTimeObject($value))->format('Y-m-d');
-            }
-            // If it's already a string date
-            return Carbon::parse($value)->format('Y-m-d');
-        } catch (\Exception $e) {
-            return null; // if date is invalid
+   private function transformDate($value)
+{
+    try {
+        if (is_numeric($value)) {
+            return Carbon::instance(ExcelDate::excelToDateTimeObject($value))->year;
         }
+        return Carbon::parse($value)->year;
+    } catch (\Exception $e) {
+        return null; // if date is invalid
     }
+}
+
 }
