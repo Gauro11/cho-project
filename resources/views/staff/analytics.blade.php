@@ -420,33 +420,34 @@
         });
 
     // Click map container to load barangay population
-    document.getElementById("map-container").addEventListener("click", function () {
-        fetch("{{ route('dagupan.barangays') }}")
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const tbody = document.querySelector("#population-table tbody");
-                    tbody.innerHTML = "";
+   document.getElementById("map-container").addEventListener("click", function () {
+    fetch("{{ route('dagupan.barangays') }}")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const tbody = document.querySelector("#population-table tbody");
+                tbody.innerHTML = "";
 
-                    data.barangays.forEach(row => {
-                        tbody.innerHTML += `
-                            <tr>
-                                <td class="fw-semibold">${row.location}</td>
-                                <td>${row.population.toLocaleString()}</td>
-                                 <td>${row.year}</td> <!-- ✅ use year directly -->
-                            </tr>
-                        `;
-                    });
+                data.barangays.forEach(row => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="fw-semibold">${row.location}</td>
+                            <td>${row.population.toLocaleString()}</td>
+                            <td>${row.year}</td>
+                        </tr>
+                    `;
+                });
 
-                    // Show modal
-                    new bootstrap.Modal(document.getElementById("barangayModal")).show();
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert("Unable to load barangay population data.");
-            });
-    });
+                // Show modal
+                new bootstrap.Modal(document.getElementById("barangayModal")).show();
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Unable to load barangay population data.");
+        });
+});
+
 </script>
 
 
