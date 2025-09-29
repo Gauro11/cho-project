@@ -1037,29 +1037,37 @@
                                 </div>
 
                                <!-- Year Picker -->
-<div class="mb-3">
+<div class="mb-3 dropend"> <!-- try dropup / dropend / dropdown -->
     <label for="year" class="modern-form-label form-label">📅 Year</label>
-    <select class="modern-form-control form-control" id="year" name="year" required>
+    <select class="form-select" id="year" name="year" required>
         <option value="">-- Select Year --</option>
     </select>
 </div>
+<select id="year" name="year"></select>
+
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const yearSelect = document.getElementById("year");
-        const currentYear = new Date().getFullYear();
-        const startYear = 2000;
-        const endYear = 2099;
+  const currentYear = new Date().getFullYear();
+  const startYear = 2000;
+  const endYear = 2099;
 
-        for (let y = startYear; y <= endYear; y++) {
-            let option = document.createElement("option");
-            option.value = y;
-            option.textContent = y;
-            if (y === currentYear) option.selected = true; // default to current year
-            yearSelect.appendChild(option);
-        }
-    });
+  const yearSelect = document.getElementById("year");
+
+  for (let y = startYear; y <= endYear; y++) {
+    let option = document.createElement("option");
+    option.value = y;
+    option.textContent = y;
+    if (y === currentYear) option.selected = true;
+    yearSelect.appendChild(option);
+  }
+
+  new Choices(yearSelect, {
+    position: 'bottom' // 👈 forces dropdown to open downward
+  });
 </script>
+
 
 
 
