@@ -1048,8 +1048,8 @@
     // Generate year options dynamically
     const yearSelect = document.getElementById("year");
     const currentYear = new Date().getFullYear();
-    const startYear = 1900;
-    const endYear = 2099;
+    const startYear = 2000;
+    const endYear = 2199;
 
     for (let y = startYear; y <= endYear; y++) {
         let option = document.createElement("option");
