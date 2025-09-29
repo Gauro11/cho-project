@@ -28,7 +28,7 @@ class PopulationController extends Controller
         // Validate input data
         $request->validate([
             'location' => 'required|string',
-            'year' => 'required|date',  // Change 'date' to 'year' to match the form field
+            'year' => 'required|integer|min:1900|max:2099',
             'total_population' => 'required|integer|min:1', // Change 'population' to 'total_population'
         ]);
     
@@ -53,7 +53,7 @@ class PopulationController extends Controller
     // Validate the request data
     $request->validate([
         'location' => 'required|string|max:255',
-        'date' => 'required|date',
+        'year' => 'required|integer|min:1900|max:2099',
         'population' => 'required|integer|min:0',
     ]);
 
