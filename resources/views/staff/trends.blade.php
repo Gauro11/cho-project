@@ -862,7 +862,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Update prediction info
 if (data.prediction) {
     let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
-    data.prediction.labels.forEach((month, index) => {
+    data.prediction.labels.forEach((label, index) => {
         const value = Math.round(data.prediction.values[index]);
         let trend = "";
 
@@ -874,12 +874,10 @@ if (data.prediction) {
             }
         }
 
-        predictionText += `📅 <strong>${month}</strong>: ${value}${trend ? " (" + trend + ")" : ""}<br>`;
+        predictionText += `📅 <strong>${label}</strong>: ${value}${trend ? " (" + trend + ")" : ""}<br>`;
     });
 
-
-
-    // 👇 Plain text regression formula
+    // 👇 Regression formula
     if (data.prediction.formula) {
         predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
     }
@@ -892,42 +890,35 @@ if (data.prediction) {
     if (values.length >= 2) {
         const firstLabel = labels[0];
         const lastLabel = labels[labels.length - 1];
-        const firstValue = values[0];
-        const lastValue = values[values.length - 1];
+        const secondLastValue = Math.round(values[values.length - 2]);
+        const firstValue = Math.round(values[0]);
+        const lastValue = Math.round(values[values.length - 1]);
 
+        // 👇 Change “cases” to “population”
         if (lastValue < firstValue) {
-            // Decreasing narrative
             interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">consistent decrease</span> 
                 from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
-                Based on the regression model, the forecast predicts cases will decline to 
-                <strong>${Math.round(values[values.length - 2])}</strong> by <strong>${labels[labels.length - 2]}</strong> 
-                and may reach <strong>${Math.round(lastValue)}</strong> by <strong>${lastLabel}</strong>.`;
+                Based on the regression model, the forecast predicts population will decline to 
+                <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
+                and may reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
         } else if (lastValue > firstValue) {
-            // Increasing narrative
             interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">consistent increase</span> 
                 from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
-                Based on the regression model, the forecast predicts cases will rise to 
-                <strong>${Math.round(values[values.length - 2])}</strong> by <strong>${labels[labels.length - 2]}</strong> 
-                and reach <strong>${Math.round(lastValue)}</strong> by <strong>${lastLabel}</strong>.`;
-        } else {
-            // Stable narrative
-            interpretation = `➖ The prediction indicates a <span style="color:gray;font-weight:bold;">stable trend</span>, 
-                with <strong>no significant change</strong> expected from 
-                <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>.`;
+                Based on the regression model, the forecast predicts population will rise to 
+                <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
+                and reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
         }
     }
 
     predictionText += `<br><br><strong>📝 Interpretation:</strong><br>${interpretation}`;
-
     predictionInfo.innerHTML = predictionText;
+
 } else {
     predictionInfo.innerHTML = dateFilterType.value ? 
         "📊 Filtered data - predictions not available for filtered views." : 
         "❌ No prediction available for this dataset.";
 }
 
-
-    }
     
 
     initChart();
