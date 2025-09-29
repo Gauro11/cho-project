@@ -24,13 +24,22 @@ class PopulationImport implements ToModel, WithHeadingRow
    private function transformDate($value)
 {
     try {
+        // Case 1: Already just a year (e.g. 2025)
+        if (is_numeric($value) && strlen((string) $value) === 4) {
+            return (int) $value;
+        }
+
+        // Case 2: Excel serial date (e.g. 45963)
         if (is_numeric($value)) {
             return Carbon::instance(ExcelDate::excelToDateTimeObject($value))->year;
         }
+
+        // Case 3: String date (e.g. "2025-09-28")
         return Carbon::parse($value)->year;
     } catch (\Exception $e) {
-        return null; // if date is invalid
+        return null; // if invalid
     }
 }
+
 
 }
