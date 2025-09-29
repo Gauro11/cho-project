@@ -1036,12 +1036,30 @@
                                     </select>
                                 </div>
 
-                                <!-- Year Picker -->
-                                <div class="mb-3">
+                               <!-- Year Picker -->
+<div class="mb-3">
     <label for="year" class="modern-form-label form-label">📅 Year</label>
-    <input type="number" class="modern-form-control form-control" id="year" name="year" 
-           min="1900" max="2099" step="1" required placeholder="YYYY">
+    <select class="modern-form-control form-control" id="year" name="year" required>
+        <option value="">-- Select Year --</option>
+    </select>
 </div>
+
+<script>
+    // Generate year options dynamically
+    const yearSelect = document.getElementById("year");
+    const currentYear = new Date().getFullYear();
+    const startYear = 1900;
+    const endYear = 2099;
+
+    for (let y = startYear; y <= endYear; y++) {
+        let option = document.createElement("option");
+        option.value = y;
+        option.textContent = y;
+        if (y === currentYear) option.selected = true; // default to current year
+        yearSelect.appendChild(option);
+    }
+</script>
+
 
 
                                 <!-- Total Population -->
