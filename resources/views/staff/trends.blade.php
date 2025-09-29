@@ -860,6 +860,7 @@ document.addEventListener("DOMContentLoaded", function() {
         chart.update();
 
         // Update prediction info
+// Update prediction info with automated interpretation
 if (data.prediction) {
     let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
     data.prediction.labels.forEach((month, index) => {
@@ -871,12 +872,36 @@ if (data.prediction) {
         predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
     }
 
+    // 👇 Automated Interpretation (with % change)
+    const values = data.prediction.values;
+    let interpretation = "";
+
+    if (values.length >= 2) {
+        const first = values[0];
+        const second = values[1];
+        const change = second - first;
+        const percentChange = ((change / first) * 100).toFixed(2);
+
+        if (change > 0) {
+            interpretation = `📈 The prediction indicates an **upward trend**, with an expected increase of 
+                <strong>${change}</strong> (${percentChange}%) from ${data.prediction.labels[0]} to ${data.prediction.labels[1]}.`;
+        } else if (change < 0) {
+            interpretation = `📉 The prediction indicates a **downward trend**, with an expected decrease of 
+                <strong>${Math.abs(change)}</strong> (${Math.abs(percentChange)}%) from ${data.prediction.labels[0]} to ${data.prediction.labels[1]}.`;
+        } else {
+            interpretation = `➖ The prediction indicates a **stable trend**, with no significant change expected between the two months.`;
+        }
+    }
+
+    predictionText += `<br><br><strong>📝 Interpretation:</strong> ${interpretation}`;
+
     predictionInfo.innerHTML = predictionText;
 } else {
     predictionInfo.innerHTML = dateFilterType.value ? 
         "📊 Filtered data - predictions not available for filtered views." : 
         "❌ No prediction available for this dataset.";
 }
+
 
     }
     
