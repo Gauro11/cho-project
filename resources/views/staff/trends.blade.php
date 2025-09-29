@@ -864,15 +864,15 @@ document.addEventListener("DOMContentLoaded", function() {
 if (data.prediction) {
     let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
     data.prediction.labels.forEach((month, index) => {
-        predictionText += `📅 ${month}: ${Math.round(data.prediction.values[index])} (${data.prediction.trend} trend)<br>`;
+        predictionText += `📅 <strong>${month}</strong>: <span style="color:#007bff;font-weight:bold;">${Math.round(data.prediction.values[index])}</span> (${data.prediction.trend} trend)<br>`;
     });
 
     // 👇 Add formula
     if (data.prediction.formula) {
-        predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
+        predictionText += `<br><strong>📐 Regression Formula:</strong> <code>${data.prediction.formula}</code>`;
     }
 
-    // 👇 Automated Interpretation (with % change)
+    // 👇 Automated Interpretation (with % change + highlights)
     const values = data.prediction.values;
     let interpretation = "";
 
@@ -883,17 +883,23 @@ if (data.prediction) {
         const percentChange = ((change / first) * 100).toFixed(2);
 
         if (change > 0) {
-            interpretation = `📈 The prediction indicates an **upward trend**, with an expected increase of 
-                <strong>${change}</strong> (${percentChange}%) from ${data.prediction.labels[0]} to ${data.prediction.labels[1]}.`;
+            interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">STRONG UPWARD TREND</span>, 
+                with an expected increase of <span style="color:green;font-weight:bold;">${change}</span> 
+                (<span style="color:green;font-weight:bold;">+${percentChange}%</span>) 
+                from <strong>${data.prediction.labels[0]}</strong> to <strong>${data.prediction.labels[1]}</strong>.`;
         } else if (change < 0) {
-            interpretation = `📉 The prediction indicates a **downward trend**, with an expected decrease of 
-                <strong>${Math.abs(change)}</strong> (${Math.abs(percentChange)}%) from ${data.prediction.labels[0]} to ${data.prediction.labels[1]}.`;
+            interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">DOWNWARD TREND</span>, 
+                with an expected decrease of <span style="color:red;font-weight:bold;">${Math.abs(change)}</span> 
+                (<span style="color:red;font-weight:bold;">${Math.abs(percentChange)}%</span>) 
+                from <strong>${data.prediction.labels[0]}</strong> to <strong>${data.prediction.labels[1]}</strong>.`;
         } else {
-            interpretation = `➖ The prediction indicates a **stable trend**, with no significant change expected between the two months.`;
+            interpretation = `➖ The prediction indicates a <span style="color:gray;font-weight:bold;">STABLE TREND</span>, 
+                with <span style="font-weight:bold;">no significant change</span> expected between 
+                <strong>${data.prediction.labels[0]}</strong> and <strong>${data.prediction.labels[1]}</strong>.`;
         }
     }
 
-    predictionText += `<br><br><strong>📝 Interpretation:</strong> ${interpretation}`;
+    predictionText += `<br><br><strong>📝 Interpretation:</strong><br>${interpretation}`;
 
     predictionInfo.innerHTML = predictionText;
 } else {
