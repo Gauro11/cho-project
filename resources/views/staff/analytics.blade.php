@@ -433,7 +433,7 @@
                             <tr>
                                 <td class="fw-semibold">${row.location}</td>
                                 <td>${row.population.toLocaleString()}</td>
-                                <td>${new Year(row.year).toLocaleDateString()}</td>
+                                 <td>${row.year}</td> <!-- ✅ use year directly -->
                             </tr>
                         `;
                     });
@@ -529,22 +529,24 @@
         let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
         
 
-      // Sort population data by date
-let sortedPopulation = barangays.sort((a, b) => new Year(a.year) - new Year(b.year));
+  // -------------------------
+// Sort population by year
+// -------------------------
+let sortedPopulation = barangays.sort((a, b) => a.year - b.year);
 
-  // ✅ Calculate total population
-  let totalPopulation = sortedPopulation.reduce((sum, item) => sum + parseInt(item.population), 0);
+// ✅ Calculate total population
+let totalPopulation = sortedPopulation.reduce((sum, item) => sum + parseInt(item.population), 0);
 
 // -------------------------
 // Population Chart
 // -------------------------
 new Chart(document.getElementById("populationChart"), {
-      type: "line",
+    type: "line",
     data: {
-        labels: sortedPopulation.map(item => item.year),
+        labels: sortedPopulation.map(item => item.year), // ✅ use year, not date
         datasets: [
             {
-                label: "Total Population (" + totalPopulation.toLocaleString() + ")", // 👈 add total here
+                label: "Total Population (" + totalPopulation.toLocaleString() + ")", 
                 borderColor: "#007bff",
                 backgroundColor: "rgba(0, 123, 255, 0.2)",
                 borderWidth: 3,
@@ -572,7 +574,7 @@ new Chart(document.getElementById("populationChart"), {
             x: {
                 title: {
                     display: true,
-                    text: "Year" // ✅ corrected label
+                    text: "Year" // ✅ corrected
                 }
             },
             y: {
