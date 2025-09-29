@@ -83,11 +83,12 @@
         }
 
         .stat-card {
-            background: var(--card-white);
+            background: var(--primary-blue);
             border-radius: 12px;
             padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            color: white;
         }
 
         .stat-card:hover {
@@ -97,7 +98,7 @@
 
         .stat-label {
             font-size: 0.875rem;
-            color: var(--text-gray);
+            opacity: 0.9;
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
@@ -105,7 +106,6 @@
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--primary-blue);
             margin-bottom: 0.75rem;
         }
 
@@ -230,10 +230,6 @@
 <body>
     <div class="dashboard-header">
         <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
-        <div class="user-profile">
-            <div class="user-avatar">TS</div>
-            <span style="font-weight: 500;">Taylor Swift</span>
-        </div>
     </div>
 
     <div class="main-container">
@@ -241,38 +237,38 @@
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-label">Total Population</div>
-                <div class="stat-value" id="total-population">180,234</div>
+                <div class="stat-value" id="stat-population">--</div>
                 <svg class="stat-sparkline" viewBox="0 0 100 40">
                     <polyline points="0,30 20,25 40,20 60,15 80,10 100,8" 
-                              fill="none" stroke="#3b82f6" stroke-width="2"/>
+                              fill="none" stroke="white" stroke-width="2"/>
                 </svg>
             </div>
 
             <div class="stat-card">
                 <div class="stat-label">Total Live Birth</div>
-                <div class="stat-value" id="total-births">402</div>
+                <div class="stat-value" id="stat-births">--</div>
                 <svg class="stat-sparkline" viewBox="0 0 100 40">
                     <polyline points="0,25 20,22 40,20 60,18 80,15 100,12" 
-                              fill="none" stroke="#10b981" stroke-width="2"/>
+                              fill="none" stroke="white" stroke-width="2"/>
                 </svg>
             </div>
 
             <div class="stat-card">
                 <div class="stat-label">Total Deaths</div>
-                <div class="stat-value" id="total-deaths">361</div>
+                <div class="stat-value" id="stat-deaths">--</div>
                 <svg class="stat-sparkline" viewBox="0 0 100 40">
                     <polyline points="0,20 20,22 40,25 60,23 80,28 100,30" 
-                              fill="none" stroke="#ef4444" stroke-width="2"/>
+                              fill="none" stroke="white" stroke-width="2"/>
                 </svg>
             </div>
 
             <div class="stat-card">
                 <div class="stat-label">Admissions</div>
-                <div class="stat-value">1,234</div>
-                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                    <span style="font-size: 0.75rem; color: var(--text-gray);">● Infectious</span>
-                    <span style="font-size: 0.75rem; color: var(--text-gray);">● Deficiency</span>
-                    <span style="font-size: 0.75rem; color: var(--text-gray);">● Social</span>
+                <div class="stat-value" id="stat-admissions">--</div>
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.75rem; opacity: 0.9;">Infectious</span>
+                    <span style="font-size: 0.75rem; opacity: 0.9;">Deficiency</span>
+                    <span style="font-size: 0.75rem; opacity: 0.9;">Social</span>
                 </div>
             </div>
         </div>
@@ -288,7 +284,7 @@
                         <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
                              alt="Dagupan City Map">
                         <div class="map-overlay" id="population-text">
-                            🚩 City of Dagupan / Loading...
+                            City of Dagupan / Loading...
                         </div>
                     </div>
                 </div>
@@ -400,12 +396,12 @@
             .then(data => {
                 if (data.success) {
                     document.getElementById("population-text").innerHTML =
-                        `🚩 ${data.city} / Population ${data.population.toLocaleString()} (${data.year})`;
+                        `${data.city} / Population ${data.population.toLocaleString()} (${data.year})`;
                 }
             })
             .catch(() => {
                 document.getElementById("population-text").innerHTML =
-                    "🚩 City of Dagupan / Population unavailable";
+                    "City of Dagupan / Population unavailable";
             });
 
         // Click map container to load barangay population
@@ -448,7 +444,19 @@
             let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
             let totalPopulation = sortedPopulation.reduce((sum, item) => sum + parseInt(item.population), 0);
 
-            // Population Chart
+            // Update stat cards
+            document.getElementById('stat-population').textContent = totalPopulation.toLocaleString();
+            if (sortedVital.length > 0) {
+                let latestVital = sortedVital[sortedVital.length - 1];
+                document.getElementById('stat-births').textContent = latestVital.total_live_births.toLocaleString();
+                document.getElementById('stat-deaths').textContent = latestVital.total_deaths.toLocaleString();
+            }
+            
+            // Calculate total admissions from morbidity data
+            let totalAdmissions = morbidityData.reduce((sum, item) => sum + parseInt(item.male_count) + parseInt(item.female_count), 0);
+            document.getElementById('stat-admissions').textContent = totalAdmissions.toLocaleString();
+
+            // Population Chart (Donut)
             new Chart(document.getElementById("populationChart"), {
                 type: "doughnut",
                 data: {
