@@ -118,15 +118,23 @@ public function store_vitalstatiscs(Request $request)
         return Excel::download(new VitalStatisticTemplateExport, 'vital_statistics_template.xlsx');
     }
 
-public function deleteAll()
+public function deleteSelected(Request $request)
 {
     try {
-        $deletedCount = VitalStatisticsManagement::count(); // Get count before deletion
-        VitalStatisticsManagement::truncate(); // Deletes all records
-        
+        $ids = $request->input('ids'); // Array of selected IDs
+
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No records selected for deletion'
+            ], 400);
+        }
+
+        $deletedCount = VitalStatisticsManagement::whereIn('id', $ids)->delete();
+
         return response()->json([
             'success' => true,
-            'message' => 'All records deleted successfully',
+            'message' => "Selected records deleted successfully",
             'deleted_count' => $deletedCount
         ]);
     } catch (\Exception $e) {
@@ -136,6 +144,7 @@ public function deleteAll()
         ], 500);
     }
 }
+
     
 
 }

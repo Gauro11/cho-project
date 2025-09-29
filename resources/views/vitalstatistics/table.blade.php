@@ -242,20 +242,243 @@
         <div class="col-12 col-lg-12 col-xxl-12 d-flex">
             <div class="card flex-fill" id="dataTable">
                 <table class="table table-hover my-0">
-                    <thead>
-    <tr>
-        <th onclick="sortTable(0, 'number')">Year <i class="fas fa-sort sort-icon" id="icon-0"></i></th>
-        <th onclick="sortTable(1, 'number')">Total Live Births <i class="fas fa-sort sort-icon" id="icon-1"></i></th>
-        <th onclick="sortTable(2, 'number')">Crude Birth Rate <i class="fas fa-sort sort-icon" id="icon-2"></i></th>
-        <th onclick="sortTable(3, 'number')">Total Deaths <i class="fas fa-sort sort-icon" id="icon-3"></i></th>
-        <th onclick="sortTable(4, 'number')">Crude Death Rate 
-        <th onclick="sortTable(5, 'number')">Infant Deaths <i class="fas fa-sort sort-icon" id="icon-5"></i></th>
-        <th onclick="sortTable(6, 'number')">Infant Mortality Rate
-        <th onclick="sortTable(7, 'number')">Maternal Deaths <i class="fas fa-sort sort-icon" id="icon-7"></i></th>
-        <th onclick="sortTable(8, 'number')">Maternal Mortality Rate 
-        <th class="no-print">Actions</th>
-    </tr>
-</thead>
+                   <table class="table table-bordered">
+    <thead>
+        <tr>
+            <!-- Master checkbox -->
+            <th style="width: 50px;">
+                <div class="checkbox-container">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="selectAll">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </th>
+
+            <th onclick="sortTable(1, 'number')">Year <i class="fas fa-sort sort-icon" id="icon-1"></i></th>
+            <th onclick="sortTable(2, 'number')">Total Live Births <i class="fas fa-sort sort-icon" id="icon-2"></i></th>
+            <th onclick="sortTable(3, 'number')">Crude Birth Rate <i class="fas fa-sort sort-icon" id="icon-3"></i></th>
+            <th onclick="sortTable(4, 'number')">Total Deaths <i class="fas fa-sort sort-icon" id="icon-4"></i></th>
+            <th onclick="sortTable(5, 'number')">Crude Death Rate <i class="fas fa-sort sort-icon" id="icon-5"></i></th>
+            <th onclick="sortTable(6, 'number')">Infant Deaths <i class="fas fa-sort sort-icon" id="icon-6"></i></th>
+            <th onclick="sortTable(7, 'number')">Infant Mortality Rate <i class="fas fa-sort sort-icon" id="icon-7"></i></th>
+            <th onclick="sortTable(8, 'number')">Maternal Deaths <i class="fas fa-sort sort-icon" id="icon-8"></i></th>
+            <th onclick="sortTable(9, 'number')">Maternal Mortality Rate <i class="fas fa-sort sort-icon" id="icon-9"></i></th>
+            <th class="no-print">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody style="background-color: white;">
+        @foreach($data as $row)
+            <tr data-id="{{ $row->id }}">
+                <td>
+                    <div class="checkbox-container">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" class="row-checkbox" data-id="{{ $row->id }}">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                </td>
+                <td>{{ $row->year }}</td>
+                <td>{{ number_format($row->total_live_births) }}</td>
+                <td>{{ number_format($row->crude_birth_rate, 2) }}</td>
+                <td>{{ number_format($row->total_deaths) }}</td>
+                <td>{{ number_format($row->crude_death_rate, 2) }}</td>
+                <td>{{ number_format($row->infant_deaths) }}</td>
+                <td>{{ number_format($row->infant_mortality_rate, 2) }}</td>
+                <td>{{ number_format($row->maternal_deaths) }}</td>
+                <td>{{ number_format($row->maternal_mortality_rate, 2) }}</td>
+                <td class="no-print">
+                    <button class="btn btn-warning btn-sm edit-button"
+                        data-id="{{ $row->id }}"
+                        data-year="{{ $row->year }}"
+                        data-births="{{ $row->total_live_births }}">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm delete-button" data-id="{{ $row->id }}">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
+<!-- Bulk Actions Bar -->
+<div class="bulk-actions-bar" id="bulkActionsBar">
+    <div class="selected-count">
+        <i class="fas fa-check-circle"></i>
+        <span id="selectedCount">0</span> selected
+    </div>
+    <button class="btn btn-danger" id="deleteSelectedBtn">
+        <i class="fas fa-trash"></i> Delete Selected
+    </button>
+    <button class="btn btn-success" id="selectAllVisible">
+        <i class="fas fa-check-double"></i> Select All
+    </button>
+    <button class="btn btn-secondary" id="clearSelection">
+        <i class="fas fa-times"></i> Clear Selection
+    </button>
+</div>
+
+<script>
+let sortDirections = {}; // Track sort state
+
+function sortTable(colIndex, type = 'string') {
+    const table = document.querySelector(".table tbody");
+    const rows = Array.from(table.rows);
+    const icon = document.getElementById("icon-" + colIndex);
+
+    sortDirections[colIndex] = !sortDirections[colIndex];
+    const direction = sortDirections[colIndex] ? 1 : -1;
+
+    document.querySelectorAll(".sort-icon").forEach(i => i.className = "fas fa-sort sort-icon");
+
+    rows.sort((a, b) => {
+        let A = a.cells[colIndex].innerText.trim();
+        let B = b.cells[colIndex].innerText.trim();
+
+        if (type === "number") {
+            A = parseFloat(A.replace(/,/g, "")) || 0;
+            B = parseFloat(B.replace(/,/g, "")) || 0;
+        } else {
+            A = A.toLowerCase();
+            B = B.toLowerCase();
+        }
+
+        if (A < B) return -1 * direction;
+        if (A > B) return 1 * direction;
+        return 0;
+    });
+
+    rows.forEach(row => table.appendChild(row));
+
+    icon.className = "fas " + (direction === 1 ? "fa-sort-up" : "fa-sort-down") + " sort-icon";
+}
+
+// Modern Alert
+if (typeof window.showModernAlert === 'undefined') {
+    window.showModernAlert = function(title, message, type = 'success') {
+        const alertBox = document.createElement('div');
+        alertBox.className = `modern-alert ${type}`;
+        alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
+        document.body.appendChild(alertBox);
+
+        setTimeout(() => {
+            alertBox.style.opacity = "0";
+            alertBox.style.transform = "translateX(100%)";
+            setTimeout(() => {
+                if (alertBox.parentNode) alertBox.remove();
+            }, 500);
+        }, 3000);
+    };
+}
+
+// Bulk Selection + Delete
+document.addEventListener("DOMContentLoaded", function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const bulkActionsBar = document.getElementById('bulkActionsBar');
+    const selectedCountElement = document.getElementById('selectedCount');
+    const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+    const selectAllVisibleBtn = document.getElementById('selectAllVisible');
+    const clearSelectionBtn = document.getElementById('clearSelection');
+
+    function updateBulkActions() {
+        const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+        const count = checkedBoxes.length;
+        selectedCountElement.textContent = count;
+
+        if (count > 0) {
+            bulkActionsBar.classList.add('show');
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const checkbox = row.querySelector('.row-checkbox');
+                row.classList.toggle('selected', checkbox && checkbox.checked);
+            });
+        } else {
+            bulkActionsBar.classList.remove('show');
+            document.querySelectorAll('tbody tr').forEach(row => row.classList.remove('selected'));
+        }
+
+        const allCheckboxes = document.querySelectorAll('.row-checkbox');
+        const allChecked = allCheckboxes.length === checkedBoxes.length && allCheckboxes.length > 0;
+        const someChecked = checkedBoxes.length > 0;
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = someChecked && !allChecked;
+        }
+    }
+
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('row-checkbox')) updateBulkActions();
+    });
+
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = this.checked);
+            updateBulkActions();
+        });
+    }
+
+    if (selectAllVisibleBtn) {
+        selectAllVisibleBtn.addEventListener('click', function() {
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = true);
+            updateBulkActions();
+        });
+    }
+
+    if (clearSelectionBtn) {
+        clearSelectionBtn.addEventListener('click', function() {
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+            updateBulkActions();
+        });
+    }
+
+    if (deleteSelectedBtn) {
+        deleteSelectedBtn.addEventListener('click', function() {
+            const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+            const selectedIds = Array.from(checkedBoxes).map(cb => cb.dataset.id);
+
+            if (selectedIds.length === 0) {
+                showModernAlert("⚠️ Warning", "No records selected for deletion.", "warning");
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete ${selectedIds.length} record(s)?`)) return;
+
+            fetch("{{ url('/vital-statistics/delete-selected') }}", {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ ids: selectedIds })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    selectedIds.forEach(id => {
+                        const row = document.querySelector(`tr[data-id="${id}"]`);
+                        if (row) row.remove();
+                    });
+                    showModernAlert("✅ Success", `Deleted ${data.deleted_count} records.`, "success");
+                } else {
+                    showModernAlert("❌ Error", data.message || "Failed to delete.", "error");
+                }
+                updateBulkActions();
+            })
+            .catch(err => {
+                console.error(err);
+                showModernAlert("❌ Error", "Something went wrong.", "error");
+            });
+        });
+    }
+
+    updateBulkActions();
+});
+</script>
+
 
 <script>
 let currentPage = 1;
