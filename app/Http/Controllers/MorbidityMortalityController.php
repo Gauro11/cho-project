@@ -251,34 +251,35 @@ public function deleteAllMorbidity()
     }
 }
 
-public function deleteAllMortality()
+
+
+public function deleteSelected(Request $request)
 {
     try {
-        // Use a transaction for safety
-        return DB::transaction(function () {
-            $query = MorbidityMortalityManagement::where('category', 'mortality');
+        $ids = $request->input('ids'); // dapat array ng mga ID
 
-            $deletedCount = $query->count();
-
-            if ($deletedCount > 0) {
-                $query->delete();
-            }
-
+        if (empty($ids) || !is_array($ids)) {
             return response()->json([
-                'success' => 1,
-                'message' => $deletedCount > 0 
-                    ? 'All mortality records deleted successfully' 
-                    : 'No mortality records found',
-                'deleted_count' => $deletedCount
-            ]);
-        });
+                'success' => false,
+                'message' => 'No records selected for deletion'
+            ], 400);
+        }
+
+        $deletedCount = MorbidityMortalityManagement::whereIn('id', $ids)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Selected mortality records deleted successfully",
+            'deleted_count' => $deletedCount
+        ]);
     } catch (\Exception $e) {
         return response()->json([
-            'success' => 0,
-            'message' => 'Failed to delete moratlity records: ' . $e->getMessage()
+            'success' => false,
+            'message' => 'Failed to delete records: ' . $e->getMessage()
         ], 500);
     }
 }
+
 
 
 }
