@@ -337,7 +337,7 @@ function sortTable(colIndex, type = 'string') {
                     <tbody style="background-color: white;">
                         @foreach($data as $row)
                             <tr>
-                                <td>{{ \Carbon\Carbon::parse($row->year)->format('Y') }}</td>
+                                <td>{{ $row->year }}</td>
                                 <td>{{ $row->location }}</td>
 
                                 <td>
