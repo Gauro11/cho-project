@@ -867,9 +867,9 @@ if (data.prediction) {
         predictionText += `📅 <strong>${month}</strong>: <span style="color:#007bff;font-weight:bold;">${Math.round(data.prediction.values[index])}</span> (${data.prediction.trend} trend)<br>`;
     });
 
-    // 👇 Add formula
+    // 👇 Plain text formula
     if (data.prediction.formula) {
-        predictionText += `<br><strong>📐 Regression Formula:</strong> <code>${data.prediction.formula}</code>`;
+        predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
     }
 
     // 👇 Automated Interpretation (with % change + highlights)
