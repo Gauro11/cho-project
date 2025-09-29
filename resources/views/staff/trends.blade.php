@@ -862,40 +862,47 @@ document.addEventListener("DOMContentLoaded", function() {
         // Update prediction info
 // Update prediction info with automated interpretation
 if (data.prediction) {
-    let predictionText = `<strong>🔮 Next 2 Months Prediction:</strong><br>`;
+    let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
     data.prediction.labels.forEach((month, index) => {
-        predictionText += `📅 <strong>${month}</strong>: <span style="color:#007bff;font-weight:bold;">${Math.round(data.prediction.values[index])}</span> (${data.prediction.trend} trend)<br>`;
+        predictionText += `📅 <strong>${month}</strong>: 
+            <span style="color:#007bff;font-weight:bold;">${Math.round(data.prediction.values[index])}</span><br>`;
     });
 
-    // 👇 Plain text formula
+    // 👇 Plain text regression formula
     if (data.prediction.formula) {
         predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
     }
 
-    // 👇 Automated Interpretation (with % change + highlights)
+    // 👇 Narrative Interpretation
+    const labels = data.prediction.labels;
     const values = data.prediction.values;
     let interpretation = "";
 
     if (values.length >= 2) {
-        const first = values[0];
-        const second = values[1];
-        const change = second - first;
-        const percentChange = ((change / first) * 100).toFixed(2);
+        const firstLabel = labels[0];
+        const lastLabel = labels[labels.length - 1];
+        const firstValue = values[0];
+        const lastValue = values[values.length - 1];
 
-        if (change > 0) {
-            interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">STRONG UPWARD TREND</span>, 
-                with an expected increase of <span style="color:green;font-weight:bold;">${change}</span> 
-                (<span style="color:green;font-weight:bold;">+${percentChange}%</span>) 
-                from <strong>${data.prediction.labels[0]}</strong> to <strong>${data.prediction.labels[1]}</strong>.`;
-        } else if (change < 0) {
-            interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">DOWNWARD TREND</span>, 
-                with an expected decrease of <span style="color:red;font-weight:bold;">${Math.abs(change)}</span> 
-                (<span style="color:red;font-weight:bold;">${Math.abs(percentChange)}%</span>) 
-                from <strong>${data.prediction.labels[0]}</strong> to <strong>${data.prediction.labels[1]}</strong>.`;
+        if (lastValue < firstValue) {
+            // Decreasing narrative
+            interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">consistent decrease</span> 
+                from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
+                Based on the regression model, the forecast predicts cases will decline to 
+                <strong>${Math.round(values[values.length - 2])}</strong> by <strong>${labels[labels.length - 2]}</strong> 
+                and may reach <strong>${Math.round(lastValue)}</strong> by <strong>${lastLabel}</strong>.`;
+        } else if (lastValue > firstValue) {
+            // Increasing narrative
+            interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">consistent increase</span> 
+                from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
+                Based on the regression model, the forecast predicts cases will rise to 
+                <strong>${Math.round(values[values.length - 2])}</strong> by <strong>${labels[labels.length - 2]}</strong> 
+                and reach <strong>${Math.round(lastValue)}</strong> by <strong>${lastLabel}</strong>.`;
         } else {
-            interpretation = `➖ The prediction indicates a <span style="color:gray;font-weight:bold;">STABLE TREND</span>, 
-                with <span style="font-weight:bold;">no significant change</span> expected between 
-                <strong>${data.prediction.labels[0]}</strong> and <strong>${data.prediction.labels[1]}</strong>.`;
+            // Stable narrative
+            interpretation = `➖ The prediction indicates a <span style="color:gray;font-weight:bold;">stable trend</span>, 
+                with <strong>no significant change</strong> expected from 
+                <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>.`;
         }
     }
 
