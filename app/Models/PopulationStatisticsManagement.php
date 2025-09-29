@@ -14,7 +14,7 @@ class PopulationStatisticsManagement extends Model
 
     protected $fillable = [
         'location',
-        'date',
+        'year',
         'population',
     ];
 }

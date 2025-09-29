@@ -37,7 +37,7 @@ class PopulationController extends Controller
             $data = PopulationStatisticsManagement::find($request->id);
     
             $data->location = $request->location;
-            $data ->date = $request->year; // Change to match the form field
+            $data ->year = $request->year; // Change to match the form field
             $data->population = $request->total_population; // Change to match the form field
             $data->save();
     
@@ -70,7 +70,7 @@ class PopulationController extends Controller
     // Store the data in the database
     PopulationStatisticsManagement::create([
         'location' => $request->location,
-        'date' => $request->date,
+        'year' => $request->year,
         'population' => $request->population,
     ]);
 
