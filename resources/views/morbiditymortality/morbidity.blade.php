@@ -1349,51 +1349,78 @@
                                 </div>
 
                                <div class="mb-3">
-    <label for="edit_male_count" class="form-label">👨 Male Count</label>
+    <label for="edit_male_count" class="form-label modern-form-label">👨 Male Count</label>
     <div class="input-group">
-        <input type="number" class="form-control" id="edit_male_count" name="male_count" required>
-        <button type="button" class="btn btn-success" id="addMaleCountBtn">➕</button>
+        <input type="number" class="form-control modern-form-control" id="edit_male_count" name="male_count" required>
+        <button type="button" class="btn btn-success modern-btn" id="addMaleCountBtn">➕</button>
     </div>
 </div>
 
 <div class="mb-3">
-    <label for="edit_female_count" class="form-label">👩 Female Count</label>
+    <label for="edit_female_count" class="form-label modern-form-label">👩 Female Count</label>
     <div class="input-group">
-        <input type="number" class="form-control" id="edit_female_count" name="female_count" required>
-        <button type="button" class="btn btn-success" id="addFemaleCountBtn">➕</button>
+        <input type="number" class="form-control modern-form-control" id="edit_female_count" name="female_count" required>
+        <button type="button" class="btn btn-success modern-btn" id="addFemaleCountBtn">➕</button>
     </div>
 </div>
 
 <div class="mb-3">
-    <label for="edit_total" class="form-label">📊 Total</label>
-    <input type="number" class="form-control" id="edit_total" readonly>
+    <label for="edit_total" class="form-label modern-form-label">📊 Total</label>
+    <div class="input-group">
+        <input type="number" class="form-control modern-form-control" id="edit_total" readonly>
+        
+    </div>
 </div>
 
-<div class="modal-footer">
-    <button type="button" id="cancelEditModal" class="btn btn-secondary">❌ Cancel</button>
-    <button type="submit" class="btn btn-primary">💾 Update Morbidity Records</button>
+<div class="modal-footer modern-modal-footer">
+    <button type="button" id="cancelEditModal" class="btn btn-secondary modern-btn">❌ Cancel</button>
+    <button type="submit" class="btn btn-primary modern-btn">💾 Update Mortality Records</button>
 </div>
 </form>
 </div>
 </div>
 
 <!-- Small Add Modal -->
-<div id="addModal" class="modal" style="display: none;">
-    <div class="modal-content" style="max-width: 400px;">
-        <span class="close" id="closeAddModal">&times;</span>
+<div id="addModal" class="modern-modal modal" style="display: none;">
+    <div class="modern-modal-content modal-content popup-top-right">
+        <span class="modern-close close" id="closeAddModal">&times;</span>
         <h3 id="addModalTitle">➕ Add Value</h3>
 
         <div class="mb-3">
-            <label id="addLabel" class="form-label"></label>
-            <input type="number" class="form-control" id="addValue">
+            <label id="addLabel" class="form-label modern-form-label"></label>
+            <input type="number" class="form-control modern-form-control" id="addValue">
         </div>
 
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="cancelAddModal">❌ Cancel</button>
-            <button type="button" class="btn btn-primary" id="confirmAddBtn">✅ Add</button>
+        <div class="modern-modal-footer modal-footer">
+            <button type="button" class="btn btn-secondary modern-btn" id="cancelAddModal">❌ Cancel</button>
+            <button type="button" class="btn btn-primary modern-btn" id="confirmAddBtn">✅ Add</button>
         </div>
     </div>
 </div>
+
+<style>
+/* Position the modal in upper-right */
+#addModal {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 9999;
+}
+
+#addModal .popup-top-right {
+    max-width: 350px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+#addModal .close {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+}
+</style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -1402,12 +1429,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const confirmAddBtn = document.getElementById("confirmAddBtn");
     const addModalTitle = document.getElementById("addModalTitle");
     const addLabel = document.getElementById("addLabel");
+
     const maleInput = document.getElementById("edit_male_count");
     const femaleInput = document.getElementById("edit_female_count");
     const totalInput = document.getElementById("edit_total");
+
     let targetInput = null;
 
-    // Function to update total
+    // Function to update total automatically
     function updateTotal() {
         let male = parseInt(maleInput.value) || 0;
         let female = parseInt(femaleInput.value) || 0;
@@ -1432,12 +1461,26 @@ document.addEventListener("DOMContentLoaded", function () {
         addModal.style.display = "block";
     });
 
+    // Open modal for Total
+    document.getElementById("addTotalBtn").addEventListener("click", function () {
+        targetInput = totalInput;
+        addModalTitle.textContent = "➕ Add to Total";
+        addLabel.textContent = "Enter number to add to current Total (" + (targetInput.value || 0) + ")";
+        addValueInput.value = "";
+        addModal.style.display = "block";
+    });
+
     // Confirm Add
     confirmAddBtn.addEventListener("click", function () {
         let addValue = parseInt(addValueInput.value) || 0;
         let currentValue = parseInt(targetInput.value) || 0;
+
+        // Add value
         targetInput.value = currentValue + addValue;
+
+        // Always recalc total
         updateTotal();
+
         addModal.style.display = "none";
     });
 

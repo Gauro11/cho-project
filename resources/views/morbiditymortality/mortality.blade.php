@@ -1565,7 +1565,7 @@
     <label for="edit_total" class="form-label modern-form-label">📊 Total</label>
     <div class="input-group">
         <input type="number" class="form-control modern-form-control" id="edit_total" readonly>
-        <button type="button" class="btn btn-success modern-btn" id="addTotalBtn">➕</button>
+        
     </div>
 </div>
 
