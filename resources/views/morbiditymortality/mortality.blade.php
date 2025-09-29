@@ -1545,35 +1545,112 @@
                                             id="edit_case_name" name="case_name" required>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <label for="edit_male_count" class="form-label modern-form-label">👨 Male
-                                            Count</label>
-                                        <input type="number" class="form-control modern-form-control"
-                                            id="edit_male_count" name="male_count" required>
-                                    </div>
+                                   <div class="mb-3">
+    <label for="edit_male_count" class="form-label">👨 Male Count</label>
+    <div class="input-group">
+        <input type="number" class="form-control" id="edit_male_count" name="male_count" required>
+        <button type="button" class="btn btn-success" id="addMaleCountBtn">➕</button>
+    </div>
+</div>
 
-                                    <div class="mb-3">
-                                        <label for="edit_female_count" class="form-label modern-form-label">👩 Female
-                                            Count</label>
-                                        <input type="number" class="form-control modern-form-control"
-                                            id="edit_female_count" name="female_count" required>
-                                    </div>
+<div class="mb-3">
+    <label for="edit_female_count" class="form-label">👩 Female Count</label>
+    <div class="input-group">
+        <input type="number" class="form-control" id="edit_female_count" name="female_count" required>
+        <button type="button" class="btn btn-success" id="addFemaleCountBtn">➕</button>
+    </div>
+</div>
 
-                                    <div class="mb-3">
-                                        <label for="edit_total" class="form-label modern-form-label">📊 Total</label>
-                                        <input type="number" class="form-control modern-form-control"
-                                            id="edit_total" readonly>
-                                    </div>
+<div class="mb-3">
+    <label for="edit_total" class="form-label">📊 Total</label>
+    <input type="number" class="form-control" id="edit_total" readonly>
+</div>
 
-                                    <div class="modal-footer modern-modal-footer">
-                                        <button type="button" id="cancelEditModal"
-                                            class="btn btn-secondary modern-btn">❌ Cancel</button>
-                                        <button type="submit" class="btn btn-primary modern-btn">💾 Update Mortality
-                                            Records</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+<div class="modal-footer">
+    <button type="button" id="cancelEditModal" class="btn btn-secondary">❌ Cancel</button>
+    <button type="submit" class="btn btn-primary">💾 Update Morbidity Records</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Small Add Modal -->
+<div id="addModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+        <span class="close" id="closeAddModal">&times;</span>
+        <h3 id="addModalTitle">➕ Add Value</h3>
+
+        <div class="mb-3">
+            <label id="addLabel" class="form-label"></label>
+            <input type="number" class="form-control" id="addValue">
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelAddModal">❌ Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirmAddBtn">✅ Add</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const addModal = document.getElementById("addModal");
+    const addValueInput = document.getElementById("addValue");
+    const confirmAddBtn = document.getElementById("confirmAddBtn");
+    const addModalTitle = document.getElementById("addModalTitle");
+    const addLabel = document.getElementById("addLabel");
+    const maleInput = document.getElementById("edit_male_count");
+    const femaleInput = document.getElementById("edit_female_count");
+    const totalInput = document.getElementById("edit_total");
+    let targetInput = null;
+
+    // Function to update total
+    function updateTotal() {
+        let male = parseInt(maleInput.value) || 0;
+        let female = parseInt(femaleInput.value) || 0;
+        totalInput.value = male + female;
+    }
+
+    // Open modal for Male Count
+    document.getElementById("addMaleCountBtn").addEventListener("click", function () {
+        targetInput = maleInput;
+        addModalTitle.textContent = "➕ Add Male Count";
+        addLabel.textContent = "Enter number to add to current Male total (" + (targetInput.value || 0) + ")";
+        addValueInput.value = "";
+        addModal.style.display = "block";
+    });
+
+    // Open modal for Female Count
+    document.getElementById("addFemaleCountBtn").addEventListener("click", function () {
+        targetInput = femaleInput;
+        addModalTitle.textContent = "➕ Add Female Count";
+        addLabel.textContent = "Enter number to add to current Female total (" + (targetInput.value || 0) + ")";
+        addValueInput.value = "";
+        addModal.style.display = "block";
+    });
+
+    // Confirm Add
+    confirmAddBtn.addEventListener("click", function () {
+        let addValue = parseInt(addValueInput.value) || 0;
+        let currentValue = parseInt(targetInput.value) || 0;
+        targetInput.value = currentValue + addValue;
+        updateTotal();
+        addModal.style.display = "none";
+    });
+
+    // Update total when typing
+    maleInput.addEventListener("input", updateTotal);
+    femaleInput.addEventListener("input", updateTotal);
+
+    // Cancel & Close modal
+    document.getElementById("cancelAddModal").addEventListener("click", function () {
+        addModal.style.display = "none";
+    });
+    document.getElementById("closeAddModal").addEventListener("click", function () {
+        addModal.style.display = "none";
+    });
+});
+</script>
 
 
                         <!-- Initialize Feather Icons -->
