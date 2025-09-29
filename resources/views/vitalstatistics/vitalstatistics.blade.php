@@ -1266,44 +1266,119 @@
                                 </div>
 
 
-                                
-                                <div class="mb-3">
-                                    <label for="edit_births" class="modern-form-label form-label">👶 Total Live
-                                        Births</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_births"
-                                        name="total_live_births" required min="0">
-                                </div>
+                               <div class="mb-3">
+    <label for="edit_births" class="modern-form-label form-label">👶 Total Live Births</label>
+    <div class="input-group">
+        <input type="number" class="modern-form-control form-control" id="edit_births"
+               name="total_live_births" required min="0">
+        <button type="button" class="modern-btn btn-success" id="addBirthsBtn">➕</button>
+    </div>
+</div>
 
-                                <div class="mb-3">
-                                    <label for="edit_deaths" class="modern-form-label form-label">⚰️ Total
-                                        Deaths</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_deaths"
-                                        name="total_deaths" required min="0">
-                                </div>
+<div class="mb-3">
+    <label for="edit_deaths" class="modern-form-label form-label">⚰️ Total Deaths</label>
+    <div class="input-group">
+        <input type="number" class="modern-form-control form-control" id="edit_deaths"
+               name="total_deaths" required min="0">
+        <button type="button" class="modern-btn btn-success" id="addDeathsBtn">➕</button>
+    </div>
+</div>
 
-                                <div class="mb-3">
-                                    <label for="edit_infant" class="modern-form-label form-label">👼 Infant
-                                        Deaths</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_infant"
-                                        name="infant_deaths" required min="0">
-                                </div>
+<div class="mb-3">
+    <label for="edit_infant" class="modern-form-label form-label">👼 Infant Deaths</label>
+    <div class="input-group">
+        <input type="number" class="modern-form-control form-control" id="edit_infant"
+               name="infant_deaths" required min="0">
+        <button type="button" class="modern-btn btn-success" id="addInfantBtn">➕</button>
+    </div>
+</div>
 
-                                <div class="mb-3">
-                                    <label for="edit_maternal" class="modern-form-label form-label">🤱 Maternal
-                                        Deaths</label>
-                                    <input type="number" class="modern-form-control form-control" id="edit_maternal"
-                                        name="maternal_deaths" required min="0">
-                                </div>
+<div class="mb-3">
+    <label for="edit_maternal" class="modern-form-label form-label">🤱 Maternal Deaths</label>
+    <div class="input-group">
+        <input type="number" class="modern-form-control form-control" id="edit_maternal"
+               name="maternal_deaths" required min="0">
+        <button type="button" class="modern-btn btn-success" id="addMaternalBtn">➕</button>
+    </div>
+</div>
 
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌
-                                        Cancel</button>
-                                    <button type="submit" class="modern-btn btn-primary">💾 Update Vital Statistics
-                                        Records</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+<div class="modern-modal-footer modal-footer">
+    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌ Cancel</button>
+    <button type="submit" class="modern-btn btn-primary">💾 Update Vital Statistics Records</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Small Add Modal (reusable for all fields) -->
+<div id="addModal" class="modern-modal modal" style="display: none;">
+    <div class="modern-modal-content modal-content" style="max-width: 400px;">
+        <span class="modern-close close" id="closeAddModal">&times;</span>
+        <h3 id="addModalTitle">➕ Add Value</h3>
+
+        <div class="mb-3">
+            <label id="addLabel" class="modern-form-label form-label"></label>
+            <input type="number" class="modern-form-control form-control" id="addValue">
+        </div>
+
+        <div class="modern-modal-footer modal-footer">
+            <button type="button" class="modern-btn btn-secondary" id="cancelAddModal">❌ Cancel</button>
+            <button type="button" class="modern-btn btn-primary" id="confirmAddBtn">✅ Add</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const addModal = document.getElementById("addModal");
+    const addValueInput = document.getElementById("addValue");
+    const confirmAddBtn = document.getElementById("confirmAddBtn");
+    const addModalTitle = document.getElementById("addModalTitle");
+    const addLabel = document.getElementById("addLabel");
+    let targetInput = null;
+
+    function openAddModal(inputId, title, labelPrefix) {
+        targetInput = document.getElementById(inputId);
+        addModalTitle.textContent = title;
+        addLabel.textContent = labelPrefix + " (" + (targetInput.value || 0) + ")";
+        addValueInput.value = "";
+        addModal.style.display = "block";
+    }
+
+    // Open modal for each field
+    document.getElementById("addBirthsBtn").addEventListener("click", function () {
+        openAddModal("edit_births", "➕ Add Total Live Births", "Enter number to add to current Births");
+    });
+
+    document.getElementById("addDeathsBtn").addEventListener("click", function () {
+        openAddModal("edit_deaths", "➕ Add Total Deaths", "Enter number to add to current Deaths");
+    });
+
+    document.getElementById("addInfantBtn").addEventListener("click", function () {
+        openAddModal("edit_infant", "➕ Add Infant Deaths", "Enter number to add to current Infant Deaths");
+    });
+
+    document.getElementById("addMaternalBtn").addEventListener("click", function () {
+        openAddModal("edit_maternal", "➕ Add Maternal Deaths", "Enter number to add to current Maternal Deaths");
+    });
+
+    // Confirm Add
+    confirmAddBtn.addEventListener("click", function () {
+        let addValue = parseInt(addValueInput.value) || 0;
+        let currentValue = parseInt(targetInput.value) || 0;
+        targetInput.value = currentValue + addValue;
+        addModal.style.display = "none";
+    });
+
+    // Cancel & Close
+    document.getElementById("cancelAddModal").addEventListener("click", function () {
+        addModal.style.display = "none";
+    });
+    document.getElementById("closeAddModal").addEventListener("click", function () {
+        addModal.style.display = "none";
+    });
+});
+</script>
 
 
 

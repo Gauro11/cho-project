@@ -28,22 +28,24 @@ class VitalStatisticsController extends Controller
     $request->validate([
         'id' => 'required|exists:vital_statistics_management,id',
         'year' => 'required|string',
-        
         'total_live_births' => 'required|numeric',
         'total_deaths' => 'required|numeric',
         'infant_deaths' => 'required|numeric',
         'maternal_deaths' => 'required|numeric',
     ]);
-    
-    try {
-        $data = VitalStatisticsManagement::find($request->id);
 
+    try {
+        $data = VitalStatisticsManagement::findOrFail($request->id);
+
+        // ✅ Update year only (always overwrite)
         $data->year = $request->year;
-       
-        $data->total_live_births = $request->total_live_births;
-        $data->total_deaths = $request->total_deaths;
-        $data->infant_deaths = $request->infant_deaths;
-        $data->maternal_deaths = $request->maternal_deaths;
+
+        // ✅ Add new values to existing totals
+        $data->total_live_births = ($data->total_live_births ?? 0) + $request->total_live_births;
+        $data->total_deaths = ($data->total_deaths ?? 0) + $request->total_deaths;
+        $data->infant_deaths = ($data->infant_deaths ?? 0) + $request->infant_deaths;
+        $data->maternal_deaths = ($data->maternal_deaths ?? 0) + $request->maternal_deaths;
+
         $data->save();
 
         return response()->json(['success' => true, 'message' => 'Data updated successfully.']);
@@ -51,6 +53,7 @@ class VitalStatisticsController extends Controller
         return response()->json(['success' => false, 'message' => $e->getMessage()]);
     }
 }
+
 public function store_vitalstatiscs(Request $request)
 {
     $request->validate([
