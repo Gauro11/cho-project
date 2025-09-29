@@ -1045,20 +1045,22 @@
 </div>
 
 <script>
-    // Generate year options dynamically
-    const yearSelect = document.getElementById("year");
-    const currentYear = new Date().getFullYear();
-    const startYear = 2000;
-    const endYear = 2199;
+    document.addEventListener("DOMContentLoaded", function () {
+        const yearSelect = document.getElementById("year");
+        const currentYear = new Date().getFullYear();
+        const startYear = 2000;
+        const endYear = 2099;
 
-    for (let y = startYear; y <= endYear; y++) {
-        let option = document.createElement("option");
-        option.value = y;
-        option.textContent = y;
-        if (y === currentYear) option.selected = true; // default to current year
-        yearSelect.appendChild(option);
-    }
+        for (let y = startYear; y <= endYear; y++) {
+            let option = document.createElement("option");
+            option.value = y;
+            option.textContent = y;
+            if (y === currentYear) option.selected = true; // default to current year
+            yearSelect.appendChild(option);
+        }
+    });
 </script>
+
 
 
 
