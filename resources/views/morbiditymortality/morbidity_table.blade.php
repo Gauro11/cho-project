@@ -135,21 +135,18 @@ function sortTable2(colIndex, type = 'string') {
 document.addEventListener("DOMContentLoaded", function () {
     const rows = document.querySelectorAll("#dataTable tbody tr");
 
-    // Step 1: group totals by case_name
+    // Step 1: group totals by normalized case_name
     let caseTotals = {};
     rows.forEach(row => {
-        const caseName = row.cells[1].innerText.trim(); // "CASES" column
+        let caseName = row.cells[1].innerText.trim().toUpperCase(); // normalize
         const total = parseInt(row.querySelector(".percentage-cell").dataset.total) || 0;
 
-        if (!caseTotals[caseName]) {
-            caseTotals[caseName] = 0;
-        }
-        caseTotals[caseName] += total;
+        caseTotals[caseName] = (caseTotals[caseName] || 0) + total;
     });
 
     // Step 2: compute percentage for each row within its case group
     rows.forEach(row => {
-        const caseName = row.cells[1].innerText.trim();
+        let caseName = row.cells[1].innerText.trim().toUpperCase();
         const cell = row.querySelector(".percentage-cell");
         const rowTotal = parseInt(cell.dataset.total) || 0;
 
@@ -161,3 +158,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
