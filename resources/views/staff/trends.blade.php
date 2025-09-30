@@ -389,17 +389,21 @@
                                             <label class="date-filter-label">📅 Filter Type</label>
                                             <select id="dateFilterType" class="form-select">
                                                 <option value="">All Data</option>
-                                                <option value="specific">Specific Date</option>
+                                                <option value="range">Date Range</option>
                                                 <option value="monthly">Monthly</option>
                                                 <option value="quarterly">Quarterly</option>
                                                 <option value="yearly">Yearly</option>
                                             </select>
                                         </div>
                                         
-                                        <div class="date-filter-group" id="specificDateGroup" style="display: none;">
-                                            <label class="date-filter-label">📆 Select Specific Date</label>
-                                            <input type="date" id="specificDatePicker" class="form-control">
-                                        </div>
+                                       <div class="date-filter-group" id="rangeDateGroup" style="display: none;">
+    <label class="date-filter-label">📆 Select Date Range</label>
+    <div style="display: flex; gap: 0.5rem;">
+        <input type="date" id="startDatePicker" class="form-control">
+        <input type="date" id="endDatePicker" class="form-control">
+    </div>
+</div>
+
                                         
                                         <div class="date-filter-group" id="monthFilterGroup" style="display: none;">
                                             <label class="date-filter-label">📆 Select Month</label>
@@ -568,6 +572,74 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+    dateFilterType.addEventListener("change", function() {
+    const filterType = dateFilterType.value;
+    
+    // Hide lahat muna
+    rangeDateGroup.style.display = 'none';
+    monthFilterGroup.style.display = 'none';
+    quarterFilterGroup.style.display = 'none';
+    yearFilterGroup.style.display = 'none';
+    quarterYearGroup.style.display = 'none';
+    
+    switch(filterType) {
+        case 'range':
+            rangeDateGroup.style.display = 'block';
+            break;
+        case 'monthly':
+            monthFilterGroup.style.display = 'block';
+            break;
+        case 'quarterly':
+            quarterFilterGroup.style.display = 'block';
+            quarterYearGroup.style.display = 'block';
+            break;
+        case 'yearly':
+            yearFilterGroup.style.display = 'block';
+            break;
+    }
+});
+
+startDatePicker.addEventListener("change", applyDateFilter);
+endDatePicker.addEventListener("change", applyDateFilter);
+
+function applyDateFilter() {
+    if (!originalData) return;
+
+    const filterType = dateFilterType.value;
+    let filteredData = {...originalData};
+
+    if (filterType === 'range' && startDatePicker.value && endDatePicker.value) {
+        const start = new Date(startDatePicker.value);
+        const end = new Date(endDatePicker.value);
+        filteredData = filterDataByRange(originalData, start, end);
+    }
+    // ibang cases: monthly, quarterly, yearly...
+
+    updateChart(filteredData);
+}
+
+function filterDataByRange(data, start, end) {
+    const filteredLabels = [];
+    const filteredValues = [];
+
+    data.historical.labels.forEach((label, index) => {
+        const date = parseDate(label);
+        if (date && date >= start && date <= end) {
+            filteredLabels.push(label);
+            filteredValues.push(data.historical.values[index]);
+        }
+    });
+
+    return {
+        ...data,
+        historical: {
+            labels: filteredLabels,
+            values: filteredValues
+        },
+        prediction: null
+    };
+}
+
 
     // Populate year dropdowns
     function populateYearDropdowns() {
