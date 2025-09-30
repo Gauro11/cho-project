@@ -957,7 +957,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "📊 Filtered data - predictions not available for filtered views." : 
         "❌ No prediction available for this dataset.";
 }
-
+    }
 
     initChart();
     populateYearDropdowns();
