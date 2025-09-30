@@ -943,7 +943,11 @@ document.addEventListener("DOMContentLoaded", function() {
                         <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
                         and reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
                 }
-            }
+            }else {
+    interpretation = `➖ The prediction indicates a <span style="color:gray;font-weight:bold;">stable or no significant change</span> 
+        between <strong>${firstLabel}</strong> and <strong>${lastLabel}</strong>. 
+        The values remain constant at <strong>${lastValue}</strong> across the forecasted period.`;
+}
 
             predictionText += `<br><br><strong>📝 Interpretation:</strong><br>${interpretation}`;
             predictionInfo.innerHTML = predictionText;
