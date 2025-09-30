@@ -1229,13 +1229,17 @@
         <input list="caseOptions" class="form-control modern-form-control" 
                id="case_name" name="case_name" placeholder="Select or type case name" required>
         <datalist id="caseOptions">
-            <option value="Heart Disease">
-            <option value="Cancer">
-            <option value="Stroke">
-            <option value="Respiratory Disease">
-            <option value="Accident">
-            <option value="Kidney Failure">
-                 <option value="Tuberculosis">
+            <option value="Animal Bite">
+            <option value="Acute Respiratory ">
+            <option value="Infection">
+            <option value="Hypertension">
+            <option value="Skin Diseases">
+            <option value="Punctured/Lacerated Wound">
+            <option value="Pneumonia">
+                <option value="Diabetes Mellitus">
+                    <option value="Urinary Tract Infection">
+                        <option value="Gastritis/GERD">
+                            <option value="Systemic Viral Infection">
                      
         </datalist>
     </div>

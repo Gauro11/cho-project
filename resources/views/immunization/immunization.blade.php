@@ -1476,21 +1476,17 @@
                id="vaccine_name" name="vaccine_name" required
                oninput="this.value = this.value.toUpperCase()">
         <datalist id="vaccineOptions">
-            <option value="BCG (TUBERCULOSIS)">
-            <option value="HEPATITIS B VACCINE">
-            <option value="PENTAVALENT VACCINE (DPT-HEPB-HIB)">
-            <option value="DTP (DIPHTHERIA, TETANUS, PERTUSSIS)">
-            <option value="POLIO VACCINE (OPV/IPV)">
-            <option value="MEASLES-CONTAINING VACCINE (MCV)">
-            <option value="MMR (MEASLES, MUMPS, RUBELLA)">
-            <option value="PNEUMOCOCCAL CONJUGATE VACCINE (PCV)">
-            <option value="ROTAVIRUS VACCINE">
-            <option value="INFLUENZA VACCINE">
-            <option value="DENGUE VACCINE (DENGVAXIA)">
-            <option value="COVID-19 VACCINE">
-            <option value="HPV VACCINE (HUMAN PAPILLOMAVIRUS)">
-            <option value="VARICELLA VACCINE (CHICKENPOX)">
-            <option value="TETANUS TOXOID (TT)">
+            <option value="CPAB">
+            <option value="BCG">
+            <option value="HepB within 24 hours">
+            <option value="DPT-HiB-HepB 1">
+            <option value="DPT-HiB-HepB 2)">
+            <option value="DPT-HiB-HepB 3">
+            <option value="OPV 1">
+            <option value="OPV 2">
+            <option value="OPV 3">
+            <option value="IPV 1">
+           
         </datalist>
     </div>
 

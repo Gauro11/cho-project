@@ -1227,12 +1227,16 @@
                name="case_name" placeholder="Select or type case name" required>
         <datalist id="morbidityOptions">
             <option value="Animal Bite">
-            <option value="Dengue Fever">
-            <option value="Pneumonia">
-            <option value="Diarrheal Diseases">
-            <option value="Tuberculosis">
+            <option value="Acute Respiratory ">
+            <option value="Infection">
             <option value="Hypertension">
-            <option value="Diabetes Mellitus">
+            <option value="Skin Diseases">
+            <option value="Punctured/Lacerated Wound">
+            <option value="Pneumonia">
+                <option value="Diabetes Mellitus">
+                    <option value="Urinary Tract Infection">
+                        <option value="Gastritis/GERD">
+                            <option value="Systemic Viral Infection">
         </datalist>
     </div>
 
