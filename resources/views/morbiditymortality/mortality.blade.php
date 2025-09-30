@@ -1234,7 +1234,9 @@
             <option value="Stroke">
             <option value="Respiratory Disease">
             <option value="Accident">
-            <option value="Other">
+            <option value="Kidney Failure">
+                 <option value="Tuberculosis">
+                     
         </datalist>
     </div>
 

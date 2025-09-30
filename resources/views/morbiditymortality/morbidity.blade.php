@@ -1214,36 +1214,48 @@
                         <div class="modal-content">
                             <span class="close">&times;</span>
                             <h2>Add New Morbidity Record</h2>
-                            <form action="{{ route('morbidity.store') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="date" class="form-label">📅 Date</label>
-                                    <input type="date" class="form-control" id="date" name="date" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="case_name" class="form-label">📝 Case Name</label>
-                                    <input type="text" class="form-control" id="case_name" name="case_name"
-                                        placeholder="Enter case name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="male_count" class="form-label">👨 Male Count</label>
-                                    <input type="number" class="form-control" id="male_count" name="male_count"
-                                        required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="female_count" class="form-label">👩 Female Count</label>
-                                    <input type="number" class="form-control" id="female_count" name="female_count"
-                                        required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="total" class="form-label">📊 Total Cases</label>
-                                    <input type="text" class="form-control" id="total" readonly>
-                                </div>
+                           <form action="{{ route('morbidity.store') }}" method="POST">
+    @csrf
+    <div class="mb-3">
+        <label for="date" class="form-label">📅 Date</label>
+        <input type="date" class="form-control" id="date" name="date" required>
+    </div>
 
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">✅ Add New Record</button>
-                                </div>
-                            </form>
+    <div class="mb-3">
+        <label for="case_name" class="form-label">📝 Case Name</label>
+        <input list="morbidityOptions" class="form-control" id="case_name" 
+               name="case_name" placeholder="Select or type case name" required>
+        <datalist id="morbidityOptions">
+            <option value="Animal Bite">
+            <option value="Dengue Fever">
+            <option value="Pneumonia">
+            <option value="Diarrheal Diseases">
+            <option value="Tuberculosis">
+            <option value="Hypertension">
+            <option value="Diabetes Mellitus">
+        </datalist>
+    </div>
+
+    <div class="mb-3">
+        <label for="male_count" class="form-label">👨 Male Count</label>
+        <input type="number" class="form-control" id="male_count" name="male_count" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="female_count" class="form-label">👩 Female Count</label>
+        <input type="number" class="form-control" id="female_count" name="female_count" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="total" class="form-label">📊 Total Cases</label>
+        <input type="text" class="form-control" id="total" readonly>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">✅ Add New Record</button>
+    </div>
+</form>
+
 
                         </div>
                     </div>
