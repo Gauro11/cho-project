@@ -281,6 +281,12 @@
             min-width: 150px;
         }
 
+        .date-range-inputs {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -341,6 +347,10 @@
             #monthPicker, #quarterPicker, #yearPicker {
                 min-width: auto;
             }
+
+            .date-range-inputs {
+                flex-direction: column;
+            }
         }
         
     </style>
@@ -389,21 +399,21 @@
                                             <label class="date-filter-label">📅 Filter Type</label>
                                             <select id="dateFilterType" class="form-select">
                                                 <option value="">All Data</option>
-                                                <option value="range">Date Range</option>
+                                                <option value="specific">Date Range</option>
                                                 <option value="monthly">Monthly</option>
                                                 <option value="quarterly">Quarterly</option>
                                                 <option value="yearly">Yearly</option>
                                             </select>
                                         </div>
                                         
-                                       <div class="date-filter-group" id="rangeDateGroup" style="display: none;">
-    <label class="date-filter-label">📆 Select Date Range</label>
-    <div style="display: flex; gap: 0.5rem;">
-        <input type="date" id="startDatePicker" class="form-control">
-        <input type="date" id="endDatePicker" class="form-control">
-    </div>
-</div>
-
+                                        <div class="date-filter-group" id="specificDateGroup" style="display: none;">
+                                            <label class="date-filter-label">📆 Date Range</label>
+                                            <div class="date-range-inputs">
+                                                <input type="date" id="startDatePicker" class="form-control" placeholder="Start Date">
+                                                <span style="color: var(--text-secondary);">to</span>
+                                                <input type="date" id="endDatePicker" class="form-control" placeholder="End Date">
+                                            </div>
+                                        </div>
                                         
                                         <div class="date-filter-group" id="monthFilterGroup" style="display: none;">
                                             <label class="date-filter-label">📆 Select Month</label>
@@ -483,7 +493,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const quarterFilterGroup = document.getElementById("quarterFilterGroup");
     const yearFilterGroup = document.getElementById("yearFilterGroup");
     const quarterYearGroup = document.getElementById("quarterYearGroup");
-    const specificDatePicker = document.getElementById("specificDatePicker");
+    const startDatePicker = document.getElementById("startDatePicker");
+    const endDatePicker = document.getElementById("endDatePicker");
     const monthPicker = document.getElementById("monthPicker");
     const quarterPicker = document.getElementById("quarterPicker");
     const yearPicker = document.getElementById("yearPicker");
@@ -572,74 +583,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
-    dateFilterType.addEventListener("change", function() {
-    const filterType = dateFilterType.value;
-    
-    // Hide lahat muna
-    rangeDateGroup.style.display = 'none';
-    monthFilterGroup.style.display = 'none';
-    quarterFilterGroup.style.display = 'none';
-    yearFilterGroup.style.display = 'none';
-    quarterYearGroup.style.display = 'none';
-    
-    switch(filterType) {
-        case 'range':
-            rangeDateGroup.style.display = 'block';
-            break;
-        case 'monthly':
-            monthFilterGroup.style.display = 'block';
-            break;
-        case 'quarterly':
-            quarterFilterGroup.style.display = 'block';
-            quarterYearGroup.style.display = 'block';
-            break;
-        case 'yearly':
-            yearFilterGroup.style.display = 'block';
-            break;
-    }
-});
-
-startDatePicker.addEventListener("change", applyDateFilter);
-endDatePicker.addEventListener("change", applyDateFilter);
-
-function applyDateFilter() {
-    if (!originalData) return;
-
-    const filterType = dateFilterType.value;
-    let filteredData = {...originalData};
-
-    if (filterType === 'range' && startDatePicker.value && endDatePicker.value) {
-        const start = new Date(startDatePicker.value);
-        const end = new Date(endDatePicker.value);
-        filteredData = filterDataByRange(originalData, start, end);
-    }
-    // ibang cases: monthly, quarterly, yearly...
-
-    updateChart(filteredData);
-}
-
-function filterDataByRange(data, start, end) {
-    const filteredLabels = [];
-    const filteredValues = [];
-
-    data.historical.labels.forEach((label, index) => {
-        const date = parseDate(label);
-        if (date && date >= start && date <= end) {
-            filteredLabels.push(label);
-            filteredValues.push(data.historical.values[index]);
-        }
-    });
-
-    return {
-        ...data,
-        historical: {
-            labels: filteredLabels,
-            values: filteredValues
-        },
-        prediction: null
-    };
-}
-
 
     // Populate year dropdowns
     function populateYearDropdowns() {
@@ -690,7 +633,8 @@ function filterDataByRange(data, start, end) {
     });
 
     // Date filter change handlers
-    specificDatePicker.addEventListener("change", applyDateFilter);
+    startDatePicker.addEventListener("change", applyDateFilter);
+    endDatePicker.addEventListener("change", applyDateFilter);
     monthPicker.addEventListener("change", applyDateFilter);
     quarterPicker.addEventListener("change", applyDateFilter);
     quarterYearPicker.addEventListener("change", applyDateFilter);
@@ -703,11 +647,10 @@ function filterDataByRange(data, start, end) {
         const filterType = dateFilterType.value;
         let filteredData = {...originalData};
 
-        if (filterType === 'specific' && specificDatePicker.value) {
-            const selectedDate = specificDatePicker.value; // Format: YYYY-MM-DD
-            filteredData = filterDataBySpecificDate(originalData, selectedDate);
+        if (filterType === 'specific' && (startDatePicker.value || endDatePicker.value)) {
+            filteredData = filterDataBySpecificDate(originalData);
         } else if (filterType === 'monthly' && monthPicker.value) {
-            const selectedMonth = monthPicker.value; // Format: YYYY-MM
+            const selectedMonth = monthPicker.value;
             filteredData = filterDataByMonth(originalData, selectedMonth);
         } else if (filterType === 'quarterly' && quarterPicker.value && quarterYearPicker.value) {
             const selectedQuarter = quarterPicker.value;
@@ -721,25 +664,49 @@ function filterDataByRange(data, start, end) {
         updateChart(filteredData);
     }
 
-    // Filter data by specific date
-    function filterDataBySpecificDate(data, selectedDate) {
-        const selectedDateObj = new Date(selectedDate);
+    // Filter data by date range
+    function filterDataBySpecificDate(data) {
+        const startDate = startDatePicker.value ? new Date(startDatePicker.value) : null;
+        const endDate = endDatePicker.value ? new Date(endDatePicker.value) : null;
+        
+        if (!startDate && !endDate) {
+            return data; // Return all data if no dates selected
+        }
+
         const filteredLabels = [];
         const filteredValues = [];
 
-        console.log("=== DEBUGGING SPECIFIC DATE FILTER ===");
-        console.log("Selected Date:", selectedDate);
-        console.log("Selected Date Object:", selectedDateObj);
+        console.log("=== DEBUGGING DATE RANGE FILTER ===");
+        console.log("Start Date:", startDate);
+        console.log("End Date:", endDate);
         console.log("Available Labels:", data.historical.labels);
 
         data.historical.labels.forEach((label, index) => {
             const date = parseDate(label);
-            console.log(`Label: ${label}, Parsed Date: ${date}, Same Date: ${date ? isSameDate(date, selectedDateObj) : false}`);
             
-            if (date && isSameDate(date, selectedDateObj)) {
-                filteredLabels.push(label);
-                filteredValues.push(data.historical.values[index]);
-                console.log("✅ MATCH FOUND:", label);
+            if (date) {
+                const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                let isInRange = true;
+
+                if (startDate) {
+                    const normalizedStartDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+                    if (normalizedDate < normalizedStartDate) {
+                        isInRange = false;
+                    }
+                }
+
+                if (endDate && isInRange) {
+                    const normalizedEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+                    if (normalizedDate > normalizedEndDate) {
+                        isInRange = false;
+                    }
+                }
+
+                if (isInRange) {
+                    filteredLabels.push(label);
+                    filteredValues.push(data.historical.values[index]);
+                    console.log("✅ Date in range:", label);
+                }
             }
         });
 
@@ -754,15 +721,6 @@ function filterDataByRange(data, start, end) {
             },
             prediction: null // Remove predictions for filtered data
         };
-    }
-
-    // Helper function to check if two dates are the same day
-    function isSameDate(date1, date2) {
-        // Normalize both dates to avoid timezone issues
-        const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
-        const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
-        
-        return d1.getTime() === d2.getTime();
     }
 
     // Filter data by month
@@ -932,65 +890,63 @@ function filterDataByRange(data, start, end) {
         chart.update();
 
         // Update prediction info
-if (data.prediction) {
-    let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
-    data.prediction.labels.forEach((label, index) => {
-        const value = Math.round(data.prediction.values[index]);
-        let trend = "";
+        if (data.prediction) {
+            let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
+            data.prediction.labels.forEach((label, index) => {
+                const value = Math.round(data.prediction.values[index]);
+                let trend = "";
 
-        if (index > 0) {
-            if (data.prediction.values[index] > data.prediction.values[index - 1]) {
-                trend = "increased";
-            } else if (data.prediction.values[index] < data.prediction.values[index - 1]) {
-                trend = "decreased";
+                if (index > 0) {
+                    if (data.prediction.values[index] > data.prediction.values[index - 1]) {
+                        trend = "increased";
+                    } else if (data.prediction.values[index] < data.prediction.values[index - 1]) {
+                        trend = "decreased";
+                    }
+                }
+
+                predictionText += `📅 <strong>${label}</strong>: ${value}${trend ? " (" + trend + ")" : ""}<br>`;
+            });
+
+            // Regression formula
+            if (data.prediction.formula) {
+                predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
             }
+
+            // Narrative Interpretation
+            const labels = data.prediction.labels;
+            const values = data.prediction.values;
+            let interpretation = "";
+
+            if (values.length >= 2) {
+                const firstLabel = labels[0];
+                const lastLabel = labels[labels.length - 1];
+                const secondLastValue = Math.round(values[values.length - 2]);
+                const firstValue = Math.round(values[0]);
+                const lastValue = Math.round(values[values.length - 1]);
+
+                if (lastValue < firstValue) {
+                    interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">consistent decrease</span> 
+                        from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
+                        Based on the regression model, the forecast predicts population will decline to 
+                        <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
+                        and may reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
+                } else if (lastValue > firstValue) {
+                    interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">consistent increase</span> 
+                        from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
+                        Based on the regression model, the forecast predicts population will rise to 
+                        <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
+                        and reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
+                }
+            }
+
+            predictionText += `<br><br><strong>📝 Interpretation:</strong><br>${interpretation}`;
+            predictionInfo.innerHTML = predictionText;
+
+        } else {
+            predictionInfo.innerHTML = dateFilterType.value ? 
+                "📊 Filtered data - predictions not available for filtered views." : 
+                "❌ No prediction available for this dataset.";
         }
-
-        predictionText += `📅 <strong>${label}</strong>: ${value}${trend ? " (" + trend + ")" : ""}<br>`;
-    });
-
-    // 👇 Regression formula
-    if (data.prediction.formula) {
-        predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
-    }
-
-    // 👇 Narrative Interpretation
-    const labels = data.prediction.labels;
-    const values = data.prediction.values;
-    let interpretation = "";
-
-    if (values.length >= 2) {
-        const firstLabel = labels[0];
-        const lastLabel = labels[labels.length - 1];
-        const secondLastValue = Math.round(values[values.length - 2]);
-        const firstValue = Math.round(values[0]);
-        const lastValue = Math.round(values[values.length - 1]);
-
-        // 👇 Change “cases” to “population”
-        if (lastValue < firstValue) {
-            interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">consistent decrease</span> 
-                from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
-                Based on the regression model, the forecast predicts population will decline to 
-                <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
-                and may reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
-        } else if (lastValue > firstValue) {
-            interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">consistent increase</span> 
-                from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
-                Based on the regression model, the forecast predicts population will rise to 
-                <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
-                and reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
-        }
-    }
-
-    predictionText += `<br><br><strong>📝 Interpretation:</strong><br>${interpretation}`;
-    predictionInfo.innerHTML = predictionText;
-
-} else {
-    predictionInfo.innerHTML = dateFilterType.value ? 
-        "📊 Filtered data - predictions not available for filtered views." : 
-        "❌ No prediction available for this dataset.";
-}
-
     }
 
     initChart();
