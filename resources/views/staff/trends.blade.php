@@ -896,68 +896,68 @@ document.addEventListener("DOMContentLoaded", function() {
         chart.update();
 
         // Update prediction info
-        if (data.prediction) {
-            let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
-            data.prediction.labels.forEach((label, index) => {
-                const value = Math.round(data.prediction.values[index]);
-                let trend = "";
+       if (data.prediction) {
+    let predictionText = `<strong>🔮 Next Predictions:</strong><br>`;
+    data.prediction.labels.forEach((label, index) => {
+        const value = Math.round(data.prediction.values[index]);
+        let trend = "";
 
-                if (index > 0) {
-                    if (data.prediction.values[index] > data.prediction.values[index - 1]) {
-                        trend = "increased";
-                    } else if (data.prediction.values[index] < data.prediction.values[index - 1]) {
-                        trend = "decreased";
-                    }
-                }
-
-                predictionText += `📅 <strong>${label}</strong>: ${value}${trend ? " (" + trend + ")" : ""}<br>`;
-            });
-
-            // Regression formula
-            if (data.prediction.formula) {
-                predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
+        if (index > 0) {
+            if (data.prediction.values[index] > data.prediction.values[index - 1]) {
+                trend = "increased";
+            } else if (data.prediction.values[index] < data.prediction.values[index - 1]) {
+                trend = "decreased";
             }
+        }
 
-            // Narrative Interpretation
-            const labels = data.prediction.labels;
-            const values = data.prediction.values;
-            let interpretation = "";
+        predictionText += `📅 <strong>${label}</strong>: ${value}${trend ? " (" + trend + ")" : ""}<br>`;
+    });
 
-            if (values.length >= 2) {
-                const firstLabel = labels[0];
-                const lastLabel = labels[labels.length - 1];
-                const secondLastValue = Math.round(values[values.length - 2]);
-                const firstValue = Math.round(values[0]);
-                const lastValue = Math.round(values[values.length - 1]);
+    // Regression formula
+    if (data.prediction.formula) {
+        predictionText += `<br><strong>📐 Regression Formula:</strong> ${data.prediction.formula}`;
+    }
 
-                if (lastValue < firstValue) {
-                    interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">consistent decrease</span> 
-                        from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
-                        Based on the regression model, the forecast predicts population will decline to 
-                        <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
-                        and may reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
-                } else if (lastValue > firstValue) {
-                    interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">consistent increase</span> 
-                        from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
-                        Based on the regression model, the forecast predicts population will rise to 
-                        <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
-                        and reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
-                }
-            }else {
-    interpretation = `➖ The prediction indicates a <span style="color:gray;font-weight:bold;">stable or no significant change</span> 
-        between <strong>${firstLabel}</strong> and <strong>${lastLabel}</strong>. 
-        The values remain constant at <strong>${lastValue}</strong> across the forecasted period.`;
-}
+    // Narrative Interpretation
+    const labels = data.prediction.labels;
+    const values = data.prediction.values;
+    let interpretation = "";
 
-            predictionText += `<br><br><strong>📝 Interpretation:</strong><br>${interpretation}`;
-            predictionInfo.innerHTML = predictionText;
+    if (values.length >= 2) {
+        const firstLabel = labels[0];
+        const lastLabel = labels[labels.length - 1];
+        const secondLastValue = Math.round(values[values.length - 2]);
+        const firstValue = Math.round(values[0]);
+        const lastValue = Math.round(values[values.length - 1]);
 
+        if (lastValue < firstValue) {
+            interpretation = `📉 The prediction shows a <span style="color:red;font-weight:bold;">consistent decrease</span> 
+                from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
+                Based on the regression model, the forecast predicts population will decline to 
+                <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
+                and may reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
+        } else if (lastValue > firstValue) {
+            interpretation = `📈 The prediction shows a <span style="color:green;font-weight:bold;">consistent increase</span> 
+                from <strong>${firstLabel}</strong> to <strong>${lastLabel}</strong>. 
+                Based on the regression model, the forecast predicts population will rise to 
+                <strong>${secondLastValue}</strong> by <strong>${labels[labels.length - 2]}</strong> 
+                and reach <strong>${lastValue}</strong> by <strong>${lastLabel}</strong>.`;
         } else {
-            predictionInfo.innerHTML = dateFilterType.value ? 
-                "📊 Filtered data - predictions not available for filtered views." : 
-                "❌ No prediction available for this dataset.";
+            interpretation = `➖ The prediction indicates a <span style="color:gray;font-weight:bold;">stable or no significant change</span> 
+                between <strong>${firstLabel}</strong> and <strong>${lastLabel}</strong>. 
+                The values remain constant at <strong>${lastValue}</strong> across the forecasted period.`;
         }
     }
+
+    predictionText += `<br><br><strong>📝 Interpretation:</strong><br>${interpretation}`;
+    predictionInfo.innerHTML = predictionText;
+
+} else {
+    predictionInfo.innerHTML = dateFilterType.value ? 
+        "📊 Filtered data - predictions not available for filtered views." : 
+        "❌ No prediction available for this dataset.";
+}
+
 
     initChart();
     populateYearDropdowns();
