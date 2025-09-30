@@ -405,7 +405,7 @@
                                             <label class="date-filter-label">📅 Filter Type</label>
                                             <select id="dateFilterType" class="form-select">
                                                 <option value="">All Data</option>
-                                                <option value="specific">Date Range</option>
+                                                <option value="specific">Specific Date</option>
                                                 <option value="monthly">Monthly</option>
                                                 <option value="quarterly">Quarterly</option>
                                                 <option value="yearly">Yearly</option>
