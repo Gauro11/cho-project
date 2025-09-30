@@ -351,11 +351,12 @@
             .date-range-inputs {
                 flex-direction: column;
             }
-            .date-filter-label {
+            
+        }
+        .date-filter-label {
     color: gray !important;
     font-weight: 500; /* optional para medyo makapal pa rin */
 }
-        }
         
         
     </style>
