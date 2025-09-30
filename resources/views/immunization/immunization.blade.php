@@ -1462,41 +1462,56 @@
                         <div class="modern-modal-content modal-content">
                             <span class="modern-close close">&times;</span>
                             <h2>Add Immunization Record</h2>
-                            <form action="{{ route('immunization.store') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="date" class="modern-form-label form-label">📅 Date of
-                                        Immunization</label>
-                                    <input type="date" class="modern-form-control form-control" id="date"
-                                        name="date" required min="">
-                                </div>
+                            <form action="{{ route('vaccination.store') }}" method="POST">
+    @csrf
+    <div class="mb-3">
+        <label for="date" class="form-label">📅 Date</label>
+        <input type="date" class="form-control" id="date" name="date" required>
+    </div>
 
-                                <div class="mb-3">
-                                    <label for="vaccine_name" class="modern-form-label form-label">💊 Vaccine
-                                        Name</label>
-                                    <input type="text" class="modern-form-control form-control text-uppercase"
-                                        id="vaccine_name" name="vaccine_name" required
-                                        oninput="this.value = this.value.toUpperCase()">
-                                </div>
+    <div class="mb-3">
+        <label for="vaccine_name" class="form-label">💉 Vaccine Name</label>
+        <input list="vaccineOptions" class="form-control" id="vaccine_name" 
+               name="vaccine_name" placeholder="Select or type vaccine name" required>
+        <datalist id="vaccineOptions">
+            <option value="BCG (Tuberculosis)">
+            <option value="Hepatitis B Vaccine">
+            <option value="Pentavalent Vaccine (DPT-HepB-Hib)">
+            <option value="DTP (Diphtheria, Tetanus, Pertussis)">
+            <option value="Polio Vaccine (OPV/IPV)">
+            <option value="Measles-Containing Vaccine (MCV)">
+            <option value="MMR (Measles, Mumps, Rubella)">
+            <option value="Pneumococcal Conjugate Vaccine (PCV)">
+            <option value="Rotavirus Vaccine">
+            <option value="Influenza Vaccine">
+            <option value="Dengue Vaccine (Dengvaxia)">
+            <option value="COVID-19 Vaccine">
+            <option value="HPV Vaccine (Human Papillomavirus)">
+            <option value="Varicella Vaccine (Chickenpox)">
+            <option value="Tetanus Toxoid (TT)">
+        </datalist>
+    </div>
 
-                                <div class="mb-3">
-                                    <label for="male_vaccinated" class="modern-form-label form-label">👨 Male
-                                        Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control" id="male_vaccinated"
-                                        name="male_vaccinated" required min="0">
-                                </div>
+    <div class="mb-3">
+        <label for="male_count" class="form-label">👨 Male Count</label>
+        <input type="number" class="form-control" id="male_count" name="male_count" required>
+    </div>
 
-                                <div class="mb-3">
-                                    <label for="female_vaccinated" class="modern-form-label form-label">👩 Female
-                                        Vaccinated</label>
-                                    <input type="number" class="modern-form-control form-control"
-                                        id="female_vaccinated" name="female_vaccinated" required min="0">
-                                </div>
+    <div class="mb-3">
+        <label for="female_count" class="form-label">👩 Female Count</label>
+        <input type="number" class="form-control" id="female_count" name="female_count" required>
+    </div>
 
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="submit" class="modern-btn btn-primary">✅ Add Record</button>
-                                </div>
-                            </form>
+    <div class="mb-3">
+        <label for="total" class="form-label">📊 Total Vaccinated</label>
+        <input type="text" class="form-control" id="total" readonly>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">✅ Add Vaccination Record</button>
+    </div>
+</form>
+
                         </div>
                     </div>
 
