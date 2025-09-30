@@ -1216,42 +1216,50 @@
                             <div class="modal-content modern-modal-content">
                                 <span class="close modern-close">&times;</span>
                                 <h2>Add Mortality Records</h2>
-                                <form action="{{ route('mortality.store') }}" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="date" class="form-label modern-form-label">📅 Date</label>
-                                        <input type="date" class="form-control modern-form-control" id="date"
-                                            name="date" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="case_name" class="form-label modern-form-label">📋 Case Name</label>
-                                        <input type="text" class="form-control modern-form-control" id="case_name"
-                                            name="case_name" placeholder="Enter case name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="male_count" class="form-label modern-form-label">👨 Male
-                                            Count</label>
-                                        <input type="number" class="form-control modern-form-control" id="male_count"
-                                            name="male_count" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="female_count" class="form-label modern-form-label">👩 Female
-                                            Count</label>
-                                        <input type="number" class="form-control modern-form-control"
-                                            id="female_count" name="female_count" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="total" class="form-label modern-form-label">📊 Total
-                                            Cases</label>
-                                        <input type="text" class="form-control modern-form-control" id="total"
-                                            readonly>
-                                    </div>
+                               <form action="{{ route('mortality.store') }}" method="POST">
+    @csrf
+    <div class="mb-3">
+        <label for="date" class="form-label modern-form-label">📅 Date</label>
+        <input type="date" class="form-control modern-form-control" id="date"
+               name="date" required>
+    </div>
 
-                                    <div class="modal-footer modern-modal-footer">
-                                        <button type="submit" class="btn btn-primary modern-btn">✅ Add Mortality
-                                            Records</button>
-                                    </div>
-                                </form>
+    <div class="mb-3">
+        <label for="case_name" class="form-label modern-form-label">📋 Case Name</label>
+        <input list="caseOptions" class="form-control modern-form-control" 
+               id="case_name" name="case_name" placeholder="Select or type case name" required>
+        <datalist id="caseOptions">
+            <option value="Heart Disease">
+            <option value="Cancer">
+            <option value="Stroke">
+            <option value="Respiratory Disease">
+            <option value="Accident">
+            <option value="Other">
+        </datalist>
+    </div>
+
+    <div class="mb-3">
+        <label for="male_count" class="form-label modern-form-label">👨 Male Count</label>
+        <input type="number" class="form-control modern-form-control" id="male_count"
+               name="male_count" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="female_count" class="form-label modern-form-label">👩 Female Count</label>
+        <input type="number" class="form-control modern-form-control"
+               id="female_count" name="female_count" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="total" class="form-label modern-form-label">📊 Total Cases</label>
+        <input type="text" class="form-control modern-form-control" id="total" readonly>
+    </div>
+
+    <div class="modal-footer modern-modal-footer">
+        <button type="submit" class="btn btn-primary modern-btn">✅ Add Mortality Records</button>
+    </div>
+</form>
+
 
                             </div>
                         </div>
