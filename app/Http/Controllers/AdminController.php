@@ -345,20 +345,24 @@ public function update_year(Request $request, $id)
             }elseif ($usertype == 'admin') {
     try {
         $barangays = DB::table('population_statistics_management')->get();
-        $morbidityCases = DB::table('morbidity_mortality_management')->where('category', 'morbidity')->get();
-        $mortalityCases = DB::table('morbidity_mortality_management')->where('category', 'mortality')->get();
+        $morbidityCases = DB::table('morbidity_mortality_management')
+            ->where('category', 'morbidity')
+            ->get();
+        $mortalityCases = DB::table('morbidity_mortality_management')
+            ->where('category', 'mortality')
+            ->get();
         $vitalStatisticsData = DB::table('vital_statistics_management')->get();
         $immunizationData = DB::table('immunization_management')->get();
 
         return view('admin.index', compact(
-            'morbidityCases', 'barangays', 'mortalityCases', 'vitalStatisticsData', 'immunizationData'
+            'morbidityCases',
+            'barangays',
+            'mortalityCases',
+            'vitalStatisticsData',
+            'immunizationData'
         ));
     } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile()
-        ]);
+        dd($e->getMessage()); // This will show the real error
     }
 }
 
