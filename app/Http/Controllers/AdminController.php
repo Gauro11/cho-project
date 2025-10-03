@@ -23,42 +23,64 @@ class AdminController extends Controller
 
 {
 
-    public function fetchTrendData($category)
-    {
-        $data = [];
+   public function fetchTrendData($category)
+{
+    $data = [];
 
-        switch ($category) {
-            case 'morbidity':
-            case 'mortality':
-                $data = MorbidityMortalityManagement::where('category', $category)
-                    ->orderBy('date')
-                    ->get(['date', 'male_count', 'female_count']);
-                break;
-            case 'vital_statistics':
-                $data = VitalStatisticsManagement::orderBy('year')->get(['year', 'total_deaths']);
-                break;
-            case 'population_statistics':
-                $data = PopulationStatisticsManagement::orderBy('year')->get(['year', 'population']);
-                break;
-            case 'immunization':
-                $data = ImmunizationManagement::orderBy('date')->get(['date', 'male_vaccinated', 'female_vaccinated']);
-                break;
-        }
+    switch ($category) {
+        case 'morbidity':
+        case 'mortality':
+            $data = MorbidityMortalityManagement::where('category', $category)
+                ->orderBy('date')
+                ->get(['date', 'male_count', 'female_count']);
 
-        // Format data for Chart.js
-        $formattedData = [
-            'labels' => $data->pluck('date'),
-            'data' => $data->pluck('male_count')->merge($data->pluck('female_count'))
-        ];
+            $labels = $data->pluck('date');
+            $values = $data->pluck('male_count')->merge($data->pluck('female_count'));
+            break;
 
-        // Predict next 2 months (Basic Forecasting)
-        $predictedData = $this->predictTrend($data->pluck('male_count')->merge($data->pluck('female_count')));
+        case 'vital_statistics':
+            $data = VitalStatisticsManagement::orderBy('year')
+                ->get(['year', 'total_deaths']);
 
-        return response()->json([
-            'trendData' => $formattedData,
-            'predictedData' => $predictedData
-        ]);
+            $labels = $data->pluck('year');
+            $values = $data->pluck('total_deaths');
+            break;
+
+        case 'population_statistics':
+            $data = PopulationStatisticsManagement::orderBy('year')
+                ->get(['year', 'population']);
+
+            $labels = $data->pluck('year');
+            $values = $data->pluck('population');
+            break;
+
+        case 'immunization':
+            $data = ImmunizationManagement::orderBy('date')
+                ->get(['date', 'male_vaccinated', 'female_vaccinated']);
+
+            $labels = $data->pluck('date');
+            $values = $data->pluck('male_vaccinated')->merge($data->pluck('female_vaccinated'));
+            break;
+
+        default:
+            $labels = collect();
+            $values = collect();
     }
+
+    // Format data for Chart.js
+    $formattedData = [
+        'labels' => $labels,
+        'data' => $values
+    ];
+
+    // Predict next 2 months (Basic Forecasting)
+    $predictedData = $this->predictTrend($values);
+
+    return response()->json([
+        'trendData' => $formattedData,
+        'predictedData' => $predictedData
+    ]);
+}
 
     private function predictTrend($historicalData)
     {
