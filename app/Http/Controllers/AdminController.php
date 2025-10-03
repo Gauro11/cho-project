@@ -38,7 +38,7 @@ class AdminController extends Controller
                 $data = VitalStatisticsManagement::orderBy('year')->get(['year', 'total_deaths']);
                 break;
             case 'population_statistics':
-                $data = PopulationStatisticsManagement::orderBy('date')->get(['date', 'population']);
+                $data = PopulationStatisticsManagement::orderBy('year')->get(['year', 'population']);
                 break;
             case 'immunization':
                 $data = ImmunizationManagement::orderBy('date')->get(['date', 'male_vaccinated', 'female_vaccinated']);
