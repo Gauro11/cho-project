@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Models\MorbidityMortalityManagement;
+use App\Models\VitalStatisticsManagement;
+use App\Models\PopulationStatisticsManagement;
+use App\Models\ImmunizationManagement;
+
 
 
 
