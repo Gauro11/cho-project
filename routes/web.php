@@ -34,7 +34,7 @@ Route::get('/', function () {
 // Login routes with PreventBackHistory
 Route::middleware(['PreventBackHistory'])->group(function () {
     Route::get('/login', function () {
-        if (Auth::guard('home')->check()) {
+        if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.dashboard');
         }
         if (Auth::guard('staff')->check()) {
