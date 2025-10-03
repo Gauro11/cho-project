@@ -316,20 +316,23 @@ public function update_year(Request $request, $id)
                 $user = Auth::user();
                 return view('staff.index');
             }elseif ($usertype == 'admin') {
-    $barangays = DB::table('population_statistics_management')->get();
-    $morbidityCases = DB::table('morbidity_mortality_management')
-        ->where('category', 'morbidity')
-        ->get();
-    $mortalityCases = DB::table('morbidity_mortality_management')
-        ->where('category', 'mortality')
-        ->get();
-    $vitalStatisticsData = DB::table('vital_statistics_management')->get();
-    $immunizationData = DB::table('immunization_management')->get();
 
-    // Change this line ↓
-    return view('admin.analytics', compact('morbidityCases', 'barangays','mortalityCases', 'vitalStatisticsData', 'immunizationData'));            
-}           
-            
+                $barangays = DB::table('population_statistics_management')->get();
+
+
+                $morbidityCases = DB::table('morbidity_mortality_management')
+                ->where('category', 'morbidity')
+                ->get();
+        
+                $mortalityCases = DB::table('morbidity_mortality_management')
+                ->where('category', 'mortality')
+                ->get();
+                $vitalStatisticsData = DB::table('vital_statistics_management')->get();
+                $immunizationData = DB::table('immunization_management')->get();
+
+        
+                return view('admin.index', compact('morbidityCases', 'barangays','mortalityCases', 'vitalStatisticsData', 'immunizationData'));            
+            }
             elseif ($usertype == 'mortality and morbidity records manager') {
                 $morbidityCases = DB::table('morbidity_mortality_management')
                 ->where('category', 'morbidity')
