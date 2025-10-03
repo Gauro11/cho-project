@@ -190,20 +190,23 @@ Route::post('/morbidity/import', [MorbidityMortalityController::class, 'imports'
 
 
 
-Route::middleware(['auth', 'PreventBackHistory'])->group(function () {
-    // Admin dashboard
+Route::middleware(['auth:admin', 'PreventBackHistory'])->group(function () {
     Route::get('/home', [AdminController::class, 'index'])->name('admin.dashboard');
+});
 
-    // Staff dashboard + features
+Route::middleware(['auth:staff', 'PreventBackHistory'])->group(function () {
     Route::get('/staff', [StaffController::class, 'index'])->name('staff.dashboard');
+    
+    
     Route::get('/show_immunization', [ImmunizationController::class, 'show_immunization'])->name('immunization.show');
     Route::get('/show_vital_statistics', [VitalStatisticsController::class, 'show_vital_statistics']);
     Route::get('/show_population', [PopulationController::class, 'show_population']);
-    Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbidity']);
+     Route::get('/show_morbidity', [MorbidityMortalityController::class, 'show_morbidity']);
     Route::get('/show_mortality', [MorbidityMortalityController::class, 'show_mortality']);
+
+   
     Route::get('/show_trends', [AdminController::class, 'show_trends']);
 });
-
 
 
 
