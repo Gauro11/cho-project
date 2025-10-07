@@ -229,51 +229,47 @@
 
 <body>
     
-     <div class="wrapper">
-        @include('staff.sidebar')
-        
-        <div class="main">
-            @include('staff.header')
-            
-            <main class="content">
-                <div class="container-fluid p-0">
-                    <h1 class="h3 mb-3">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
+    </div>
 
-                    <div class="main-container">
-                        <!-- Stats Cards Row -->
-                        <div class="stats-row">
-                            <div class="stat-card">
-                                <div class="stat-label">Total Population</div>
-                                <div class="stat-value" id="stat-population">--</div>
-                                <svg class="stat-sparkline" viewBox="0 0 100 40">
-                                    <polyline points="0,30 20,25 40,20 60,15 80,10 100,8" 
-                                              fill="none" stroke="white" stroke-width="2"/>
-                                </svg>
-                            </div>
+    <div class="main-container">
+        <!-- Stats Cards Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Population</div>
+                <div class="stat-value" id="stat-population">--</div>
+                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                    <polyline points="0,30 20,25 40,20 60,15 80,10 100,8" 
+                              fill="none" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
 
-                            <div class="stat-card">
-                                <div class="stat-label">Total Live Birth</div>
-                                <div class="stat-value" id="stat-births">--</div>
-                                <svg class="stat-sparkline" viewBox="0 0 100 40">
-                                    <polyline points="0,25 20,22 40,20 60,18 80,15 100,12" 
-                                              fill="none" stroke="white" stroke-width="2"/>
-                                </svg>
-                            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Live Birth</div>
+                <div class="stat-value" id="stat-births">--</div>
+                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                    <polyline points="0,25 20,22 40,20 60,18 80,15 100,12" 
+                              fill="none" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
 
-                            <div class="stat-card">
-                                <div class="stat-label">Total Deaths</div>
-                                <div class="stat-value" id="stat-deaths">--</div>
-                                <svg class="stat-sparkline" viewBox="0 0 100 40">
-                                    <polyline points="0,20 20,22 40,25 60,23 80,28 100,30" 
-                                              fill="none" stroke="white" stroke-width="2"/>
-                                </svg>
-                            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Deaths</div>
+                <div class="stat-value" id="stat-deaths">--</div>
+                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                    <polyline points="0,20 20,22 40,25 60,23 80,28 100,30" 
+                              fill="none" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
 
-                            <div class="stat-card">
-                                <div class="stat-label">Admissions</div>
-                                <div class="stat-value" id="stat-admissions">--</div>
-                            </div>
-                        </div>
+            <div class="stat-card">
+                <div class="stat-label">Admissions</div>
+                <div class="stat-value" id="stat-admissions">--</div>
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                   
+                </div>
+            </div>
         </div>
 
         <!-- First Row of Cards -->
