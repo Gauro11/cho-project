@@ -308,7 +308,12 @@
 
 <body>
     
-        <h1 class="page-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
+        <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <h1 class="page-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
+                        <div class="d-flex gap-2" style="width: 100%; max-width: 400px;">
+
+                        </div>
+                    </div>
     
 
     <div class="main-container">
