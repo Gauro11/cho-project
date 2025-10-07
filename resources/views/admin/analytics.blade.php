@@ -21,16 +21,6 @@
             --border-color: #e2e8f0;
             --success-green: #10b981;
             --danger-red: #ef4444;
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            --warning-gradient: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
-            --dark-bg: #0f0f23;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --shadow-glow: 0 8px 32px rgba(31, 38, 135, 0.37);
         }
 
         * {
@@ -233,87 +223,15 @@
                 gap: 1rem;
                 align-items: flex-start;
             }
-            .page-title {
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            position: relative;
-            animation: fadeInUp 0.8s ease-out;
         }
-
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150px;
-            height: 3px;
-            background: var(--primary-gradient);
-            border-radius: 10px;
-        }
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 1.8rem;
-            }
-
-            .modern-modal-content {
-                width: 95%;
-                padding: 1.5rem;
-            }
-
-            .content {
-                padding: 1rem;
-            }
-        }
-
-        @media print {
-
-            .no-print,
-            .pagination {
-                display: none !important;
-            }
-        }
-          @media (max-width: 768px) {
-            .page-title {
-                font-size: 1.8rem;
-            }
-
-            .modal-content {
-                width: 95%;
-                padding: 1.5rem;
-            }
-
-            .content {
-                padding: 1rem;
-            }
-        }
-
-        @media print {
-
-            .no-print,
-            .pagination {
-                display: none !important;
-            }
-        }
-    }
-
     </style>
 </head>
 
 <body>
     
-        <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <h1 class="page-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
-                        <div class="d-flex gap-2" style="width: 100%; max-width: 400px;">
-
-                        </div>
-                    </div>
+        <div class="dashboard-header">
+        <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
+    </div>
     
 
     <div class="main-container">
