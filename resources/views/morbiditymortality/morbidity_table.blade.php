@@ -89,61 +89,58 @@ function sortTable2(colIndex, type = 'string') {
                         </tbody>
                     </table>
 
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <p class="mb-0" style="color: white !important;">
-                            Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} results
-                        </p>
-
+                    <div class="pagination-container mt-3 no-print">
+                        <p>Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} results</p>
                         <nav>
-                           <div class="pagination-container mt-3 no-print">
-    <p>Showing {{ $data->firstItem() }} to {{ $data->lastItem() }} of {{ $data->total() }} results</p>
-    <nav>
-        <ul class="pagination custom-pagination">
-            {{-- Previous Button --}}
-            @if ($data->onFirstPage())
-                <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
-            @else
-                <li class="page-item">
-                    <a class="page-link" href="{{ $data->appends(request()->except('page'))->previousPageUrl() }}" rel="prev">&laquo; Previous</a>
-                </li>
-            @endif
+                            <ul class="pagination custom-pagination">
+                                @if ($data->onFirstPage())
+                                    <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $data->appends(['search' => request()->search])->previousPageUrl() }}"
+                                            rel="prev">&laquo; Previous</a>
+                                    </li>
+                                @endif
 
-            {{-- First Page Link --}}
-            @if ($start > 1)
-                <li class="page-item"><a class="page-link" href="{{ $data->appends(request()->except('page'))->url(1) }}">1</a></li>
-                @if ($start > 2)
-                    <li class="page-item disabled"><span class="page-link">...</span></li>
-                @endif
-            @endif
+                                @if ($start > 1)
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $data->appends(['search' => request()->search])->url(1) }}">1</a></li>
+                                    @if ($start > 2)
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+                                @endif
 
-            {{-- Page Number Links --}}
-            @for ($i = $start; $i <= $end; $i++)
-                <li class="page-item {{ $i == $data->currentPage() ? 'active' : '' }}">
-                    <a class="page-link" href="{{ $data->appends(request()->except('page'))->url($i) }}">{{ $i }}</a>
-                </li>
-            @endfor
+                                @for ($i = $start; $i <= $end; $i++)
+                                    <li class="page-item {{ $i == $data->currentPage() ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $data->appends(['search' => request()->search])->url($i) }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
 
-            {{-- Last Page Link --}}
-            @if ($end < $data->lastPage())
-                @if ($end < $data->lastPage() - 1)
-                    <li class="page-item disabled"><span class="page-link">...</span></li>
-                @endif
-                <li class="page-item">
-                    <a class="page-link" href="{{ $data->appends(request()->except('page'))->url($data->lastPage()) }}">{{ $data->lastPage() }}</a>
-                </li>
-            @endif
+                                @if ($end < $data->lastPage())
+                                    @if ($end < $data->lastPage() - 1)
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $data->appends(['search' => request()->search])->url($data->lastPage()) }}">{{ $data->lastPage() }}</a>
+                                    </li>
+                                @endif
 
-            {{-- Next Button --}}
-            @if ($data->hasMorePages())
-                <li class="page-item">
-                    <a class="page-link" href="{{ $data->appends(request()->except('page'))->nextPageUrl() }}" rel="next">Next &raquo;</a>
-                </li>
-            @else
-                <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
-            @endif
-        </ul>
-    </nav>
-</div>
+                                @if ($data->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $data->appends(['search' => request()->search])->nextPageUrl() }}"
+                                            rel="next">Next &raquo;</a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                                @endif
+                            </ul>
+                        </nav>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
 
 @else
     <p class="text-center mt-4" style="color: #000957; font-size: 18px;">No data available.</p>
