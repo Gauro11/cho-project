@@ -1825,32 +1825,43 @@ document.addEventListener("DOMContentLoaded", function () {
                     </script>
 
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                    <script>
-                        document.getElementById("searchInput").addEventListener("input", function() {
-                            let searchValue = this.value.toLowerCase();
-                            let rows = document.querySelectorAll("#dataTable tbody tr");
+<script>
+    document.getElementById("searchInput").addEventListener("input", function () {
+        let searchValue = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#dataTable tbody tr");
 
-                            rows.forEach(row => {
-                                let cell = row.querySelector("td");
-                                let text = cell.innerText;
-                                let lowerText = text.toLowerCase();
+        rows.forEach(row => {
+            let cells = row.querySelectorAll("td");
+            let found = false;
 
-                                if (searchValue === "" || lowerText.includes(searchValue)) {
-                                    row.style.display = "";
+            cells.forEach(cell => {
+                let text = cell.innerText;
+                let lowerText = text.toLowerCase();
 
-                                    cell.innerHTML = text;
+                // Reset cell content before highlighting
+                cell.innerHTML = text;
 
-                                    // Apply highlighting
-                                    if (searchValue !== "") {
-                                        let regex = new RegExp(`(${searchValue})`, "gi");
-                                        cell.innerHTML = text.replace(regex, `<span class="highlight">$1</span>`);
-                                    }
-                                } else {
-                                    row.style.display = "none";
-                                }
-                            });
-                        });
-                    </script>
+                if (searchValue !== "" && lowerText.includes(searchValue)) {
+                    found = true;
+
+                    // Highlight matching part
+                    let regex = new RegExp(`(${searchValue})`, "gi");
+                    cell.innerHTML = text.replace(regex, `<span class="highlight">$1</span>`);
+                }
+            });
+
+            // Show/hide row based on match
+            if (searchValue === "" || found) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
+
+
+
 
                     <script>
                         document.addEventListener("DOMContentLoaded", function() {
