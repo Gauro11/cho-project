@@ -670,7 +670,7 @@ document.addEventListener("DOMContentLoaded", function() {
         updateChart(filteredData);
     }
 
-    // Filter data by date range
+    
    // Replace the filterDataBySpecificDate function with this updated version:
 
 function filterDataBySpecificDate(data) {
@@ -758,13 +758,13 @@ function generatePrediction(labels, values) {
     const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
 
-    // Generate predictions for next 3 periods
+    // Generate predictions for next 2 months
     const predictionLabels = [];
     const predictionValues = [];
     const lastDate = parseDate(labels[labels.length - 1]);
 
     if (lastDate) {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 2; i++) {
             const futureDate = new Date(lastDate);
             futureDate.setMonth(futureDate.getMonth() + i);
             
@@ -784,7 +784,6 @@ function generatePrediction(labels, values) {
         formula: formula
     };
 }
-
     // Filter data by month
     function filterDataByMonth(data, selectedMonth) {
         const [selectedYear, selectedMonthNum] = selectedMonth.split('-');
