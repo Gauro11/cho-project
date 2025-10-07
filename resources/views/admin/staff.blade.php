@@ -971,32 +971,49 @@ document.addEventListener("DOMContentLoaded", function () {
                     <!-- JavaScript for Search Functionality -->
                     <script>
                         document.getElementById("searchInput").addEventListener("input", function () {
-                            let searchValue = this.value.toLowerCase();
-                            let rows = document.querySelectorAll("#dataTable tbody tr");
+    let searchValue = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#dataTable tbody tr");
 
-                            rows.forEach(row => {
-                                let found = false;
+    rows.forEach(row => {
+        let found = false;
 
-                                row.querySelectorAll("td").forEach(cell => {
-                                    let originalText = cell.innerText;
-                                    let lowerText = originalText.toLowerCase();
+       
+        const searchableCells = row.querySelectorAll("td:not(:last-child)");
 
-                                    if (lowerText.includes(searchValue)) {
-                                        found = true;
-                                        let regex = new RegExp(`(${searchValue})`, "gi");
-                                        
-                                        cell.innerHTML = originalText.replace(
-                                            regex,
-                                            `<span class="highlight" style="background-color: yellow; font-weight: bold;">$1</span>`
-                                        );
-                                    } else {
-                                        cell.innerHTML = originalText;
-                                    }
-                                });
+        searchableCells.forEach(cell => {
+            // Skip if cell contains buttons or form elements
+            if (cell.querySelector('button') || cell.querySelector('input') || cell.querySelector('select')) {
+                return;
+            }
 
-                                row.style.display = found ? "" : "none";
-                            });
-                        });
+            let originalText = cell.textContent || cell.innerText;
+            let lowerText = originalText.toLowerCase();
+
+            // Store original text if not already stored
+            if (!cell.hasAttribute('data-original')) {
+                cell.setAttribute('data-original', originalText);
+            }
+
+            // Check if search matches
+            if (searchValue !== "" && lowerText.includes(searchValue)) {
+                found = true;
+                
+                // Highlight matching text
+                let regex = new RegExp(`(${searchValue})`, "gi");
+                let highlightedText = originalText.replace(regex, `<span class="highlight">$1</span>`);
+                cell.innerHTML = highlightedText;
+            } else {
+                // Restore original text if no match or search is empty
+                if (cell.hasAttribute('data-original')) {
+                    cell.textContent = cell.getAttribute('data-original');
+                }
+            }
+        });
+
+        // Show or hide row based on match
+        row.style.display = (searchValue === "" || found) ? "" : "none";
+    });
+});
                     </script>
 
                     <!-- Print Table Script -->
