@@ -100,10 +100,10 @@ class AdminController extends Controller
     public function create_staff(Request $request)
     {
         $validatedData = $request->validate([
-    'staff_id' => ['required', 'unique:users,staff_id', 'regex:/^\d{2}-\d{5}$/'],
-    'first_name' => 'required|string',
-    'last_name' => 'required|string',
-]);
+            'staff_id' => 'required|unique:users,staff_id',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+        ]);
     
         if (!$validatedData) {
             return redirect()->back()->withErrors($validatedData)->withInput();
