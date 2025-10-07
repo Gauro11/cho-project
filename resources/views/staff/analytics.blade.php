@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Health Office Dashboard</title>
+    @include('staff.css')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -228,164 +229,179 @@
 </head>
 
 <body>
-    
-    <div class="dashboard-header">
-        <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
-    </div>
+    <div class="wrapper">
+        @include('staff.sidebar')
+        
+        <div class="main">
+            @include('staff.header')
+            
+            <main class="content">
+                <div class="container-fluid p-0">
+                    <div class="dashboard-header">
+                        <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
+                    </div>
 
-    <div class="main-container">
-        <!-- Stats Cards Row -->
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-label">Total Population</div>
-                <div class="stat-value" id="stat-population">--</div>
-                <svg class="stat-sparkline" viewBox="0 0 100 40">
-                    <polyline points="0,30 20,25 40,20 60,15 80,10 100,8" 
-                              fill="none" stroke="white" stroke-width="2"/>
-                </svg>
-            </div>
+                    <div class="main-container">
+                        <!-- Stats Cards Row -->
+                        <div class="stats-row">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Population</div>
+                                <div class="stat-value" id="stat-population">--</div>
+                                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                                    <polyline points="0,30 20,25 40,20 60,15 80,10 100,8" 
+                                              fill="none" stroke="white" stroke-width="2"/>
+                                </svg>
+                            </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Total Live Birth</div>
-                <div class="stat-value" id="stat-births">--</div>
-                <svg class="stat-sparkline" viewBox="0 0 100 40">
-                    <polyline points="0,25 20,22 40,20 60,18 80,15 100,12" 
-                              fill="none" stroke="white" stroke-width="2"/>
-                </svg>
-            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Total Live Birth</div>
+                                <div class="stat-value" id="stat-births">--</div>
+                                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                                    <polyline points="0,25 20,22 40,20 60,18 80,15 100,12" 
+                                              fill="none" stroke="white" stroke-width="2"/>
+                                </svg>
+                            </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Total Deaths</div>
-                <div class="stat-value" id="stat-deaths">--</div>
-                <svg class="stat-sparkline" viewBox="0 0 100 40">
-                    <polyline points="0,20 20,22 40,25 60,23 80,28 100,30" 
-                              fill="none" stroke="white" stroke-width="2"/>
-                </svg>
-            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Total Deaths</div>
+                                <div class="stat-value" id="stat-deaths">--</div>
+                                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                                    <polyline points="0,20 20,22 40,25 60,23 80,28 100,30" 
+                                              fill="none" stroke="white" stroke-width="2"/>
+                                </svg>
+                            </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Admissions</div>
-                <div class="stat-value" id="stat-admissions">--</div>
-                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
-                   
-                </div>
-            </div>
-        </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Admissions</div>
+                                <div class="stat-value" id="stat-admissions">--</div>
+                                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                                   
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- First Row of Cards -->
-        <div class="content-grid">
-            <div class="card-modern map-card">
-                <div class="card-header-clean">
-                    <h3 class="card-title-clean">Dagupan City Map</h3>
-                </div>
-                <div class="card-body-clean" style="padding: 0;">
-                    <div class="map-image-wrapper" id="map-container">
-                        <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
-                             alt="Dagupan City Map">
-                        <div class="map-overlay" id="population-text">
-                            City of Dagupan / Loading...
+                        <!-- First Row of Cards -->
+                        <div class="content-grid">
+                            <div class="card-modern map-card">
+                                <div class="card-header-clean">
+                                    <h3 class="card-title-clean">Dagupan City Map</h3>
+                                </div>
+                                <div class="card-body-clean" style="padding: 0;">
+                                    <div class="map-image-wrapper" id="map-container">
+                                        <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
+                                             alt="Dagupan City Map">
+                                        <div class="map-overlay" id="population-text">
+                                            City of Dagupan / Loading...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-modern population-card">
+                                <div class="card-header-clean">
+                                    <h3 class="card-title-clean">Population per Barangay</h3>
+                                    
+                                </div>
+                                <div class="card-body-clean">
+                                    <div class="chart-wrapper">
+                                        <canvas id="populationChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-modern immunization-card">
+                                <div class="card-header-clean">
+                                    <h3 class="card-title-clean">Immunization Statistics</h3>
+                                </div>
+                                <div class="card-body-clean">
+                                    <div class="chart-wrapper">
+                                        <canvas id="immunizationChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Second Row of Cards -->
+                        <div class="content-grid">
+                            <div class="card-modern half-width-card">
+                                <div class="card-header-clean">
+                                    <h3 class="card-title-clean">Morbidity Statistics</h3>
+                                    <a href="#" class="view-all-link">View All</a>
+                                </div>
+                                <div class="card-body-clean">
+                                    <div class="chart-wrapper">
+                                        <canvas id="morbidityCasesChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-modern half-width-card">
+                                <div class="card-header-clean">
+                                    <h3 class="card-title-clean">Mortality Statistics</h3>
+                                    <a href="#" class="view-all-link">View All</a>
+                                </div>
+                                <div class="card-body-clean">
+                                    <div class="chart-wrapper">
+                                        <canvas id="mortalityCasesChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Birth and Death Rate Card -->
+                        <div class="content-grid">
+                            <div class="card-modern full-width-card">
+                                <div class="card-header-clean">
+                                    <h3 class="card-title-clean">Birth and Death Rate</h3>
+                                    <a href="#" class="view-all-link">View All</a>
+                                </div>
+                                <div class="card-body-clean">
+                                    <div class="chart-wrapper">
+                                        <canvas id="birthDeathChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal (unchanged) -->
+                    <div class="modal fade" id="barangayModal" tabindex="-1" aria-labelledby="barangayModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-xl">
+                            <div class="modal-content shadow-lg border-0 rounded-4">
+                                <div class="modal-header bg-primary text-white rounded-top-4">
+                                    <h5 class="modal-title fw-bold" id="barangayModalLabel">Barangay Population Statistics</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle text-center" id="population-table">
+                                            <thead class="table-primary">
+                                                <tr>
+                                                    <th>Barangay</th>
+                                                    <th>Population</th>
+                                                    <th>year</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Filled dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
 
-            <div class="card-modern population-card">
-                <div class="card-header-clean">
-                    <h3 class="card-title-clean">Population per Barangay</h3>
-                    
-                </div>
-                <div class="card-body-clean">
-                    <div class="chart-wrapper">
-                        <canvas id="populationChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-modern immunization-card">
-                <div class="card-header-clean">
-                    <h3 class="card-title-clean">Immunization Statistics</h3>
-                </div>
-                <div class="card-body-clean">
-                    <div class="chart-wrapper">
-                        <canvas id="immunizationChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Second Row of Cards -->
-        <div class="content-grid">
-            <div class="card-modern half-width-card">
-                <div class="card-header-clean">
-                    <h3 class="card-title-clean">Morbidity Statistics</h3>
-                    <a href="#" class="view-all-link">View All</a>
-                </div>
-                <div class="card-body-clean">
-                    <div class="chart-wrapper">
-                        <canvas id="morbidityCasesChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-modern half-width-card">
-                <div class="card-header-clean">
-                    <h3 class="card-title-clean">Mortality Statistics</h3>
-                    <a href="#" class="view-all-link">View All</a>
-                </div>
-                <div class="card-body-clean">
-                    <div class="chart-wrapper">
-                        <canvas id="mortalityCasesChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Birth and Death Rate Card -->
-        <div class="content-grid">
-            <div class="card-modern full-width-card">
-                <div class="card-header-clean">
-                    <h3 class="card-title-clean">Birth and Death Rate</h3>
-                    <a href="#" class="view-all-link">View All</a>
-                </div>
-                <div class="card-body-clean">
-                    <div class="chart-wrapper">
-                        <canvas id="birthDeathChart"></canvas>
-                    </div>
-                </div>
-            </div>
+            @include('staff.footer')
         </div>
     </div>
 
-    <!-- Modal (unchanged) -->
-    <div class="modal fade" id="barangayModal" tabindex="-1" aria-labelledby="barangayModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content shadow-lg border-0 rounded-4">
-                <div class="modal-header bg-primary text-white rounded-top-4">
-                    <h5 class="modal-title fw-bold" id="barangayModalLabel">Barangay Population Statistics</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle text-center" id="population-table">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th>Barangay</th>
-                                    <th>Population</th>
-                                    <th>year</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Filled dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('staff.js')
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
@@ -574,6 +590,9 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        feather.replace();
+    </script>
 </body>
 
 </html>
