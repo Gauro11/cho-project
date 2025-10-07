@@ -309,7 +309,7 @@
 }
 
 .custom-pagination .page-link {
-    color: #4f46e5 !important;
+    color: white !important;
     background: rgba(255, 255, 255, 1); /* Fully white background */
     backdrop-filter: blur(10px);
     border: 1px solid rgba(79, 70, 229, 0.2);
@@ -331,7 +331,7 @@
 
 .custom-pagination .page-item.active .page-link {
     background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    border-color: #4f46e5;
+    border-color: white;
     color: white !important;
     box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
 }
