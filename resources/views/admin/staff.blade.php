@@ -37,7 +37,7 @@
         }
 
         /* Modern Page Title */
-        .h3 {
+        .page-title {
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -45,15 +45,17 @@
             font-weight: 700;
             font-size: 2.5rem;
             margin-bottom: 2rem;
+            text-align: center;
             position: relative;
             animation: fadeInUp 0.8s ease-out;
         }
 
-        .h3::after {
+        .page-title::after {
             content: '';
             position: absolute;
             bottom: -10px;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 150px;
             height: 3px;
             background: var(--primary-gradient);
@@ -61,19 +63,20 @@
         }
 
         /* Modern Glass Cards */
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        .glass-card {
+            background: var(--primary-gradient);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            box-shadow: var(--shadow-glow);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
+            overflow: visible;
             position: relative;
             margin-bottom: 2rem;
+            z-index: 1;
         }
 
-        .card::before {
+        .glass-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -84,76 +87,24 @@
             transition: left 0.5s;
         }
 
-        .card:hover::before {
+        .glass-card:hover::before {
             left: 100%;
         }
 
-        .card:hover {
+        .glass-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(31, 38, 135, 0.5);
         }
 
-        /* Modern Card Body for the top card */
+        /* Modern Card Body */
         .card-body {
             padding: 2rem;
             background: transparent;
-            overflow: visible !important;
-        }
-
-        .card-body.d-flex {
-            background: var(--primary-gradient);
-            color: white;
-            border-radius: 0;
-        }
-
-        /* Icon hover effects */
-        .card-body i {
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 8px;
-            border-radius: 8px;
-        }
-
-        .card-body i:hover {
-            color: #facc15;
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
-        }
-
-        /* Modern Input Group */
-        .input-group {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-        }
-
-        .input-group .input-group-text {
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-        }
-
-        .input-group input {
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            padding: 12px 20px;
-        }
-
-        .input-group input:focus {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            box-shadow: none;
-        }
-
-        .input-group input::placeholder {
-            color: var(--text-secondary);
+            overflow: visible;
         }
 
         /* Modern Buttons */
-        .btn-primary {
+        .modern-btn {
             background: var(--primary-gradient);
             border: none;
             border-radius: 15px;
@@ -164,9 +115,13 @@
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-primary::before {
+        .modern-btn::before {
             content: '';
             position: absolute;
             top: 0;
@@ -177,26 +132,78 @@
             transition: left 0.5s;
         }
 
-        .btn-primary:hover::before {
+        .modern-btn:hover::before {
             left: 100%;
         }
 
-        .btn-primary:hover {
-            background: var(--primary-gradient);
+        .modern-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
             color: white;
+            text-decoration: none;
         }
 
-        /* Updated Modern Table Styles */
-        .table {
-            margin: 0;
+        .modern-btn.btn-success {
+            background: var(--success-gradient);
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+        }
+
+        .modern-btn.btn-success:hover {
+            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.5);
+        }
+
+        .modern-btn.btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .modern-btn.btn-primary {
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Modern Input Group */
+        .modern-input-group {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .modern-input-group .input-group-text {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+        }
+
+        .modern-input-group input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            padding: 12px 20px;
+        }
+
+        .modern-input-group input:focus {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            box-shadow: none;
+        }
+
+        .modern-input-group input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Modern Table Styles */
+        .modern-table {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             overflow: hidden;
-            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .table thead th {
+        .modern-table thead th {
             background: linear-gradient(135deg, #1f2937, #374151);
             color: white;
             font-weight: 600;
@@ -205,12 +212,9 @@
             letter-spacing: 1px;
             padding: 20px 15px;
             border: none;
-            position: sticky;
-            top: 0;
-            z-index: 10;
         }
 
-        .table tbody td {
+        .modern-table tbody td {
             padding: 18px 15px;
             vertical-align: middle;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -219,62 +223,77 @@
             background: white;
         }
 
-        .table tbody tr {
+        .modern-table tbody tr {
             background: white;
             transition: all 0.3s ease;
         }
 
-        .table tbody tr:hover {
+        .modern-table tbody tr:hover {
             background: linear-gradient(135deg, rgba(79, 70, 229, 0.03), rgba(124, 58, 237, 0.03));
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        /* Updated Button Styles */
-        .btn {
-            border-radius: 10px;
-            font-weight: 500;
-            padding: 8px 16px;
-            font-size: 13px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
+        /* Action Buttons */
         .btn-warning {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .btn-warning:hover {
             background: linear-gradient(135deg, #d97706, #b45309);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .btn-danger {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .btn-danger:hover {
             background: linear-gradient(135deg, #dc2626, #b91c1c);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 0.875rem;
-            border-radius: 10px;
-            margin-right: 5px;
-            transition: all 0.3s ease;
+        /* Modern Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
         }
 
-        /* Updated Modern Pagination */
+        .pagination-container p {
+            margin: 0;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
         .custom-pagination {
             display: flex;
             list-style: none;
@@ -320,48 +339,6 @@
             color: rgba(107, 114, 128, 0.6) !important;
             cursor: not-allowed;
             box-shadow: none;
-        }
-
-        /* Updated Pagination Container */
-        .pagination-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 20px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-top: 20px;
-        }
-
-        .pagination-container p {
-            margin: 0;
-            color: white;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        /* Table Container for better scrolling */
-        .table-container {
-            max-height: 600px;
-            overflow-y: auto;
-            border-radius: 20px;
-        }
-
-        .table-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .table-container::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .table-container::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border-radius: 10px;
         }
 
         /* Modern Modal */
@@ -496,55 +473,6 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Modern Alert System */
-        .modern-alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 1rem 1.5rem;
-            color: var(--text-primary);
-            box-shadow: var(--shadow-glow);
-            z-index: 10001;
-            animation: slideInRight 0.3s ease-out;
-            max-width: 400px;
-        }
-
-        .modern-alert.success {
-            border-left: 4px solid #10b981;
-        }
-
-        .modern-alert.error {
-            border-left: 4px solid #ef4444;
-        }
-
-        .modern-alert.warning {
-            border-left: 4px solid #f59e0b;
-        }
-
         /* No data message */
         .no-data-message {
             background: rgba(255, 255, 255, 0.9);
@@ -563,9 +491,16 @@
             font-weight: 500;
         }
 
+        /* Separator */
+        .separator {
+            color: var(--text-secondary);
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
         /* Media Queries */
         @media (max-width: 768px) {
-            .h3 {
+            .page-title {
                 font-size: 1.8rem;
             }
 
@@ -588,15 +523,11 @@
                 gap: 1rem;
             }
 
-            .table-responsive {
-                border-radius: 16px;
-            }
-            
             .pagination-container {
                 flex-direction: column;
                 gap: 15px;
             }
-            
+
             .custom-pagination {
                 justify-content: center;
             }
@@ -609,18 +540,7 @@
             }
         }
 
-        /* Input rows for forms */
-        .input-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 4%;
-        }
-
-        .half-width {
-            width: 48%;
-        }
-
-        /* Additional modern effects */
+        /* Wrapper positioning */
         .wrapper {
             position: relative;
             z-index: auto;
@@ -629,31 +549,6 @@
         .main {
             position: relative;
             z-index: auto;
-        }
-
-        /* Ensure proper stacking context */
-        .card {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Text color for results info - Updated */
-        .d-flex.justify-content-between.align-items-center.mt-3.px-3 p {
-            color: white;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .stats-badge {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 8px 16px;
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            margin-left: 10px;
         }
     </style>
 </head>
@@ -668,27 +563,36 @@
                 <div class="container-fluid p-0">
 
                     <div class="mb-3 d-flex justify-content-between align-items-center">
-                        <h1 class="h3">Staff Management</h1>
+                        <h1 class="page-title">Staff Management</h1>
                     </div>
 
+                    <br><br>
+
                     <div class="col-12 col-lg-12 fade-in-up">
-                        <div class="card">
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-3">
-                                    <i id="openModal" data-feather="plus"></i>
-                                    <span>|</span>
-                                    <div class="input-group">
+                        <div class="glass-card">
+                            <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <button class="modern-btn btn-success btn-sm" id="openModal">
+                                        ➕ Add New Staff
+                                    </button>
+
+                                    <span class="separator">|</span>
+
+                                    <div class="modern-input-group input-group" style="width: 300px;">
                                         <span class="input-group-text"><i data-feather="search"></i></span>
-                                        <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+                                        <input type="text" id="searchInput" class="form-control" placeholder="Search staff...">
                                     </div>
-                                    <span>|</span>
+
+                                    <span class="separator">|</span>
                                 </div>
 
-                                <div class="d-flex align-items-center gap-3">
-                                    <i data-feather="printer"></i>
-                                    <i data-feather="download"></i>
-                                    <span>|</span>
-                                    <i data-feather="maximize-2"></i>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <button id="printTable" class="modern-btn btn-primary btn-sm">
+                                        <i data-feather="printer"></i> Print
+                                    </button>
+                                    <button id="downloadBtn" class="modern-btn btn-secondary btn-sm">
+                                        <i data-feather="download"></i> Download
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -697,8 +601,8 @@
                     <!-- Staff Table -->
                     <div class="row fade-in-up">
                         <div class="col-12 col-lg-12 col-xxl-12 d-flex">
-                            <div class="card flex-fill" id="dataTable">
-                                <table class="table table-hover my-0">
+                            <div class="glass-card flex-fill" style="width: 100%;">
+                                <table class="table modern-table my-0" id="dataTable">
                                     <thead>
                                         <tr>
                                             <th>Staff ID</th>
@@ -732,19 +636,21 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="5" class="text-center">No data found.</td>
+                                                <td colspan="5">
+                                                    <div class="no-data-message">
+                                                        <p>No staff data found.</p>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
 
-                                <div class="d-flex justify-content-between align-items-center mt-3 px-3">
-                                    <!-- Showing X to Y of Z results -->
+                                <div class="pagination-container">
                                     <p class="mb-0">
                                         Showing {{ $staff->firstItem() }} to {{ $staff->lastItem() }} of {{ $staff->total() }} results
                                     </p>
 
-                                    <!-- Pagination Links -->
                                     <nav>
                                         <ul class="pagination custom-pagination">
                                             @if ($staff->onFirstPage())
@@ -791,8 +697,6 @@
                             <h2>Add New Staff</h2>
                             <form action="{{ route('staff.store') }}" method="POST">
                                 @csrf
-                                <input type="hidden" id="edit_staff_id" name="id">
-
                                 <div class="mb-3">
                                     <label for="staff_id" class="form-label">Staff ID</label>
                                     <input type="text" class="form-control" id="staff_id" name="staff_id" required>
@@ -807,7 +711,7 @@
                                 </div>
 
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Add New Staff</button>
+                                    <button type="submit" class="modern-btn btn-primary">Add New Staff</button>
                                 </div>
                             </form>
                         </div>
@@ -832,7 +736,7 @@
                                 </div>
                                
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Update Staff</button>
+                                    <button type="submit" class="modern-btn btn-primary">Update Staff</button>
                                 </div>
                             </form>
                         </div>
@@ -843,19 +747,16 @@
                         document.addEventListener("DOMContentLoaded", function () {
                             var modal = document.getElementById("customModal");
                             var openModalBtn = document.getElementById("openModal");
-                            var closeModalBtn = document.querySelector(".close");
+                            var closeModalBtn = document.querySelector("#customModal .close");
 
-                            // Open Modal
                             openModalBtn.addEventListener("click", function () {
                                 modal.style.display = "flex";
                             });
 
-                            // Close Modal
                             closeModalBtn.addEventListener("click", function () {
                                 modal.style.display = "none";
                             });
 
-                            // Close if clicked outside the modal
                             window.addEventListener("click", function (event) {
                                 if (event.target === modal) {
                                     modal.style.display = "none";
@@ -867,7 +768,6 @@
                     <!-- JavaScript for Edit Modal -->
                    <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Open Edit Modal
     document.querySelectorAll(".edit-btn").forEach(button => {
         button.addEventListener("click", function () {
             let staffId = this.dataset.id;  
@@ -876,27 +776,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Set the hidden input field for ID
             document.getElementById("edit_staff_id").value = staffId;
-
-            // ✅ FIX: Use full correct path with /public
             document.getElementById("editStaffForm").action = `/public/staff/update/${staffId}`;
-
-            // Populate the form fields
             document.getElementById("edit_first_name").value = this.dataset.first_name;
             document.getElementById("edit_last_name").value = this.dataset.last_name;
 
-            // Show the modal
             document.getElementById("editModal").style.display = "flex";
         });
     });
 
-    // Close button event listener
     document.getElementById("closeModal").addEventListener("click", function () {
         document.getElementById("editModal").style.display = "none";
     });
 
-    // Close modal when clicking outside of it
     window.addEventListener("click", function (event) {
         let modal = document.getElementById("editModal");
         if (event.target === modal) {
@@ -906,16 +798,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-
                     <!-- JavaScript for Delete Functionality -->
                     <script>
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".delete-btn").forEach(button => {
         button.addEventListener("click", function () {
             const dataId = this.dataset.id;
-            const tableRow = this.closest("tr"); // Save reference to the row
+            const tableRow = this.closest("tr");
 
-            // Create modern confirmation modal
             const confirmOverlay = document.createElement('div');
             confirmOverlay.style.cssText = `
                 position: fixed;
@@ -971,7 +861,6 @@ document.addEventListener("DOMContentLoaded", function () {
             confirmOverlay.appendChild(confirmBox);
             document.body.appendChild(confirmOverlay);
 
-            // Add hover effects
             const cancelBtn = confirmBox.querySelector("#cancelDelete");
             const confirmBtn = confirmBox.querySelector("#confirmDelete");
 
@@ -995,14 +884,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.style.boxShadow = '0 4px 15px rgba(255, 71, 87, 0.3)';
             });
 
-            // Cancel action
             cancelBtn.addEventListener("click", () => {
                 confirmOverlay.remove();
             });
 
-            // Confirm action
             confirmBtn.addEventListener("click", () => {
-                // Show loading state
                 confirmBtn.innerHTML = '<span>⏳</span> Deleting...';
                 confirmBtn.disabled = true;
                 cancelBtn.disabled = true;
@@ -1018,7 +904,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(data => {
                     confirmOverlay.remove();
                     if (data.success) {
-                        // Remove the row from the table without reloading
                         tableRow.remove();
                         showModernAlert("✅ Success", "Staff deleted successfully!", "success");
                     } else {
@@ -1032,7 +917,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             });
 
-            // Close on outside click
             confirmOverlay.addEventListener('click', function(e) {
                 if (e.target === confirmOverlay) {
                     confirmOverlay.remove();
@@ -1041,10 +925,23 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Enhanced showModernAlert function
     window.showModernAlert = function(title, message, type = 'success') {
         const alertBox = document.createElement('div');
         alertBox.className = `modern-alert ${type}`;
+        alertBox.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #1e1e2f, #2a2a3e);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            color: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 10001;
+            animation: slideInRight 0.3s ease-out;
+            max-width: 400px;
+        `;
         alertBox.innerHTML = `<strong>${title}</strong><br><span style="color:#ccc;">${message}</span>`;
         document.body.appendChild(alertBox);
 
@@ -1060,7 +957,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 });
 </script>
-
 
                     <!-- JavaScript for Search Functionality -->
                     <script>
@@ -1093,6 +989,65 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     </script>
 
+                    <!-- Print Table Script -->
+                    <script>
+                        document.getElementById("printTable").addEventListener("click", function() {
+                            let printContent = document.getElementById("dataTable").outerHTML;
+                            let newWindow = window.open("", "", "width=800,height=600");
+
+                            newWindow.document.write(`
+                                <html>
+                                <head>
+                                    <title>Staff Management Print</title>
+                                    <style>
+                                        body { font-family: Arial, sans-serif; }
+                                        table { width: 100%; border-collapse: collapse; }
+                                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                                        th { background-color: #4f46e5; color: white; }
+                                        @media print {
+                                            .no-print, .pagination { display: none !important; }
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <h2>Staff Management Report</h2>
+                                    ${printContent}
+                                </body>
+                                </html>
+                            `);
+
+                            newWindow.document.close();
+                            newWindow.print();
+                        });
+                    </script>
+
+                    <!-- Download Table Script -->
+                    <script>
+                        document.getElementById("downloadBtn").addEventListener("click", function() {
+                            const table = document.getElementById("dataTable");
+                            const wb = XLSX.utils.table_to_book(table, {sheet: "Staff Data"});
+                            XLSX.writeFile(wb, "staff_management.xlsx");
+                        });
+                    </script>
+
+                    <style>
+                        @keyframes fadeIn {
+                            from { opacity: 0; }
+                            to { opacity: 1; }
+                        }
+
+                        @keyframes slideInRight {
+                            from {
+                                opacity: 0;
+                                transform: translateX(100%);
+                            }
+                            to {
+                                opacity: 1;
+                                transform: translateX(0);
+                            }
+                        }
+                    </style>
+
                 </div>
             </main>
         </div>
@@ -1100,7 +1055,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     @if(session('success'))
         <script>
-            alert("{{ session('success') }}");
+            window.showModernAlert("✅ Success", "{{ session('success') }}", "success");
         </script>
     @endif
 </body>
