@@ -1827,37 +1827,47 @@ document.addEventListener("DOMContentLoaded", function () {
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.getElementById("searchInput").addEventListener("input", function () {
-        let searchValue = this.value.toLowerCase();
-        let rows = document.querySelectorAll("#dataTable tbody tr");
+    let searchValue = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#dataTable tbody tr");
 
-        rows.forEach(row => {
-            let cells = row.querySelectorAll("td");
-            let found = false;
+    rows.forEach(row => {
+        // Only search in specific columns (exclude actions and checkboxes)
+        let searchableCells = row.querySelectorAll("td:not(:last-child)"); // Exclude last column (actions)
+        let found = false;
 
-            cells.forEach(cell => {
-                let text = cell.innerText;
-                let lowerText = text.toLowerCase();
+        searchableCells.forEach(cell => {
+            // Skip if cell contains buttons or inputs
+            if (cell.querySelector('button') || cell.querySelector('input')) {
+                return;
+            }
 
-                // Reset cell content before highlighting
-                cell.innerHTML = text;
+            let originalText = cell.textContent || cell.innerText;
+            let lowerText = originalText.toLowerCase();
 
-                if (searchValue !== "" && lowerText.includes(searchValue)) {
-                    found = true;
+            // Reset to original text first
+            if (!cell.querySelector('.highlight')) {
+                cell.setAttribute('data-original', originalText);
+            }
 
-                    // Highlight matching part
-                    let regex = new RegExp(`(${searchValue})`, "gi");
-                    cell.innerHTML = text.replace(regex, `<span class="highlight">$1</span>`);
-                }
-            });
-
-            // Show/hide row based on match
-            if (searchValue === "" || found) {
-                row.style.display = "";
+            if (searchValue !== "" && lowerText.includes(searchValue)) {
+                found = true;
+                
+                // Highlight matching text
+                let regex = new RegExp(`(${searchValue})`, "gi");
+                let highlightedText = originalText.replace(regex, `<span class="highlight">$1</span>`);
+                cell.innerHTML = highlightedText;
             } else {
-                row.style.display = "none";
+                // Restore original text if no match
+                if (cell.hasAttribute('data-original')) {
+                    cell.textContent = cell.getAttribute('data-original');
+                }
             }
         });
+
+        // Show or hide row based on match
+        row.style.display = (searchValue === "" || found) ? "" : "none";
     });
+});
 </script>
 
 
