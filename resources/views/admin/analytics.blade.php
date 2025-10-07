@@ -372,7 +372,7 @@
                                 <tr>
                                     <th>Barangay</th>
                                     <th>Population</th>
-                                    <th>Date</th>
+                                    <th>Year</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -414,14 +414,14 @@
                         tbody.innerHTML = "";
 
                         data.barangays.forEach(row => {
-                            tbody.innerHTML += `
-                                <tr>
-                                    <td class="fw-semibold">${row.location}</td>
-                                    <td>${row.population.toLocaleString()}</td>
-                                    <td>${new Date(row.date).toLocaleDateString()}</td>
-                                </tr>
-                            `;
-                        });
+    tbody.innerHTML += `
+        <tr>
+            <td class="fw-semibold">${row.location}</td>
+            <td>${row.population.toLocaleString()}</td>
+            <td>${row.year}</td>
+        </tr>
+    `;
+});
 
                         new bootstrap.Modal(document.getElementById("barangayModal")).show();
                     }
@@ -461,23 +461,23 @@
             document.getElementById('stat-admissions').textContent = totalAdmissions.toLocaleString();
 
             // Population Chart (Donut)
-            new Chart(document.getElementById("populationChart"), {
-                type: "doughnut",
-                data: {
-                    labels: sortedPopulation.slice(0, 6).map(item => item.location || item.date),
-                    datasets: [{
-                        data: sortedPopulation.slice(0, 6).map(item => item.population),
-                        backgroundColor: ['#3b82f6', '#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right' }
-                    }
-                }
-            });
+             new Chart(document.getElementById("populationChart"), {
+    type: "doughnut",
+    data: {
+        labels: sortedPopulation.slice(0, 6).map(item => item.location || item.year),
+        datasets: [{
+            data: sortedPopulation.slice(0, 6).map(item => item.population),
+            backgroundColor: ['#3b82f6', '#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'right' }
+        }
+    }
+});
 
             // Birth / Death Chart
             new Chart(document.getElementById("birthDeathChart"), {
