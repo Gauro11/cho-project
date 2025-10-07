@@ -1,732 +1,575 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Health Office Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-</head>
-<body>
-
-<style>
-    :root {
-        --primary-color: #2563eb;
-        --secondary-color: #1e40af;
-        --accent-color: #3b82f6;
-        --success-color: #059669;
-        --danger-color: #dc2626;
-        --warning-color: #d97706;
-        --info-color: #0891b2;
-        --light-bg: #f8fafc;
-        --card-bg: #ffffff;
-        --text-primary: #1e293b;
-        --text-secondary: #64748b;
-        --border-color: #e2e8f0;
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        color: var(--text-primary);
-        position: relative;
-    }
-
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
-        z-index: -1;
-    }
-
-    .main-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 24px;
-        margin: 0px;
-        padding: 32px;
-        box-shadow: var(--shadow-xl);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .dashboard-header {
-        text-align: center;
-        margin-bottom: 48px;
-        position: relative;
-    }
-
-    .dashboard-header::after {
-        content: '';
-        position: absolute;
-        bottom: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-        border-radius: 2px;
-    }
-
-    .dashboard-title {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 2.5rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        margin-bottom: 8px;
-    }
-
-    .dashboard-subtitle {
-        color: var(--text-secondary);
-        font-size: 1.125rem;
-        font-weight: 500;
-    }
-
-    .section-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 32px;
-        padding-bottom: 16px;
-        border-bottom: 2px solid var(--border-color);
-        position: relative;
-    }
-
-    .section-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 16px;
-        font-size: 20px;
-        color: white;
-        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-        box-shadow: var(--shadow-md);
-    }
-
-    .section-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0;
-        letter-spacing: -0.01em;
-    }
-
-    .section-description {
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-        margin-top: 4px;
-        font-weight: 500;
-    }
-
-    .stats-card {
-        background: var(--card-bg);
-        border-radius: 20px;
-        padding: 24px;
-        box-shadow: var(--shadow-lg);
-        border: 1px solid var(--border-color);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-    }
-
-    .stats-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    }
-
-    .stats-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--shadow-xl);
-        border-color: var(--accent-color);
-    }
-
-    .card-header-modern {
-        display: flex;
-        justify-content: between;
-        align-items: flex-start;
-        margin-bottom: 20px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .card-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0;
-        line-height: 1.4;
-    }
-
-    .card-subtitle {
-        color: var(--text-secondary);
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin-top: 4px;
-    }
-
-    .card-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-        color: white;
-        font-size: 16px;
-        flex-shrink: 0;
-    }
-
-    .chart-container {
-        position: relative;
-        height: 320px;
-        margin-top: 16px;
-    }
-
-    .chart-container canvas {
-        border-radius: 12px;
-    }
-
-    /* Immunization specific colors */
-    .immunization-card::before {
-        background: linear-gradient(90deg, var(--success-color), #10b981);
-    }
-
-    .immunization-card .card-icon {
-        background: linear-gradient(135deg, var(--success-color), #10b981);
-    }
-
-    /* Morbidity specific colors */
-    .morbidity-card::before {
-        background: linear-gradient(90deg, var(--warning-color), #f59e0b);
-    }
-
-    .morbidity-card .card-icon {
-        background: linear-gradient(135deg, var(--warning-color), #f59e0b);
-    }
-
-    /* Mortality specific colors */
-    .mortality-card::before {
-        background: linear-gradient(90deg, var(--danger-color), #ef4444);
-    }
-
-    .mortality-card .card-icon {
-        background: linear-gradient(135deg, var(--danger-color), #ef4444);
-    }
-
-    /* Vital statistics specific colors */
-    .vital-stats-card::before {
-        background: linear-gradient(90deg, var(--info-color), #06b6d4);
-    }
-
-    .vital-stats-card .card-icon {
-        background: linear-gradient(135deg, var(--info-color), #06b6d4);
-    }
-
-    /* Responsive design improvements */
-    @media (max-width: 768px) {
-        .main-container {
-            margin: 10px;
-            padding: 20px;
-            border-radius: 16px;
+    <title>Health Office Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --light-blue: #dbeafe;
+            --bg-gray: #f8fafc;
+            --card-white: #ffffff;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --border-color: #e2e8f0;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
         }
-        
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gray);
+            color: var(--text-dark);
+        }
+
+        .dashboard-header {
+            background: var(--card-white);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .dashboard-title {
-            font-size: 2rem;
-        }
-        
-        .section-title {
             font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin: 0;
         }
-        
-        .stats-card {
-            margin-bottom: 20px;
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
-        
-        .chart-container {
-            height: 280px;
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
         }
-    }
 
-    /* Loading animation */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
+        .main-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
-    }
 
-    .stats-card {
-        animation: fadeInUp 0.6s ease-out;
-    }
+        .stat-card {
+            background: var(--primary-blue);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            color: white;
+        }
 
-    .stats-card:nth-child(1) { animation-delay: 0.1s; }
-    .stats-card:nth-child(2) { animation-delay: 0.2s; }
-    .stats-card:nth-child(3) { animation-delay: 0.3s; }
-    .stats-card:nth-child(4) { animation-delay: 0.4s; }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
 
-    ::-webkit-scrollbar-track {
-        background: var(--light-bg);
-    }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
 
-    ::-webkit-scrollbar-thumb {
-        background: var(--primary-color);
-        border-radius: 4px;
-    }
+        .stat-sparkline {
+            height: 40px;
+            opacity: 0.6;
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--secondary-color);
-    }
-</style>
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
 
-<div class="main-container">
-    <!-- Dashboard Header -->
+        .card-modern {
+            background: var(--card-white);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header-clean {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title-clean {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .view-all-link {
+            font-size: 0.875rem;
+            color: var(--secondary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        .card-body-clean {
+            padding: 1.5rem;
+        }
+
+        .chart-wrapper {
+            height: 300px;
+            position: relative;
+        }
+
+        .map-card {
+            grid-column: span 4;
+        }
+
+        .population-card {
+            grid-column: span 4;
+        }
+
+        .immunization-card {
+            grid-column: span 4;
+        }
+
+        .full-width-card {
+            grid-column: span 12;
+        }
+
+        .half-width-card {
+            grid-column: span 6;
+        }
+
+        .map-image-wrapper {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .map-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .map-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .content-grid > * {
+                grid-column: span 12 !important;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
     <div class="dashboard-header">
-        <h1 class="dashboard-title">
-            <i class="fas fa-hospital-user me-3"></i>
-            CITY HEALTH OFFICE
-        </h1>
-        <p class="dashboard-subtitle">Administrative Overview & Health Statistics Dashboard</p>
+        <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
     </div>
 
-    <!-- Admin Overview Section -->
-    <div class="section-header">
-        <div class="section-icon">
-            <i class="fas fa-chart-line"></i>
-        </div>
-        <div>
-            <h2 class="section-title">ADMINISTRATIVE OVERVIEW</h2>
-            <p class="section-description">Real-time health system performance metrics</p>
-        </div>
-    </div>
-
-    <!-- Immunization Section -->
-    <div class="section-header">
-        <div class="section-icon">
-            <i class="fas fa-syringe"></i>
-        </div>
-        <div>
-            <h2 class="section-title">IMMUNIZATION PROGRAMS</h2>
-            <p class="section-description">Vaccination coverage and distribution statistics</p>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        @foreach($immunizationData as $data)
-        <div class="col-12 col-xl-6">
-            <div class="stats-card immunization-card">
-                <div class="card-header-modern">
-                    <div>
-                        <h3 class="card-title">{{ $data->vaccine_name }} Vaccination</h3>
-                        <p class="card-subtitle">
-                            <i class="fas fa-calendar-alt me-2"></i>{{ $data->date }}
-                        </p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="fas fa-shield-virus"></i>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="chart-{{ $data->id }}"></canvas>
-                </div>
+    <div class="main-container">
+        <!-- Stats Cards Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Population</div>
+                <div class="stat-value" id="stat-population">--</div>
+                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                    <polyline points="0,30 20,25 40,20 60,15 80,10 100,8" 
+                              fill="none" stroke="white" stroke-width="2"/>
+                </svg>
             </div>
-        </div>
-        @endforeach
-    </div>
 
-    <!-- Morbidity & Mortality Section -->
-    <div class="section-header mt-5">
-        <div class="section-icon">
-            <i class="fas fa-heartbeat"></i>
-        </div>
-        <div>
-            <h2 class="section-title">MORBIDITY & MORTALITY</h2>
-            <p class="section-description">Disease patterns and mortality trends analysis</p>
-        </div>
-    </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Live Birth</div>
+                <div class="stat-value" id="stat-births">--</div>
+                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                    <polyline points="0,25 20,22 40,20 60,18 80,15 100,12" 
+                              fill="none" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
 
-    <div class="row g-4">
-        <div class="col-12 col-xl-6">
-            <div class="stats-card morbidity-card">
-                <div class="card-header-modern">
-                    <div>
-                        <h3 class="card-title">Morbidity Cases</h3>
-                        <p class="card-subtitle">
-                            <i class="fas fa-user-injured me-2"></i>Gender-based case distribution
-                        </p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="fas fa-procedures"></i>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="morbidityCasesChart"></canvas>
+            <div class="stat-card">
+                <div class="stat-label">Total Deaths</div>
+                <div class="stat-value" id="stat-deaths">--</div>
+                <svg class="stat-sparkline" viewBox="0 0 100 40">
+                    <polyline points="0,20 20,22 40,25 60,23 80,28 100,30" 
+                              fill="none" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Admissions</div>
+                <div class="stat-value" id="stat-admissions">--</div>
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                    <span style="font-size: 0.75rem; opacity: 0.9;">Infectious</span>
+                    <span style="font-size: 0.75rem; opacity: 0.9;">Deficiency</span>
+                    <span style="font-size: 0.75rem; opacity: 0.9;">Social</span>
                 </div>
             </div>
         </div>
 
-        <div class="col-12 col-xl-6">
-            <div class="stats-card mortality-card">
-                <div class="card-header-modern">
-                    <div>
-                        <h3 class="card-title">Mortality Cases</h3>
-                        <p class="card-subtitle">
-                            <i class="fas fa-cross me-2"></i>Gender-based mortality statistics
-                        </p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="fas fa-memorial"></i>
+        <!-- First Row of Cards -->
+        <div class="content-grid">
+            <div class="card-modern map-card">
+                <div class="card-header-clean">
+                    <h3 class="card-title-clean">Dagupan City Map</h3>
+                </div>
+                <div class="card-body-clean" style="padding: 0;">
+                    <div class="map-image-wrapper" id="map-container">
+                        <img src="https://www.dagupan.gov.ph/wp-content/uploads/2023/05/Dagupan-Map-e1684306560968.png"
+                             alt="Dagupan City Map">
+                        <div class="map-overlay" id="population-text">
+                            City of Dagupan / Loading...
+                        </div>
                     </div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="mortalityCasesChart"></canvas>
+            </div>
+
+            <div class="card-modern population-card">
+                <div class="card-header-clean">
+                    <h3 class="card-title-clean">Population per Barangay</h3>
+                    <a href="#" class="view-all-link">All Barangay</a>
+                </div>
+                <div class="card-body-clean">
+                    <div class="chart-wrapper">
+                        <canvas id="populationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-modern immunization-card">
+                <div class="card-header-clean">
+                    <h3 class="card-title-clean">Immunization Statistics</h3>
+                </div>
+                <div class="card-body-clean">
+                    <div class="chart-wrapper">
+                        <canvas id="immunizationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row of Cards -->
+        <div class="content-grid">
+            <div class="card-modern half-width-card">
+                <div class="card-header-clean">
+                    <h3 class="card-title-clean">Morbidity Statistics</h3>
+                    <a href="#" class="view-all-link">View All</a>
+                </div>
+                <div class="card-body-clean">
+                    <div class="chart-wrapper">
+                        <canvas id="morbidityCasesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-modern half-width-card">
+                <div class="card-header-clean">
+                    <h3 class="card-title-clean">Mortality Statistics</h3>
+                    <a href="#" class="view-all-link">View All</a>
+                </div>
+                <div class="card-body-clean">
+                    <div class="chart-wrapper">
+                        <canvas id="mortalityCasesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Birth and Death Rate Card -->
+        <div class="content-grid">
+            <div class="card-modern full-width-card">
+                <div class="card-header-clean">
+                    <h3 class="card-title-clean">Birth and Death Rate</h3>
+                    <a href="#" class="view-all-link">View All</a>
+                </div>
+                <div class="card-body-clean">
+                    <div class="chart-wrapper">
+                        <canvas id="birthDeathChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Vital Statistics Section -->
-    <div class="section-header mt-5">
-        <div class="section-icon">
-            <i class="fas fa-users"></i>
-        </div>
-        <div>
-            <h2 class="section-title">VITAL STATISTICS & POPULATION</h2>
-            <p class="section-description">Population dynamics and demographic trends</p>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        <div class="col-12 col-xl-6">
-            <div class="stats-card vital-stats-card">
-                <div class="card-header-modern">
-                    <div>
-                        <h3 class="card-title">Population Growth</h3>
-                        <p class="card-subtitle">
-                            <i class="fas fa-chart-area me-2"></i>Annual population trends
-                        </p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="fas fa-users"></i>
+    <!-- Modal (unchanged) -->
+    <div class="modal fade" id="barangayModal" tabindex="-1" aria-labelledby="barangayModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title fw-bold" id="barangayModalLabel">Barangay Population Statistics</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center" id="population-table">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Barangay</th>
+                                    <th>Population</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Filled dynamically -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="populationChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-xl-6">
-            <div class="stats-card vital-stats-card">
-                <div class="card-header-modern">
-                    <div>
-                        <h3 class="card-title">Birth and Death Rates</h3>
-                        <p class="card-subtitle">
-                            <i class="fas fa-baby me-2"></i>Live births vs total deaths
-                        </p>
-                    </div>
-                    <div class="card-icon">
-                        <i class="fas fa-baby"></i>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="birthDeathChart"></canvas>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Enhanced Chart.js default configuration
-    Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-    Chart.defaults.font.size = 12;
-    Chart.defaults.color = '#64748b';
-    Chart.defaults.plugins.legend.labels.usePointStyle = true;
-    Chart.defaults.plugins.legend.labels.boxHeight = 6;
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Load city-wide summary on page load
+        fetch("{{ url('/dagupan-population') }}")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("population-text").innerHTML =
+                        `${data.city} / Population ${data.population.toLocaleString()} (${data.year})`;
+                }
+            })
+            .catch(() => {
+                document.getElementById("population-text").innerHTML =
+                    "City of Dagupan / Population unavailable";
+            });
 
-    document.addEventListener("DOMContentLoaded", function() {
-        // Enhanced color palettes
-        const colorPalettes = {
-            immunization: {
-                primary: ['#059669', '#10b981'],
-                gradient: 'linear-gradient(135deg, #059669, #10b981)'
-            },
-            morbidity: {
-                primary: ['#3b82f6', '#ec4899'],
-                secondary: ['#1e40af', '#be185d']
-            },
-            mortality: {
-                primary: ['#1e40af', '#be185d'],
-                secondary: ['#1e3a8a', '#9d174d']
-            },
-            vital: {
-                population: '#3b82f6',
-                births: '#059669',
-                deaths: '#dc2626'
+        // Click map container to load barangay population
+        document.getElementById("map-container").addEventListener("click", function () {
+            fetch("{{ route('dagupan.barangays') }}")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const tbody = document.querySelector("#population-table tbody");
+                        tbody.innerHTML = "";
+
+                        data.barangays.forEach(row => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td class="fw-semibold">${row.location}</td>
+                                    <td>${row.population.toLocaleString()}</td>
+                                    <td>${new Date(row.date).toLocaleDateString()}</td>
+                                </tr>
+                            `;
+                        });
+
+                        new bootstrap.Modal(document.getElementById("barangayModal")).show();
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Unable to load barangay population data.");
+                });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Laravel Data
+            let vitalStatisticsData = {!! json_encode($vitalStatisticsData) !!};
+            let barangays = {!! json_encode($barangays) !!};
+            let immunizationData = {!! json_encode($immunizationData) !!};
+            let morbidityData = {!! json_encode($morbidityCases) !!};
+            let mortalityData = {!! json_encode($mortalityCases) !!};
+
+            let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
+            let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
+            let totalPopulation = sortedPopulation.reduce((sum, item) => sum + parseInt(item.population), 0);
+
+            // Update stat cards
+            document.getElementById('stat-population').textContent = totalPopulation.toLocaleString();
+            if (sortedVital.length > 0) {
+                let latestVital = sortedVital[sortedVital.length - 1];
+                document.getElementById('stat-births').textContent = latestVital.total_live_births.toLocaleString();
+                document.getElementById('stat-deaths').textContent = latestVital.total_deaths.toLocaleString();
             }
-        };
+            
+            // Calculate total admissions from morbidity data
+            let totalAdmissions = morbidityData.reduce((sum, item) => sum + parseInt(item.male_count) + parseInt(item.female_count), 0);
+            document.getElementById('stat-admissions').textContent = totalAdmissions.toLocaleString();
 
-        // Common chart options
-        const commonOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    align: 'end',
-                    labels: {
-                        padding: 20,
-                        font: {
-                            weight: '600'
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    border: {
-                        display: false
-                    },
-                    ticks: {
-                        font: {
-                            weight: '500'
-                        }
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: '#f1f5f9'
-                    },
-                    border: {
-                        display: false
-                    },
-                    ticks: {
-                        font: {
-                            weight: '500'
-                        }
-                    }
-                }
-            },
-            elements: {
-                bar: {
-                    borderRadius: 6
-                }
-            }
-        };
-
-        // Immunization charts
-        @foreach($immunizationData as $data)
-            new Chart(document.getElementById("chart-{{ $data->id }}"), {
-                type: "bar",
+            // Population Chart (Donut)
+            new Chart(document.getElementById("populationChart"), {
+                type: "doughnut",
                 data: {
-                    labels: ["Male", "Female"],
+                    labels: sortedPopulation.slice(0, 6).map(item => item.location || item.date),
                     datasets: [{
-                        label: "Number Vaccinated",
-                        backgroundColor: colorPalettes.immunization.primary,
-                        borderColor: colorPalettes.immunization.primary,
-                        borderWidth: 2,
-                        data: [{{ $data->male_vaccinated }}, {{ $data->female_vaccinated }}]
+                        data: sortedPopulation.slice(0, 6).map(item => item.population),
+                        backgroundColor: ['#3b82f6', '#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981']
                     }]
                 },
                 options: {
-                    ...commonOptions,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
-                        ...commonOptions.plugins,
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#ffffff',
-                            bodyColor: '#ffffff',
-                            borderColor: '#059669',
-                            borderWidth: 1
-                        }
+                        legend: { position: 'right' }
                     }
                 }
             });
-        @endforeach
 
-        // Morbidity chart
-        new Chart(document.getElementById("morbidityCasesChart"), {
-            type: "bar",
-            data: {
-                labels: {!! json_encode($morbidityCases->pluck('case_name')) !!},
-                datasets: [{
-                    label: "Male",
-                    backgroundColor: colorPalettes.morbidity.primary[0],
-                    borderColor: colorPalettes.morbidity.secondary[0],
-                    borderWidth: 2,
-                    data: {!! json_encode($morbidityCases->pluck('male_count')) !!}
-                }, {
-                    label: "Female",
-                    backgroundColor: colorPalettes.morbidity.primary[1],
-                    borderColor: colorPalettes.morbidity.secondary[1],
-                    borderWidth: 2,
-                    data: {!! json_encode($morbidityCases->pluck('female_count')) !!}
-                }]
-            },
-            options: {
-                ...commonOptions,
-                plugins: {
-                    ...commonOptions.plugins,
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#d97706',
-                        borderWidth: 1
-                    }
+            // Birth / Death Chart
+            new Chart(document.getElementById("birthDeathChart"), {
+                type: "line",
+                data: {
+                    labels: sortedVital.map(item => item.year),
+                    datasets: [
+                        {
+                            label: "Live Births",
+                            borderColor: "#3b82f6",
+                            backgroundColor: "rgba(59, 130, 246, 0.1)",
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            data: sortedVital.map(item => item.total_live_births)
+                        },
+                        {
+                            label: "Total Deaths",
+                            borderColor: "#a855f7",
+                            backgroundColor: "rgba(168, 85, 247, 0.1)",
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            data: sortedVital.map(item => item.total_deaths)
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { beginAtZero: true } }
                 }
-            }
-        });
+            });
 
-        // Mortality chart
-        new Chart(document.getElementById("mortalityCasesChart"), {
-            type: "bar",
-            data: {
-                labels: {!! json_encode($mortalityCases->pluck('case_name')) !!},
-                datasets: [{
-                    label: "Male",
-                    backgroundColor: colorPalettes.mortality.primary[0],
-                    borderColor: colorPalettes.mortality.secondary[0],
-                    borderWidth: 2,
-                    data: {!! json_encode($mortalityCases->pluck('male_count')) !!}
-                }, {
-                    label: "Female",
-                    backgroundColor: colorPalettes.mortality.primary[1],
-                    borderColor: colorPalettes.mortality.secondary[1],
-                    borderWidth: 2,
-                    data: {!! json_encode($mortalityCases->pluck('female_count')) !!}
-                }]
-            },
-            options: {
-                ...commonOptions,
-                plugins: {
-                    ...commonOptions.plugins,
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#dc2626',
-                        borderWidth: 1
-                    }
+            // Immunization Chart
+            new Chart(document.getElementById("immunizationChart"), {
+                type: "bar",
+                data: {
+                    labels: immunizationData.map(item => item.vaccine_name),
+                    datasets: [
+                        {
+                            label: "Male",
+                            backgroundColor: "#3b82f6",
+                            data: immunizationData.map(item => item.male_vaccinated)
+                        },
+                        {
+                            label: "Female",
+                            backgroundColor: "#a78bfa",
+                            data: immunizationData.map(item => item.female_vaccinated)
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
                 }
-            }
-        });
+            });
 
-        // Population chart
-        new Chart(document.getElementById("populationChart"), {
-            type: "line",
-            data: {
-                labels: {!! json_encode($vitalStatisticsData->pluck('year')) !!},
-                datasets: [{
-                    label: "Total Population",
-                    borderColor: colorPalettes.vital.population,
-                    backgroundColor: colorPalettes.vital.population + '20',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: colorPalettes.vital.population,
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 3,
-                    pointRadius: 6,
-                    data: {!! json_encode($vitalStatisticsData->pluck('total_population')) !!}
-                }]
-            },
-            options: {
-                ...commonOptions,
-                plugins: {
-                    ...commonOptions.plugins,
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#0891b2',
-                        borderWidth: 1
-                    }
-                }
+            // Morbidity & Mortality Charts
+            function getChronologicalTopCases(data) {
+                return data.sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
             }
-        });
 
-        // Birth and Death chart
-        new Chart(document.getElementById("birthDeathChart"), {
-            type: "bar",
-            data: {
-                labels: {!! json_encode($vitalStatisticsData->pluck('year')) !!},
-                datasets: [
-                    { 
-                        label: "Live Births", 
-                        backgroundColor: colorPalettes.vital.births,
-                        borderColor: colorPalettes.vital.births,
-                        borderWidth: 2,
-                        data: {!! json_encode($vitalStatisticsData->pluck('total_live_births')) !!}
+            function createChart(chartId, caseData) {
+                new Chart(document.getElementById(chartId), {
+                    type: "bar",
+                    data: {
+                        labels: caseData.map(c => c.case_name),
+                        datasets: [
+                            {
+                                label: "Male",
+                                backgroundColor: "#60a5fa",
+                                data: caseData.map(c => c.male_count)
+                            },
+                            {
+                                label: "Female",
+                                backgroundColor: "#c084fc",
+                                data: caseData.map(c => c.female_count)
+                            }
+                        ]
                     },
-                    { 
-                        label: "Total Deaths", 
-                        backgroundColor: colorPalettes.vital.deaths,
-                        borderColor: colorPalettes.vital.deaths,
-                        borderWidth: 2,
-                        data: {!! json_encode($vitalStatisticsData->pluck('total_deaths')) !!}
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } }
                     }
-                ]
-            },
-            options: {
-                ...commonOptions,
-                plugins: {
-                    ...commonOptions.plugins,
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#0891b2',
-                        borderWidth: 1
-                    }
-                }
+                });
             }
-        });
-    });
-</script>
 
+            createChart("morbidityCasesChart", getChronologicalTopCases(morbidityData));
+            createChart("mortalityCasesChart", getChronologicalTopCases(mortalityData));
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
