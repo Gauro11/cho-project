@@ -228,9 +228,9 @@
 </head>
 
 <body>
-    <div class="dashboard-header">
+    
         <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
-    </div>
+    
 
     <div class="main-container">
         <!-- Stats Cards Row -->
