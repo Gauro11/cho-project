@@ -699,7 +699,17 @@
                                 @csrf
                                 <div class="mb-3">
                                     <label for="staff_id" class="form-label">Staff ID</label>
-                                    <input type="text" class="form-control" id="staff_id" name="staff_id" required>
+                                    <input type="text" class="form-control" id="staff_id" name="staff_id"
+       required placeholder="01-00011" pattern="\d{2}-\d{5}">
+       
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#staff_id').mask('00-00000');  // Enforce format 01-00011
+    });
+</script>
+
                                 </div>
                                 <div class="mb-3">
                                     <label for="first_name" class="form-label">First Name</label>
