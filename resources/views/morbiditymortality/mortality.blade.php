@@ -1902,45 +1902,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-document.getElementById("searchInput").addEventListener("input", function () {
-    let searchValue = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#dataTable tbody tr");
+    document.getElementById("searchInput").addEventListener("input", function () {
+        let searchValue = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#dataTable tbody tr");
 
-    rows.forEach(row => {
-        let cells = row.querySelectorAll("td");
-        let found = false;
+        rows.forEach(row => {
+            let cells = row.querySelectorAll("td");
+            let found = false;
 
-        cells.forEach(cell => {
-            // Skip cells that contain buttons (actions column)
-            if (cell.querySelector("button") || cell.querySelector("a")) {
-                return;
-            }
+            cells.forEach(cell => {
+                let text = cell.innerText;
+                let lowerText = text.toLowerCase();
 
-            let text = cell.textContent;
-            let lowerText = text.toLowerCase();
+                // Reset cell content before highlighting
+                cell.innerHTML = text;
 
-            // Reset content before highlighting
-            cell.innerHTML = text;
+                if (searchValue !== "" && lowerText.includes(searchValue)) {
+                    found = true;
 
-            if (searchValue !== "" && lowerText.includes(searchValue)) {
-                found = true;
+                    // Highlight matching part
+                    let regex = new RegExp(`(${searchValue})`, "gi");
+                    cell.innerHTML = text.replace(regex, `<span class="highlight">$1</span>`);
+                }
+            });
 
-                // Highlight matching part
-                let regex = new RegExp(`(${searchValue})`, "gi");
-                cell.innerHTML = text.replace(regex, `<span class="highlight">$1</span>`);
+            // Show/hide row based on match
+            if (searchValue === "" || found) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
             }
         });
-
-        // Show/hide row based on match
-        if (searchValue === "" || found) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
     });
-});
 </script>
-
 
 
 
