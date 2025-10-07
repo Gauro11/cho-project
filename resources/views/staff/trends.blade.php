@@ -671,63 +671,119 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Filter data by date range
-    function filterDataBySpecificDate(data) {
-        const startDate = startDatePicker.value ? new Date(startDatePicker.value) : null;
-        const endDate = endDatePicker.value ? new Date(endDatePicker.value) : null;
+   // Replace the filterDataBySpecificDate function with this updated version:
+
+function filterDataBySpecificDate(data) {
+    const startDate = startDatePicker.value ? new Date(startDatePicker.value) : null;
+    const endDate = endDatePicker.value ? new Date(endDatePicker.value) : null;
+    
+    if (!startDate && !endDate) {
+        return data; // Return all data if no dates selected
+    }
+
+    const filteredLabels = [];
+    const filteredValues = [];
+
+    console.log("=== DEBUGGING DATE RANGE FILTER ===");
+    console.log("Start Date:", startDate);
+    console.log("End Date:", endDate);
+    console.log("Available Labels:", data.historical.labels);
+
+    data.historical.labels.forEach((label, index) => {
+        const date = parseDate(label);
         
-        if (!startDate && !endDate) {
-            return data; // Return all data if no dates selected
-        }
+        if (date) {
+            const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            let isInRange = true;
 
-        const filteredLabels = [];
-        const filteredValues = [];
-
-        console.log("=== DEBUGGING DATE RANGE FILTER ===");
-        console.log("Start Date:", startDate);
-        console.log("End Date:", endDate);
-        console.log("Available Labels:", data.historical.labels);
-
-        data.historical.labels.forEach((label, index) => {
-            const date = parseDate(label);
-            
-            if (date) {
-                const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                let isInRange = true;
-
-                if (startDate) {
-                    const normalizedStartDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-                    if (normalizedDate < normalizedStartDate) {
-                        isInRange = false;
-                    }
-                }
-
-                if (endDate && isInRange) {
-                    const normalizedEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-                    if (normalizedDate > normalizedEndDate) {
-                        isInRange = false;
-                    }
-                }
-
-                if (isInRange) {
-                    filteredLabels.push(label);
-                    filteredValues.push(data.historical.values[index]);
-                    console.log("✅ Date in range:", label);
+            if (startDate) {
+                const normalizedStartDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+                if (normalizedDate < normalizedStartDate) {
+                    isInRange = false;
                 }
             }
-        });
 
-        console.log("Filtered Results:", filteredLabels.length, "matches found");
-        console.log("=== END DEBUG ===");
+            if (endDate && isInRange) {
+                const normalizedEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+                if (normalizedDate > normalizedEndDate) {
+                    isInRange = false;
+                }
+            }
 
-        return {
-            ...data,
-            historical: {
-                labels: filteredLabels,
-                values: filteredValues
-            },
-            prediction: null // Remove predictions for filtered data
-        };
+            if (isInRange) {
+                filteredLabels.push(label);
+                filteredValues.push(data.historical.values[index]);
+                console.log("✅ Date in range:", label);
+            }
+        }
+    });
+
+    console.log("Filtered Results:", filteredLabels.length, "matches found");
+
+    // Generate prediction based on filtered data
+    let prediction = null;
+    if (filteredValues.length >= 2) {
+        prediction = generatePrediction(filteredLabels, filteredValues);
+        console.log("Generated prediction for filtered data:", prediction);
     }
+
+    console.log("=== END DEBUG ===");
+
+    return {
+        ...data,
+        historical: {
+            labels: filteredLabels,
+            values: filteredValues
+        },
+        prediction: prediction
+    };
+}
+
+// Add this new function to generate predictions for filtered data:
+
+function generatePrediction(labels, values) {
+    if (values.length < 2) return null;
+
+    // Simple linear regression
+    const n = values.length;
+    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+
+    for (let i = 0; i < n; i++) {
+        sumX += i;
+        sumY += values[i];
+        sumXY += i * values[i];
+        sumX2 += i * i;
+    }
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+
+    // Generate predictions for next 3 periods
+    const predictionLabels = [];
+    const predictionValues = [];
+    const lastDate = parseDate(labels[labels.length - 1]);
+
+    if (lastDate) {
+        for (let i = 1; i <= 3; i++) {
+            const futureDate = new Date(lastDate);
+            futureDate.setMonth(futureDate.getMonth() + i);
+            
+            const futureLabel = futureDate.toISOString().split('T')[0];
+            const futureValue = Math.max(0, slope * (n + i - 1) + intercept);
+            
+            predictionLabels.push(futureLabel);
+            predictionValues.push(futureValue);
+        }
+    }
+
+    const formula = `y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}`;
+
+    return {
+        labels: predictionLabels,
+        values: predictionValues,
+        formula: formula
+    };
+}
 
     // Filter data by month
     function filterDataByMonth(data, selectedMonth) {
