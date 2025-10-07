@@ -671,16 +671,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Filter data by date range
-    function filterDataBySpecificDate(selectedDate) {
-    const dateObj = parseDate(selectedDate);
-    if (!dateObj) return [];
-
-    return mockData.filter(item => {
-        const itemDate = parseDate(item.date);
-        return itemDate && itemDate.toDateString() === dateObj.toDateString();
-    });
-}
-
+    function filterDataBySpecificDate(data) {
+        const startDate = startDatePicker.value ? new Date(startDatePicker.value) : null;
+        const endDate = endDatePicker.value ? new Date(endDatePicker.value) : null;
+        
+        if (!startDate && !endDate) {
+            return data; // Return all data if no dates selected
+        }
 
         const filteredLabels = [];
         const filteredValues = [];
@@ -866,43 +863,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Update chart with filtered data
-    function updateChart(filteredData) {
-    if (!filteredData.length) {
-        alert("No data found for this date.");
-        return;
-    }
-
-    // Extract labels and values
-    const labels = filteredData.map(item => item.date);
-    const values = filteredData.map(item => item.value);
-
-    // Add predictions
-   function predictNextValues(values, count) {
-    if (values.length === 0) return { labels: [], values: [] };
-
-    const lastValue = values[values.length - 1];
-    const avgGrowth = values.length > 1
-        ? (values[values.length - 1] - values[0]) / (values.length - 1)
-        : 2; // fallback growth if only one point
-
-    const predictions = [];
-    for (let i = 0; i < count; i++) {
-        predictions.push(Math.round(lastValue + (avgGrowth * (i + 1))));
-    }
-
-    return { labels: Array(count).fill("Prediction"), values: predictions };
-}
-
-
-    // Merge actual + prediction
-    const finalLabels = [...labels, ...predictionLabels];
-    const finalValues = [...values, ...prediction.values];
-
-    trendsChart.data.labels = finalLabels;
-    trendsChart.data.datasets[0].data = finalValues;
-    trendsChart.update();
-}
-
+    function updateChart(data) {
+        const formatDate = (dateString) => {
+            if (!dateString) return 'Unknown';
+            let date;
+            if (dateString.includes('-')) date = new Date(dateString);
+            else if (dateString.includes('/')) date = new Date(dateString);
+            else if (typeof dateString === 'number') date = new Date(dateString * 1000);
+            else date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        };
 
         const formattedHistoricalLabels = data.historical.labels.map(formatDate);
         
