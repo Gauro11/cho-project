@@ -21,6 +21,16 @@
             --border-color: #e2e8f0;
             --success-green: #10b981;
             --danger-red: #ef4444;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --warning-gradient: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            --dark-bg: #0f0f23;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --shadow-glow: 0 8px 32px rgba(31, 38, 135, 0.37);
         }
 
         * {
@@ -247,15 +257,48 @@
             background: var(--primary-gradient);
             border-radius: 10px;
         }
-         @media (max-width: 768px) {
+        @media (max-width: 768px) {
             .page-title {
                 font-size: 1.8rem;
             }
 
+            .modern-modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
         }
-         @media (max-width: 768px) {
+
+        @media print {
+
+            .no-print,
+            .pagination {
+                display: none !important;
+            }
+        }
+          @media (max-width: 768px) {
             .page-title {
                 font-size: 1.8rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+        }
+
+        @media print {
+
+            .no-print,
+            .pagination {
+                display: none !important;
             }
         }
     }
