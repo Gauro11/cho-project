@@ -266,9 +266,7 @@
                 <div class="stat-label">Admissions</div>
                 <div class="stat-value" id="stat-admissions">--</div>
                 <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
-                    <span style="font-size: 0.75rem; opacity: 0.9;">Infectious</span>
-                    <span style="font-size: 0.75rem; opacity: 0.9;">Deficiency</span>
-                    <span style="font-size: 0.75rem; opacity: 0.9;">Social</span>
+                   
                 </div>
             </div>
         </div>
