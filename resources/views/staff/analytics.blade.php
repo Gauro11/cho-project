@@ -228,9 +228,15 @@
 </head>
 
 <body>
-    <div class="dashboard-header">
+     <div class="wrapper">
+        @include('staff.sidebar')
+        
+
+        <div class="main">
+            @include('staff.header')
+    
         <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
-    </div>
+    
 
     <div class="main-container">
         <!-- Stats Cards Row -->
