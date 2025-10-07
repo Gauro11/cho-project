@@ -1050,6 +1050,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 </div>
             </main>
+              @include('staff.footer')
         </div>
     </div>
 
@@ -1058,6 +1059,8 @@ document.addEventListener("DOMContentLoaded", function () {
             window.showModernAlert("✅ Success", "{{ session('success') }}", "success");
         </script>
     @endif
+     @include('staff.js')
+
 </body>
 
 </html>
