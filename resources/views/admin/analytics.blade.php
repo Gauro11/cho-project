@@ -446,11 +446,13 @@
 
             // Update stat cards
             document.getElementById('stat-population').textContent = totalPopulation.toLocaleString();
-            if (sortedVital.length > 0) {
-                let latestVital = sortedVital[sortedVital.length - 1];
-                document.getElementById('stat-births').textContent = latestVital.total_live_births.toLocaleString();
-                document.getElementById('stat-deaths').textContent = latestVital.total_deaths.toLocaleString();
-            }
+            
+            // Calculate sum of all births and deaths across all years
+            let totalBirths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_live_births), 0);
+            let totalDeaths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_deaths), 0);
+            
+            document.getElementById('stat-births').textContent = totalBirths.toLocaleString();
+            document.getElementById('stat-deaths').textContent = totalDeaths.toLocaleString();
             
             // Calculate total admissions from morbidity data
             let totalAdmissions = morbidityData.reduce((sum, item) => sum + parseInt(item.male_count) + parseInt(item.female_count), 0);
