@@ -555,7 +555,7 @@
 
 <body>
     <div class="wrapper">
-        @include('admin.sidebar')
+        @include('staff.sidebar')
 
         <div class="main">
             @include('staff.header')
