@@ -228,8 +228,7 @@
 </head>
 
 <body>
-    <div class="main">
-            @include('staff.header')
+    
     <div class="dashboard-header">
         <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
     </div>
