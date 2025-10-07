@@ -786,8 +786,11 @@ function sortTable2(colIndex, type = 'string') {
                     }
                 });
             });
+            
         }
+        
 
         updateBulkActions();
     });
 </script>
+
