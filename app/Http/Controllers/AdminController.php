@@ -98,27 +98,50 @@ class AdminController extends Controller
 
 
     public function create_staff(Request $request)
-{
-    $validatedData = $request->validate([
-        'staff_id'   => 'required|numeric|unique:users,staff_id', // ✅ must be numbers only
-        'first_name' => 'required|string',
-        'last_name'  => 'required|string',
-    ]);
-
-    // Generate password as LASTNAMESTAFFID (Uppercase)
-    $password = strtoupper($request->last_name) . $request->staff_id;
-
-    $staff = User::create([
-        'staff_id'   => $request->staff_id,
-        'first_name' => $request->first_name,
-        'last_name'  => $request->last_name,
-        'usertype'   => 'staff',
-        'password'   => Hash::make($password),
-    ]);
-
-    return redirect()->back()->with('success', 'Staff added successfully! Default password: ' . $password);
-}
-
+    {
+        $validatedData = $request->validate([
+    'staff_id' => ['required', 'unique:users,staff_id', 'regex:/^\d{2}-\d{5}$/'],
+    'first_name' => 'required|string',
+    'last_name' => 'required|string',
+]);
+    
+        if (!$validatedData) {
+            return redirect()->back()->withErrors($validatedData)->withInput();
+        }
+    
+        // Generate password as LASTNAMESTAFFID (Uppercase)
+        $password = strtoupper($request->last_name) . $request->staff_id;
+    
+        $staff = User::create([
+            'staff_id' => $request->staff_id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'usertype' => 'staff',
+            'password' => Hash::make($password),
+        ]);
+    
+        return redirect()->back()->with('success', 'Staff added successfully! Default password: ' . $password);
+    }
+    
+    public function update(Request $request, $id)
+    {
+        \Log::info([
+            "Route Parameter ID" => $id,
+            "Received ID from Request" => $request->id,
+            "Full Request" => $request->all()
+        ]);
+    
+        // Ensure ID is received
+        if (!$id) {
+            return back()->with('error', 'ID is missing!');
+        }
+    
+        $staff = User::findOrFail($id);
+        $staff->first_name = $request->first_name;
+        $staff->last_name = $request->last_name;
+        $staff->usertype = 'staff';
+        $staff->save();
+    }
 
     
     
