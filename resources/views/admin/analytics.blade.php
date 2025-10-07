@@ -223,13 +223,49 @@
                 gap: 1rem;
                 align-items: flex-start;
             }
+            .page-title {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out;
         }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+        }
+         @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+        }
+         @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+        }
+    }
+
     </style>
 </head>
 
 <body>
     
-        <h1 class="dashboard-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
+        <h1 class="page-title">CITY HEALTH OFFICE ACTIVITY OVERVIEW</h1>
     
 
     <div class="main-container">
