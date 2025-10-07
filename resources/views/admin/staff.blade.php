@@ -274,72 +274,89 @@
         }
 
         /* Modern Pagination */
-        .pagination-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 20px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-top: 20px;
-        }
+        /* Modern Pagination Container - WHITE VERSION */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.95); /* Changed to white */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-        .pagination-container p {
-            margin: 0;
-            color: white;
-            font-weight: 500;
-            font-size: 14px;
-        }
+.pagination-container p {
+    margin: 0;
+    color: #374151; /* Changed text color to dark gray for better readability */
+    font-weight: 500;
+    font-size: 14px;
+}
 
-        .custom-pagination {
-            display: flex;
-            list-style: none;
-            padding: 0;
-            justify-content: center;
-        }
+.custom-pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    margin: 0;
+}
 
-        .custom-pagination .page-item {
-            margin: 0 3px;
-        }
+.custom-pagination .page-item {
+    margin: 0 3px;
+}
 
-        .custom-pagination .page-link {
-            color: #4f46e5 !important;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 10px 16px;
-            font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-        }
+.custom-pagination .page-link {
+    color: #4f46e5 !important;
+    background: rgba(255, 255, 255, 1); /* Fully white background */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
 
-        .custom-pagination .page-link:hover {
-            background: rgba(255, 255, 255, 1);
-            border-color: #4f46e5;
-            color: #4f46e5 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
-        }
+.custom-pagination .page-link:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: #4f46e5;
+    color: #4f46e5 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+}
 
-        .custom-pagination .page-item.active .page-link {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border-color: #4f46e5;
-            color: white !important;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-        }
+.custom-pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-color: #4f46e5;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+}
 
-        .custom-pagination .page-item.disabled .page-link {
-            background: rgba(255, 255, 255, 0.5);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: rgba(107, 114, 128, 0.6) !important;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+.custom-pagination .page-item.disabled .page-link {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(203, 213, 225, 0.5);
+    color: rgba(107, 114, 128, 0.6) !important;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Media Query for Mobile */
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .custom-pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
 
         /* Modern Modal */
         .modal {
