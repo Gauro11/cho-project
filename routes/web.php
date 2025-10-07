@@ -103,7 +103,7 @@ Route::delete('/year/{id}', [AdminController::class, 'delete_year'])->name('year
 // Route::get('/staff', [StaffController::class, 'index']);
 Route::get('/show_category', [AdminController::class, 'show_category']);
 Route::get('/show_year', [AdminController::class, 'show_year']);
-Route::get('/show_staff', [AdminController::class, 'show_staff']);
+
 Route::get('/show_disease', [AdminController::class, 'show_disease']);
 // Route::get('/show_trends', [AdminController::class, 'show_trends']);
 Route::delete('/staff/{id}', [AdminController::class, 'delete_staff'])->name('staff.destroy');
@@ -192,6 +192,7 @@ Route::post('/morbidity/import', [MorbidityMortalityController::class, 'imports'
 
 Route::middleware(['auth:admin', 'PreventBackHistory'])->group(function () {
     Route::get('/home', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/show_staff', [AdminController::class, 'show_staff']);
 });
 
 Route::middleware(['auth:staff', 'PreventBackHistory'])->group(function () {
