@@ -26,15 +26,12 @@ public function index()
         $usertype = Auth::user()->usertype;
 
         if ($usertype == 'user' || $usertype == 'staff') {
-           $barangays = DB::table('population_statistics_management')
-    ->orderBy('year', 'asc')
-    ->select('year', 'population')
-    ->get();
+            // Change this line to get all fields
+            $barangays = DB::table('population_statistics_management')
+                ->orderBy('year', 'asc')
+                ->get();  // ✅ Get all fields
 
-    $totalPopulation = DB::table('population_statistics_management')->sum('population');
-
-            
-            
+            $totalPopulation = DB::table('population_statistics_management')->sum('population');
 
             $morbidityCases = DB::table('morbidity_mortality_management')
                 ->where('category', 'morbidity')
@@ -49,6 +46,7 @@ public function index()
             $immunizationData = DB::table('immunization_management')->get();
 
             return view('staff.index', compact('morbidityCases', 'barangays', 'mortalityCases', 'vitalStatisticsData', 'immunizationData'));
+        
         } elseif ($usertype == 'mortality and morbidity records manager') {
             $morbidityCases = DB::table('morbidity_mortality_management')
                 ->where('category', 'morbidity')
