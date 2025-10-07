@@ -454,8 +454,10 @@
             document.getElementById('stat-births').textContent = totalBirths.toLocaleString();
             document.getElementById('stat-deaths').textContent = totalDeaths.toLocaleString();
             
-            // Calculate total admissions from morbidity data
-            let totalAdmissions = morbidityData.reduce((sum, item) => sum + parseInt(item.male_count) + parseInt(item.female_count), 0);
+           // Calculate total admissions from both morbidity and mortality data
+            let totalMorbidity = morbidityData.reduce((sum, item) => sum + parseInt(item.male_count) + parseInt(item.female_count), 0);
+            let totalMortality = mortalityData.reduce((sum, item) => sum + parseInt(item.male_count) + parseInt(item.female_count), 0);
+            let totalAdmissions = totalMorbidity + totalMortality;
             document.getElementById('stat-admissions').textContent = totalAdmissions.toLocaleString();
 
             // Population Chart (Donut)
