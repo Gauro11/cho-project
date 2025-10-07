@@ -293,7 +293,7 @@
             <div class="card-modern population-card">
                 <div class="card-header-clean">
                     <h3 class="card-title-clean">Population per Barangay</h3>
-                    <a href="#" class="view-all-link">All Barangay</a>
+                    
                 </div>
                 <div class="card-body-clean">
                     <div class="chart-wrapper">
