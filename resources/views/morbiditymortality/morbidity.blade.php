@@ -1831,24 +1831,26 @@ document.addEventListener("DOMContentLoaded", function () {
     let rows = document.querySelectorAll("#dataTable tbody tr");
 
     rows.forEach(row => {
-        // Only search in specific columns (exclude actions and checkboxes)
-        let searchableCells = row.querySelectorAll("td:not(:last-child)"); // Exclude last column (actions)
         let found = false;
+        
+        // Only search in specific columns (exclude checkbox, percentage, and actions)
+        // Column indices: 0=checkbox, 1=date, 2=cases, 3=male, 4=female, 5=total, 6=percentage, 7=actions
+        const searchableIndices = [1, 2, 3, 4, 5]; // Date, Cases, Male, Female, Total
 
-        searchableCells.forEach(cell => {
-            // Skip if cell contains buttons or inputs
-            if (cell.querySelector('button') || cell.querySelector('input')) {
-                return;
-            }
+        searchableIndices.forEach(colIndex => {
+            const cell = row.cells[colIndex];
+            if (!cell) return;
 
+            // Get original text
             let originalText = cell.textContent || cell.innerText;
             let lowerText = originalText.toLowerCase();
 
-            // Reset to original text first
-            if (!cell.querySelector('.highlight')) {
+            // Store original if not already stored
+            if (!cell.hasAttribute('data-original')) {
                 cell.setAttribute('data-original', originalText);
             }
 
+            // Check if search matches
             if (searchValue !== "" && lowerText.includes(searchValue)) {
                 found = true;
                 
@@ -1857,7 +1859,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 let highlightedText = originalText.replace(regex, `<span class="highlight">$1</span>`);
                 cell.innerHTML = highlightedText;
             } else {
-                // Restore original text if no match
+                // Restore original text if no match or search is empty
                 if (cell.hasAttribute('data-original')) {
                     cell.textContent = cell.getAttribute('data-original');
                 }
