@@ -1116,7 +1116,7 @@
                                 <div class="mb-3">
                                     <small class="text-muted">
                                         <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
-                                        <strong>Required columns:</strong> Location, Date, Population
+                                        <strong>Required columns:</strong> Location, Year, Population
                                     </small>
                                 </div>
 
