@@ -385,164 +385,198 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Load city-wide summary on page load
-        fetch("{{ url('/dagupan-population') }}")
+    // Load city-wide summary on page load
+    fetch("{{ url('/dagupan-population') }}")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("population-text").innerHTML =
+                    `${data.city} / Population ${data.population.toLocaleString()} (${data.year})`;
+            }
+        })
+        .catch(() => {
+            document.getElementById("population-text").innerHTML =
+                "City of Dagupan / Population unavailable";
+        });
+
+    // Click map container to load barangay population
+    document.getElementById("map-container").addEventListener("click", function () {
+        fetch("{{ route('dagupan.barangays') }}")
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById("population-text").innerHTML =
-                        `${data.city} / Population ${data.population.toLocaleString()} (${data.year})`;
+                    const tbody = document.querySelector("#population-table tbody");
+                    tbody.innerHTML = "";
+
+                    data.barangays.forEach(row => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="fw-semibold">${row.location}</td>
+                                <td>${row.population.toLocaleString()}</td>
+                                <td>${row.year}</td>
+                            </tr>
+                        `;
+                    });
+
+                    new bootstrap.Modal(document.getElementById("barangayModal")).show();
                 }
             })
-            .catch(() => {
-                document.getElementById("population-text").innerHTML =
-                    "City of Dagupan / Population unavailable";
+            .catch(err => {
+                console.error(err);
+                alert("Unable to load barangay population data.");
             });
+    });
 
-        // Click map container to load barangay population
-        document.getElementById("map-container").addEventListener("click", function () {
-            fetch("{{ route('dagupan.barangays') }}")
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        const tbody = document.querySelector("#population-table tbody");
-                        tbody.innerHTML = "";
+    document.addEventListener("DOMContentLoaded", function () {
+        // Laravel Data
+        let vitalStatisticsData = {!! json_encode($vitalStatisticsData) !!};
+        let barangays = {!! json_encode($barangays) !!};
+        let immunizationData = {!! json_encode($immunizationData) !!};
+        let morbidityData = {!! json_encode($morbidityCases) !!};
+        let mortalityData = {!! json_encode($mortalityCases) !!};
 
-                       data.barangays.forEach(row => {
-    tbody.innerHTML += `
-        <tr>
-            <td class="fw-semibold">${row.location}</td>
-            <td>${row.population.toLocaleString()}</td>
-            <td>${row.year}</td>
-        </tr>
-    `;
-});
+        let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
+        let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
 
+        // Filter population data for year 2025 only
+        let population2025 = sortedPopulation.filter(item => item.year === 2025 || item.year === '2025');
+        let totalPopulation = population2025.reduce((sum, item) => sum + parseInt(item.population), 0);
 
-                        new bootstrap.Modal(document.getElementById("barangayModal")).show();
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Unable to load barangay population data.");
-                });
+        // Update stat cards
+        document.getElementById('stat-population').textContent = totalPopulation.toLocaleString();
+
+        // Calculate total births & deaths
+        let totalBirths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_live_births), 0);
+        let totalDeaths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_deaths), 0);
+        document.getElementById('stat-births').textContent = totalBirths.toLocaleString();
+        document.getElementById('stat-deaths').textContent = totalDeaths.toLocaleString();
+
+        // ✅ Population Chart (Donut)
+        function generateColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                const hue = (i * 360 / count) % 360;
+                colors.push(`hsl(${hue}, 70%, 60%)`);
+            }
+            return colors;
+        }
+
+        // ✅ Handle too many barangays (show top 10 + Others)
+        const MAX_LABELS = 10;
+        let displayData = sortedPopulation;
+
+        if (sortedPopulation.length > MAX_LABELS) {
+            const topItems = sortedPopulation.slice(0, MAX_LABELS - 1);
+            const othersValue = sortedPopulation
+                .slice(MAX_LABELS - 1)
+                .reduce((a, b) => a + parseInt(b.population), 0);
+            displayData = [...topItems, { location: 'Others', population: othersValue }];
+        }
+
+        new Chart(document.getElementById("populationChart"), {
+            type: "doughnut",
+            data: {
+                labels: displayData.map(item => item.location || item.year),
+                datasets: [{
+                    data: displayData.map(item => item.population),
+                    backgroundColor: generateColors(displayData.length)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12,
+                            font: { size: 10 }
+                        }
+                    },
+                    tooltip: { enabled: true }
+                }
+            }
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            // Laravel Data
-            let vitalStatisticsData = {!! json_encode($vitalStatisticsData) !!};
-            let barangays = {!! json_encode($barangays) !!};
-            let immunizationData = {!! json_encode($immunizationData) !!};
-            let morbidityData = {!! json_encode($morbidityCases) !!};
-            let mortalityData = {!! json_encode($mortalityCases) !!};
-
-            let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
-            let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
-            // Filter population data for year 2025 only
-                        let population2025 = sortedPopulation.filter(item => item.year === 2025 || item.year === '2025');
-            let totalPopulation = population2025.reduce((sum, item) => sum + parseInt(item.population), 0);
-
-
-            // Update stat cards
-            document.getElementById('stat-population').textContent = totalPopulation.toLocaleString();
-            
-            // Calculate sum of all births and deaths across all years
-            let totalBirths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_live_births), 0);
-            let totalDeaths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_deaths), 0);
-            
-            document.getElementById('stat-births').textContent = totalBirths.toLocaleString();
-            document.getElementById('stat-deaths').textContent = totalDeaths.toLocaleString();
-            
-           // Calculate total admissions from both morbidity and mortality data
-          
-
-            // Population Chart (Donut)
-          // Population Chart (Donut)
-            // Generate colors for all barangays
-            function generateColors(count) {
-                const colors = [];
-                for (let i = 0; i < count; i++) {
-                    const hue = (i * 360 / count) % 360;
-                    colors.push(`hsl(${hue}, 70%, 60%)`);
-                }
-                return colors;
-            }
-            
-            new Chart(document.getElementById("populationChart"), {
-    type: "doughnut",
-    data: {
-        labels: sortedPopulation.map(item => item.location || item.year),
-        datasets: [{
-            data: sortedPopulation.map(item => item.population),
-            backgroundColor: generateColors(sortedPopulation.length)
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { 
-                position: 'right',
-                labels: {
-                    boxWidth: 12,
-                    font: {
-                        size: 10
+        // Birth / Death Chart
+        new Chart(document.getElementById("birthDeathChart"), {
+            type: "line",
+            data: {
+                labels: sortedVital.map(item => item.year),
+                datasets: [
+                    {
+                        label: "Live Births",
+                        borderColor: "#3b82f6",
+                        backgroundColor: "rgba(59, 130, 246, 0.1)",
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        data: sortedVital.map(item => item.total_live_births)
+                    },
+                    {
+                        label: "Total Deaths",
+                        borderColor: "#a855f7",
+                        backgroundColor: "rgba(168, 85, 247, 0.1)",
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        data: sortedVital.map(item => item.total_deaths)
                     }
-                }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top' } },
+                scales: { y: { beginAtZero: true } }
             }
+        });
+
+        // Immunization Chart
+        new Chart(document.getElementById("immunizationChart"), {
+            type: "bar",
+            data: {
+                labels: immunizationData.map(item => item.vaccine_name),
+                datasets: [
+                    {
+                        label: "Male",
+                        backgroundColor: "#3b82f6",
+                        data: immunizationData.map(item => item.male_vaccinated)
+                    },
+                    {
+                        label: "Female",
+                        backgroundColor: "#a78bfa",
+                        data: immunizationData.map(item => item.female_vaccinated)
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // Morbidity & Mortality Charts
+        function getChronologicalTopCases(data) {
+            return data.sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
         }
-    }
-});
 
-            // Birth / Death Chart
-            new Chart(document.getElementById("birthDeathChart"), {
-                type: "line",
-                data: {
-                    labels: sortedVital.map(item => item.year),
-                    datasets: [
-                        {
-                            label: "Live Births",
-                            borderColor: "#3b82f6",
-                            backgroundColor: "rgba(59, 130, 246, 0.1)",
-                            borderWidth: 2,
-                            tension: 0.4,
-                            fill: true,
-                            data: sortedVital.map(item => item.total_live_births)
-                        },
-                        {
-                            label: "Total Deaths",
-                            borderColor: "#a855f7",
-                            backgroundColor: "rgba(168, 85, 247, 0.1)",
-                            borderWidth: 2,
-                            tension: 0.4,
-                            fill: true,
-                            data: sortedVital.map(item => item.total_deaths)
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-
-            // Immunization Chart
-            new Chart(document.getElementById("immunizationChart"), {
+        function createChart(chartId, caseData) {
+            new Chart(document.getElementById(chartId), {
                 type: "bar",
                 data: {
-                    labels: immunizationData.map(item => item.vaccine_name),
+                    labels: caseData.map(c => c.case_name),
                     datasets: [
                         {
                             label: "Male",
-                            backgroundColor: "#3b82f6",
-                            data: immunizationData.map(item => item.male_vaccinated)
+                            backgroundColor: "#60a5fa",
+                            data: caseData.map(c => c.male_count)
                         },
                         {
                             label: "Female",
-                            backgroundColor: "#a78bfa",
-                            data: immunizationData.map(item => item.female_vaccinated)
+                            backgroundColor: "#c084fc",
+                            data: caseData.map(c => c.female_count)
                         }
                     ]
                 },
@@ -552,42 +586,13 @@
                     scales: { y: { beginAtZero: true } }
                 }
             });
+        }
 
-            // Morbidity & Mortality Charts
-            function getChronologicalTopCases(data) {
-                return data.sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
-            }
+        createChart("morbidityCasesChart", getChronologicalTopCases(morbidityData));
+        createChart("mortalityCasesChart", getChronologicalTopCases(mortalityData));
+    });
+</script>
 
-            function createChart(chartId, caseData) {
-                new Chart(document.getElementById(chartId), {
-                    type: "bar",
-                    data: {
-                        labels: caseData.map(c => c.case_name),
-                        datasets: [
-                            {
-                                label: "Male",
-                                backgroundColor: "#60a5fa",
-                                data: caseData.map(c => c.male_count)
-                            },
-                            {
-                                label: "Female",
-                                backgroundColor: "#c084fc",
-                                data: caseData.map(c => c.female_count)
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { y: { beginAtZero: true } }
-                    }
-                });
-            }
-
-            createChart("morbidityCasesChart", getChronologicalTopCases(morbidityData));
-            createChart("mortalityCasesChart", getChronologicalTopCases(mortalityData));
-        });
-    </script>
     
 </body>
 
