@@ -445,11 +445,12 @@
         $infantDeaths = $row->infant_deaths;
         $maternalDeaths = $row->maternal_deaths;
 
-        // Simple rate calculations based on births instead of population
-        $crudeBirthRate = $births; // Just show the birth count
-        $crudeDeathRate = $births > 0 ? ($deaths / $births) * 1000 : 0; // Deaths per 1000 births
-        $infantMortalityRate = $births > 0 ? ($infantDeaths / $births) * 1000 : 0;
-        $maternalMortalityRate = $births > 0 ? ($maternalDeaths / $births) * 100000 : 0;
+        // ✅ Revised rate calculations
+        $totalEvents = $births + $deaths; // Sum of births + deaths
+        $crudeBirthRate = $totalEvents > 0 ? ($births / $totalEvents) * 1000 : 0; // Births per 1,000 total events
+        $crudeDeathRate = $totalEvents > 0 ? ($deaths / $totalEvents) * 1000 : 0; // Deaths per 1,000 total events
+        $infantMortalityRate = $births > 0 ? ($infantDeaths / $births) * 1000 : 0; // Infant deaths per 1,000 live births
+        $maternalMortalityRate = $births > 0 ? ($maternalDeaths / $births) * 100000 : 0; // Maternal deaths per 100,000 live births
     @endphp
     <tr data-id="{{ $row->id }}">
         <td>
@@ -486,6 +487,7 @@
         </td>
     </tr>
 @endforeach
+
                     </tbody>
                 </table>
 
