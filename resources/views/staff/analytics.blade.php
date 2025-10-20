@@ -264,13 +264,7 @@
                 </svg>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Admissions</div>
-                <div class="stat-value" id="stat-admissions">--</div>
-                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
-                   
-                </div>
-            </div>
+           
         </div>
 
         <!-- First Row of Cards -->
@@ -456,10 +450,7 @@
             document.getElementById('stat-deaths').textContent = totalDeaths.toLocaleString();
             
            // Calculate total admissions from both morbidity and mortality data
-            let totalMorbidity = morbidityData.reduce((sum, item) => sum + parseInt(item.male_count) + parseInt(item.female_count), 0);
-            let totalMortality = mortalityData.reduce((sum, item) => sum + parseInt(item.male_count) + parseInt(item.female_count), 0);
-            let totalAdmissions = totalMorbidity + totalMortality;
-            document.getElementById('stat-admissions').textContent = totalAdmissions.toLocaleString();
+          
 
             // Population Chart (Donut)
             new Chart(document.getElementById("populationChart"), {

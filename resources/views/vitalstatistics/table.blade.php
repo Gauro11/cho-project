@@ -437,53 +437,55 @@
                     </thead>
 
                     <tbody style="background-color: white;">
-                        @foreach ($data as $row)
-                            @php
-                                $population = $row->total_population;
-                                $births = $row->total_live_births;
-                                $deaths = $row->total_deaths;
-                                $infantDeaths = $row->infant_deaths;
-                                $maternalDeaths = $row->maternal_deaths;
+                       
+@foreach ($data as $row)
+    @php
+        $births = $row->total_live_births;
+        $deaths = $row->total_deaths;
+        $infantDeaths = $row->infant_deaths;
+        $maternalDeaths = $row->maternal_deaths;
 
-                                $crudeBirthRate = $population > 0 ? ($births / $population) * 1000 : 0;
-                                $crudeDeathRate = $population > 0 ? ($deaths / $population) * 1000 : 0;
-                                $infantMortalityRate = $births > 0 ? ($infantDeaths / $births) * 1000 : 0;
-                                $maternalMortalityRate = $births > 0 ? ($maternalDeaths / $births) * 100000 : 0;
-                            @endphp
-                            <tr data-id="{{ $row->id }}">
-                                <td>
-                                    <div class="checkbox-container">
-                                        <label class="custom-checkbox">
-                                            <input type="checkbox" class="row-checkbox" data-id="{{ $row->id }}">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                </td>
-                                <td>{{ $row->year }}</td>
-                                <td>{{ number_format($births) }}</td>
-                                <td>{{ number_format($crudeBirthRate, 2) }}</td>
-                                <td>{{ number_format($deaths) }}</td>
-                                <td>{{ number_format($crudeDeathRate, 2) }}</td>
-                                <td>{{ number_format($infantDeaths) }}</td>
-                                <td>{{ number_format($infantMortalityRate, 2) }}</td>
-                                <td>{{ number_format($maternalDeaths) }}</td>
-                                <td>{{ number_format($maternalMortalityRate, 2) }}</td>
-                                <td class="no-print">
-                                    <button class="btn btn-warning btn-sm edit-button" data-id="{{ $row->id }}"
-                                        data-year="{{ $row->year }}" data-population="{{ $row->total_population }}"
-                                        data-births="{{ $row->total_live_births }}"
-                                        data-deaths="{{ $row->total_deaths }}" data-infant="{{ $row->infant_deaths }}"
-                                        data-maternal="{{ $row->maternal_deaths }}">
-                                        Edit
-                                    </button>
+        // Simple rate calculations based on births instead of population
+        $crudeBirthRate = $births; // Just show the birth count
+        $crudeDeathRate = $births > 0 ? ($deaths / $births) * 1000 : 0; // Deaths per 1000 births
+        $infantMortalityRate = $births > 0 ? ($infantDeaths / $births) * 1000 : 0;
+        $maternalMortalityRate = $births > 0 ? ($maternalDeaths / $births) * 100000 : 0;
+    @endphp
+    <tr data-id="{{ $row->id }}">
+        <td>
+            <div class="checkbox-container">
+                <label class="custom-checkbox">
+                    <input type="checkbox" class="row-checkbox" data-id="{{ $row->id }}">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </td>
+        <td>{{ $row->year }}</td>
+        <td>{{ number_format($births) }}</td>
+        <td>{{ number_format($crudeBirthRate, 2) }}</td>
+        <td>{{ number_format($deaths) }}</td>
+        <td>{{ number_format($crudeDeathRate, 2) }}</td>
+        <td>{{ number_format($infantDeaths) }}</td>
+        <td>{{ number_format($infantMortalityRate, 2) }}</td>
+        <td>{{ number_format($maternalDeaths) }}</td>
+        <td>{{ number_format($maternalMortalityRate, 2) }}</td>
+        <td class="no-print">
+            <button class="btn btn-warning btn-sm edit-button" data-id="{{ $row->id }}"
+                data-year="{{ $row->year }}"
+                data-births="{{ $row->total_live_births }}"
+                data-deaths="{{ $row->total_deaths }}" 
+                data-infant="{{ $row->infant_deaths }}"
+                data-maternal="{{ $row->maternal_deaths }}">
+                Edit
+            </button>
 
-                                    <button type="button" class="btn btn-danger btn-sm delete-button"
-                                        data-id="{{ $row->id }}">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
+            <button type="button" class="btn btn-danger btn-sm delete-button"
+                data-id="{{ $row->id }}">
+                Delete
+            </button>
+        </td>
+    </tr>
+@endforeach
                     </tbody>
                 </table>
 
