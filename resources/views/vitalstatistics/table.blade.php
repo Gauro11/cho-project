@@ -424,13 +424,13 @@
                                 </div>
                             </th>
                             <th onclick="sortTable(1, 'number')">Year <i class="fas fa-sort sort-icon" id="icon-1"></i></th>
-                            <th onclick="sortTable(2, 'number')">Total Live Births <i class="fas fa-sort sort-icon" id="icon-2"></i></th>
+                            <th onclick="sortTable(2, 'number')">Total No of Live Births <i class="fas fa-sort sort-icon" id="icon-2"></i></th>
                             <th onclick="sortTable(3, 'number')">Crude Birth Rate <i class="fas fa-sort sort-icon" id="icon-3"></i></th>
-                            <th onclick="sortTable(4, 'number')">Total Deaths <i class="fas fa-sort sort-icon" id="icon-4"></i></th>
+                            <th onclick="sortTable(4, 'number')">Total No of Deaths <i class="fas fa-sort sort-icon" id="icon-4"></i></th>
                             <th onclick="sortTable(5, 'number')">Crude Death Rate <i class="fas fa-sort sort-icon" id="icon-5"></i></th>
-                            <th onclick="sortTable(6, 'number')">Infant Deaths <i class="fas fa-sort sort-icon" id="icon-6"></i></th>
+                            <th onclick="sortTable(6, 'number')">Total No of Infant Death <i class="fas fa-sort sort-icon" id="icon-6"></i></th>
                             <th onclick="sortTable(7, 'number')">Infant Mortality Rate <i class="fas fa-sort sort-icon" id="icon-7"></i></th>
-                            <th onclick="sortTable(8, 'number')">Maternal Deaths <i class="fas fa-sort sort-icon" id="icon-8"></i></th>
+                            <th onclick="sortTable(8, 'number')">Total No of Maternal Deaths <i class="fas fa-sort sort-icon" id="icon-8"></i></th>
                             <th onclick="sortTable(9, 'number')">Maternal Mortality Rate <i class="fas fa-sort sort-icon" id="icon-9"></i></th>
                             <th class="no-print">Actions</th>
                         </tr>

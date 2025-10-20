@@ -245,6 +245,7 @@
                               fill="none" stroke="white" stroke-width="2"/>
                 </svg>
             </div>
+            
 
             <div class="stat-card">
                 <div class="stat-label">Total Live Birth</div>
@@ -437,7 +438,10 @@
 
             let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
             let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
-            let totalPopulation = sortedPopulation.reduce((sum, item) => sum + parseInt(item.population), 0);
+            // Filter population data for year 2025 only
+                        let population2025 = sortedPopulation.filter(item => item.year === 2025 || item.year === '2025');
+            let totalPopulation = population2025.reduce((sum, item) => sum + parseInt(item.population), 0);
+
 
             // Update stat cards
             document.getElementById('stat-population').textContent = totalPopulation.toLocaleString();
@@ -453,20 +457,39 @@
           
 
             // Population Chart (Donut)
+          // Population Chart (Donut)
+            // Generate colors for all barangays
+            function generateColors(count) {
+                const colors = [];
+                for (let i = 0; i < count; i++) {
+                    const hue = (i * 360 / count) % 360;
+                    colors.push(`hsl(${hue}, 70%, 60%)`);
+                }
+                return colors;
+            }
+            
             new Chart(document.getElementById("populationChart"), {
     type: "doughnut",
     data: {
-        labels: sortedPopulation.slice(0, 6).map(item => item.location || item.year),
+        labels: sortedPopulation.map(item => item.location || item.year),
         datasets: [{
-            data: sortedPopulation.slice(0, 6).map(item => item.population),
-            backgroundColor: ['#3b82f6', '#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981']
+            data: sortedPopulation.map(item => item.population),
+            backgroundColor: generateColors(sortedPopulation.length)
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: { position: 'right' }
+            legend: { 
+                position: 'right',
+                labels: {
+                    boxWidth: 12,
+                    font: {
+                        size: 10
+                    }
+                }
+            }
         }
     }
 });
