@@ -6,126 +6,17 @@ use Illuminate\Http\Request;
 use App\Models\PopulationStatisticsManagement;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\PopulationImport;
+use App\Exports\PopulationTemplateExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Exports\PopulationTemplateExport;
-use App\Models\Population;  // ← Changed this
-
-
-
 
 class PopulationController extends Controller
 {
-
-    public function delete_population($id)
+    /**
+     * Show population records (paginated) for staff
+     */
+    public function show_population()
     {
-        $data = PopulationStatisticsManagement::findOrFail($id);
-        $data->delete();
-    
-        return response()->json(['success' => true]);
-    }
-
-    public function update_population(Request $request)
-    {
-        // Validate input data
-        $request->validate([
-    'location' => 'required|string|max:255',
-    'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/', // YYYY-MM format
-    'population' => 'required|integer|min:0',
-]);
-
-        // Find the record by ID
-        try {
-           $data = PopulationStatisticsManagement::find($request->id);
-$data->location = $request->location;
-$data->year_month = $request->year_month;
-$data->population = $request->population;
-$data->save();
-
-    
-            return response()->json(['success' => true, 'message' => 'Data updated successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()]);
-        }    
-       
-    }
-    
- public function store_population(Request $request)
-{
-    // LOG EVERYTHING FIRST
-    \Log::info('=== POPULATION STORE REQUEST ===');
-    \Log::info('All Request Data:', $request->all());
-    \Log::info('Location:', [$request->location]);
-    \Log::info('Year Month:', [$request->year_month]);
-    \Log::info('Population:', [$request->population]);
-    
-    try {
-        // Validate input
-        $validated = $request->validate([
-            'location' => 'required|string|max:255',
-            'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/',
-            'population' => 'required|integer|min:0',
-        ]);
-        
-        \Log::info('Validated Data:', $validated);
-
-        // Check for duplicates
-        $exists = PopulationStatisticsManagement::where('location', $validated['location'])
-            ->where('year_month', $validated['year_month'])
-            ->exists();
-
-        if ($exists) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Population data for this location and month already exists!',
-            ], 409);
-        }
-
-        // Create new record
-        $population = PopulationStatisticsManagement::create([
-            'location' => $validated['location'],
-            'year_month' => $validated['year_month'],
-            'population' => (int) $validated['population'],
-        ]);
-        
-        \Log::info('Successfully created:', $population->toArray());
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Population data added successfully!',
-            'data' => $population,
-        ], 201);
-        
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        \Log::error('Validation Error:', $e->errors());
-        return response()->json([
-            'success' => false,
-            'message' => 'Validation failed',
-            'errors' => $e->errors()
-        ], 422);
-        
-    } catch (\Exception $e) {
-        \Log::error('Store Population Error:', [
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to save population data',
-            'error' => config('app.debug') ? $e->getMessage() : 'Server error'
-        ], 500);
-    }
-}
-
-
-
-
-public function show_population()
-{
-    try {
         if (!Auth::guard('staff')->check()) {
             return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
         }
@@ -134,27 +25,165 @@ public function show_population()
         $data = PopulationStatisticsManagement::paginate(10);
 
         return view('populationstatistics.population', compact('data', 'user'));
-
-    } catch (\Exception $e) {
-        dd($e->getMessage(), $e->getTraceAsString());
     }
-}
 
+    /**
+     * Store a new population record
+     */
+    public function store_population(Request $request)
+    {
+        try {
+            // Validate input
+            $validated = $request->validate([
+                'location' => 'required|string|max:255',
+                'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/',
+                'population' => 'required|integer|min:0',
+            ]);
 
+            // Check for duplicates
+            $exists = PopulationStatisticsManagement::where('location', $validated['location'])
+                ->where('year_month', $validated['year_month'])
+                ->exists();
 
+            if ($exists) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Population data for this location and month already exists!',
+                ], 409);
+            }
 
-public function import(Request $request)
-{
-    $request->validate([
-        'file' => 'required|mimes:xlsx,xls,csv',
-    ]);
+            // Insert
+            $population = PopulationStatisticsManagement::create($validated);
 
-    Excel::import(new PopulationImport, $request->file('file'));
+            return response()->json([
+                'success' => true,
+                'message' => 'Population data added successfully!',
+                'data' => ['id' => $population->id],
+            ], 201);
 
-    return back()->with('success', 'Population data imported successfully.');
-}
+        } catch (\Exception $e) {
+            \Log::error('Population Store Error', [
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ]);
 
- public function getBarangays()
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add population data: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Update an existing population record
+     */
+    public function update_population(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id' => 'required|integer|exists:population_statistics_management,id',
+                'location' => 'required|string|max:255',
+                'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/',
+                'population' => 'required|integer|min:0',
+            ]);
+
+            $population = PopulationStatisticsManagement::findOrFail($validated['id']);
+            $population->update($request->only(['location', 'year_month', 'population']));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Population data updated successfully!',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update population data: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete a single population record
+     */
+    public function delete_population($id)
+    {
+        try {
+            $population = PopulationStatisticsManagement::findOrFail($id);
+            $population->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Population record deleted successfully!',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete population data: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete multiple selected population records
+     */
+    public function deleteSelected(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No records selected for deletion',
+            ], 400);
+        }
+
+        try {
+            $deletedCount = PopulationStatisticsManagement::whereIn('id', $ids)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => "$deletedCount population records deleted successfully!",
+                'deleted_count' => $deletedCount,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete selected records: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete all population records
+     */
+    public function deleteAll()
+    {
+        try {
+            $count = PopulationStatisticsManagement::count();
+            PopulationStatisticsManagement::truncate();
+
+            return response()->json([
+                'success' => true,
+                'message' => "All $count population records deleted successfully",
+                'deleted_count' => $count,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete all records: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get population data for barangays
+     */
+    public function getBarangays()
     {
         try {
             $data = PopulationStatisticsManagement::select('location', 'population', 'year_month')
@@ -165,119 +194,80 @@ public function import(Request $request)
                 'success' => true,
                 'barangays' => $data
             ]);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error fetching barangay population data',
-                'error'   => $e->getMessage()
+                'message' => 'Error fetching barangay population data: '.$e->getMessage()
             ], 500);
         }
     }
 
+    /**
+     * Download population template
+     */
+    public function downloadTemplate()
+    {
+        return Excel::download(new PopulationTemplateExport, 'population_template.xlsx');
+    }
 
-public function downloadTemplate()
-{
-    return Excel::download(new PopulationTemplateExport, 'population_template.xlsx');
-}
+    /**
+     * Import population data from Excel/CSV
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
 
+        try {
+            Excel::import(new PopulationImport, $request->file('file'));
+            return back()->with('success', 'Population data imported successfully!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Import failed: '.$e->getMessage()]);
+        }
+    }
 
-public function deleteSelected(Request $request)
-{
-    try {
-        $ids = $request->input('ids'); // dapat array ng mga ID
+    /**
+     * Get Dagupan city population from PSGC API
+     */
+    public function getDagupanPopulation()
+    {
+        $cityCode = "0105518000";
 
-        if (empty($ids) || !is_array($ids)) {
+        try {
+            $response = Http::timeout(10)->get("https://psgc.cloud/api/cities/{$cityCode}");
+            if (!$response->successful()) {
+                return response()->json([
+                    'success' => false,
+                    'status' => $response->status(),
+                    'message' => 'Failed to fetch Dagupan PSGC data',
+                ], $response->status());
+            }
+
+            $data = $response->json();
+
+            // Hardcoded population (PSGC API doesn't provide)
+            $population = 174302;
+            $year = 2020;
+
+            return response()->json([
+                'success' => true,
+                'city' => $data['name'] ?? 'Dagupan City',
+                'code' => $data['code'] ?? $cityCode,
+                'type' => $data['cityClass'] ?? $data['type'] ?? null,
+                'zip_code' => $data['zipCode'] ?? $data['zip_code'] ?? null,
+                'region' => $data['region']['name'] ?? null,
+                'province' => $data['province']['name'] ?? null,
+                'population' => $population,
+                'year' => $year
+            ]);
+
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'No records selected for deletion'
-            ], 400);
+                'message' => 'Failed to fetch population: '.$e->getMessage()
+            ], 500);
         }
-
-        $deletedCount = PopulationStatisticsManagement::whereIn('id', $ids)->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => "Selected population records deleted successfully",
-            'deleted_count' => $deletedCount
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to delete records: ' . $e->getMessage()
-        ], 500);
     }
-}
-
-
-
-
-
-
-
-public function getDagupanPopulation()
-{
-    $cityCode = "0105518000"; // Correct PSGC code for Dagupan
-
-    // PSGC metadata endpoint
-    $psgcUrl = "https://psgc.cloud/api/cities/{$cityCode}";
-
-    try {
-        $response = Http::timeout(10)->get($psgcUrl);
-
-        if (!$response->successful()) {
-            return response()->json([
-                'success' => 0,
-                'status'  => $response->status(),
-                'message' => 'Failed to fetch Dagupan PSGC data',
-            ], $response->status());
-        }
-
-        $data = $response->json();
-
-        // Hardcode population since PSGC Cloud doesn't provide it
-        $population = 174302;
-        $year       = 2020;
-
-        return response()->json([
-            'success'    => 1,
-            'city'       => $data['name'] ?? 'Dagupan City',
-            'code'       => $data['code'] ?? $cityCode,
-            'type'       => $data['cityClass'] ?? $data['type'] ?? null,
-            'zip_code'   => $data['zipCode'] ?? $data['zip_code'] ?? null,
-            'region'     => $data['region']['name'] ?? null,
-            'province'   => $data['province']['name'] ?? null,
-            'population' => $population,
-            'year'       => $year
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => 0,
-            'error'   => $e->getMessage(),
-            'message' => 'Request failed',
-        ], 500);
-    }
-}
-
-public function deleteAll()
-{
-    try {
-        $deletedCount = PopulationStatisticsManagement::count(); // Get count before deletion
-        PopulationStatisticsManagement::truncate(); // Deletes all records
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'All records deleted successfully',
-            'deleted_count' => $deletedCount
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to delete records: ' . $e->getMessage()
-        ], 500);
-    }
-}
-
-
-
-
 }
