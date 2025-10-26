@@ -1214,43 +1214,45 @@
                             const modal = document.getElementById('customModal');
                             const cancelBtn = document.getElementById('cancelCustomModal'); // cancel button
                             const topCloseBtn = document.getElementById('closeCustomModalTop'); // X button
-                            document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector("form[action='{{ route('population.store') }}']");
+                            const form = document.querySelector("form[action='{{ route('/public/population.store') }}']");
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        let formData = new FormData(this);
+                            // Form submit (AJAX)
+                            form.addEventListener('submit', function(e) {
+                                e.preventDefault();
+                                let formData = new FormData(this);
 
-        fetch(form.action, {
-            method: "POST",
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: formData,
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                showModernAlert("✅ Success", data.message);
-                setTimeout(() => {
-                    form.reset();
-                    location.reload();
-                }, 1400);
-            } else {
-                const locationInput = form.querySelector("[name='location']");
-                if (data.message && data.message.includes('location')) {
-                    locationInput.classList.add("input-error");
-                }
-                showModernAlert("❌ Error", data.message);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            showModernAlert("❌ Error", "An error occurred while saving.");
-        });
-    });
-});
+                                fetch(form.action, {
+                                        method: "POST",
+                                        headers: {
+                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                                            "X-Requested-With": "XMLHttpRequest",
+                                        },
+                                        body: formData,
+                                    })
+                                    .then(r => r.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            showModernAlert("✅ Success", data.message ||
+                                                "Population data added successfully!");
+                                            setTimeout(() => {
+                                                form.reset();
+                                                closeModal();
+                                                location.reload();
+                                            }, 1400);
+                                        } else {
+                                            // highlight location field if duplicate
+                                            const locationInput = form.querySelector("[name='location']");
+                                            if (data.message && data.message.includes('location')) {
+                                                locationInput.classList.add("input-error"); // add red border CSS class
+                                            }
+                                            showModernAlert("❌ Error", data.message || "Failed to save.");
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        showModernAlert("❌ Error", "An error occurred while saving.");
+                                    });
+                            });
 
                             // Close modal function
                             function closeModal() {
