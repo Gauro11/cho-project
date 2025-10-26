@@ -31,49 +31,37 @@ class PopulationController extends Controller
      * Store a new population record
      */
     public function store_population(Request $request)
-    {
-        try {
-            // Validate input
-            $validated = $request->validate([
-                'location' => 'required|string|max:255',
-                'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/',
-                'population' => 'required|integer|min:0',
-            ]);
+{
+    try {
+        $validated = $request->validate([
+            'location' => 'required|string|max:255',
+            'year_month' => 'required|string',
+            'population' => 'required|integer|min:0',
+        ]);
 
-            // Check for duplicates
-            $exists = PopulationStatisticsManagement::where('location', $validated['location'])
-                ->where('year_month', $validated['year_month'])
-                ->exists();
+        $population = PopulationStatisticsManagement::create([
+            'location' => $validated['location'],
+            'year_month' => $validated['year_month'] ?? null,
+            'population' => $validated['population'],
+        ]);
 
-            if ($exists) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Population data for this location and month already exists!',
-                ], 409);
-            }
+        return response()->json([
+            'success' => true,
+            'message' => 'Population data added successfully!',
+            'data' => ['id' => $population->id],
+        ]);
 
-            // Insert
-            $population = PopulationStatisticsManagement::create($validated);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Population data added successfully!',
-                'data' => ['id' => $population->id],
-            ], 201);
-
-        } catch (\Exception $e) {
-            \Log::error('Population Store Error', [
-                'message' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to add population data: '.$e->getMessage(),
-            ], 500);
-        }
+    } catch (\Exception $e) {
+        // Return actual exception for debugging
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
     }
+}
+
 
     /**
      * Update an existing population record
