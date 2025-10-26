@@ -22,14 +22,14 @@ class StaffController extends Controller
     
 public function index()
 {
-    if (Auth::guard('staff')->check()) {
-        $user = Auth::guard('staff')->user();
-        $usertype = $user->usertype;
+    if (Auth::check()) {
+        $usertype = Auth::user()->usertype;
 
         if ($usertype == 'user' || $usertype == 'staff') {
+            // Change this line to get all fields
             $barangays = DB::table('population_statistics_management')
-                ->orderBy('year', 'asc')
-                ->get();
+                ->orderBy('year_month', 'asc')
+                ->get();  // ✅ Get all fields
 
             $totalPopulation = DB::table('population_statistics_management')->sum('population');
 
@@ -45,19 +45,25 @@ public function index()
 
             $immunizationData = DB::table('immunization_management')->get();
 
-            return view('staff.index', compact(
-                'morbidityCases', 
-                'barangays', 
-                'mortalityCases', 
-                'vitalStatisticsData', 
-                'immunizationData', 
-                'totalPopulation'
-            ));
+            return view('staff.index', compact('morbidityCases', 'barangays', 'mortalityCases', 'vitalStatisticsData', 'immunizationData'));
+        
+        } elseif ($usertype == 'mortality and morbidity records manager') {
+            $morbidityCases = DB::table('morbidity_mortality_management')
+                ->where('category', 'morbidity')
+                ->get();
+
+            $mortalityCases = DB::table('morbidity_mortality_management')
+                ->where('category', 'mortality')
+                ->get();
+
+            return view('morbiditymortality.index', compact('morbidityCases', 'mortalityCases'));
+        } elseif ($usertype == 'vital statistics records manager') {
+            $vitalStatisticsData = DB::table('vital_statistics_management')->get();
+
+            return view('vitalstatistics.index', compact('vitalStatisticsData'));
+        } else {
+            return redirect()->back()->withErrors(['error' => 'User type not recognized.']);
         }
-
-        // Other user types...
-        return redirect()->back()->withErrors(['error' => 'User type not recognized.']);
-
     } else {
         return redirect()->route('login')->withErrors(['error' => 'Please log in first.']);
     }
