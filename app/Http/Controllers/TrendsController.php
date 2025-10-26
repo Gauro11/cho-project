@@ -94,20 +94,21 @@ class TrendsController extends Controller
         }
     }
 
-    private function getPopulationStatisticsData()
-    {
-        $data = DB::table('population_statistics_management')
-            ->selectRaw('year_month, SUM(population) as total')
-            ->whereNotNull('year_month')
-            ->groupBy('year_month')
-            ->orderBy('year_month')
-            ->get();
+   private function getPopulationStatisticsData()
+{
+    $data = DB::table('population_statistics_management')
+        ->selectRaw('`year_month`, SUM(population) as total')
+        ->whereNotNull('year_month')
+        ->groupBy('`year_month`')
+        ->orderBy('`year_month`')
+        ->get();
 
-        return [
-            'labels' => $data->pluck('year_month')->toArray(),  // year_month labels
-            'values' => $data->pluck('total')->toArray()        // totals per month
-        ];
-    }
+    return [
+        'labels' => $data->pluck('year_month')->toArray(),  // year_month labels
+        'values' => $data->pluck('total')->toArray()        // totals per month
+    ];
+}
+
 
     private function generatePrediction($historicalData)
     {
