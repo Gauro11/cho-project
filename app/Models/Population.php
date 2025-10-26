@@ -11,9 +11,10 @@ class Population extends Model
 
     protected $table = 'population_statistics_management'; // make sure it matches your actual table name
 
-    protected $fillable = [
-        'location',
-        'year_month', // changed from 'year' to 'year_month'
-        'population',
-    ];
+  protected $fillable = [
+    'location',
+    'year_month',
+    'population',
+];
+
 }

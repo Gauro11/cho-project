@@ -1026,12 +1026,12 @@
                                         <option value="Tebeng">Tebeng</option>
                                     </select>
                                 </div>
-
 <div class="mb-3">
     <label for="year_month" class="modern-form-label form-label">📅 Month & Year</label>
     <input type="month" class="modern-form-control form-control" id="year_month" name="year_month" required
-           value="<?= date('Y-m') ?>"> <!-- defaults to current month -->
+           value="{{ date('Y-m') }}"> <!-- Laravel blade syntax -->
 </div>
+
 
 
 
@@ -1214,45 +1214,43 @@
                             const modal = document.getElementById('customModal');
                             const cancelBtn = document.getElementById('cancelCustomModal'); // cancel button
                             const topCloseBtn = document.getElementById('closeCustomModalTop'); // X button
-                            const form = document.querySelector("form[action='{{ route('population.store') }}']");
+                            document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector("form[action='{{ route('population.store') }}']");
 
-                            // Form submit (AJAX)
-                            form.addEventListener('submit', function(e) {
-                                e.preventDefault();
-                                let formData = new FormData(this);
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let formData = new FormData(this);
 
-                                fetch(form.action, {
-                                        method: "POST",
-                                        headers: {
-                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-                                            "X-Requested-With": "XMLHttpRequest",
-                                        },
-                                        body: formData,
-                                    })
-                                    .then(r => r.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            showModernAlert("✅ Success", data.message ||
-                                                "Population data added successfully!");
-                                            setTimeout(() => {
-                                                form.reset();
-                                                closeModal();
-                                                location.reload();
-                                            }, 1400);
-                                        } else {
-                                            // highlight location field if duplicate
-                                            const locationInput = form.querySelector("[name='location']");
-                                            if (data.message && data.message.includes('location')) {
-                                                locationInput.classList.add("input-error"); // add red border CSS class
-                                            }
-                                            showModernAlert("❌ Error", data.message || "Failed to save.");
-                                        }
-                                    })
-                                    .catch(err => {
-                                        console.error(err);
-                                        showModernAlert("❌ Error", "An error occurred while saving.");
-                                    });
-                            });
+        fetch(form.action, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: formData,
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showModernAlert("✅ Success", data.message);
+                setTimeout(() => {
+                    form.reset();
+                    location.reload();
+                }, 1400);
+            } else {
+                const locationInput = form.querySelector("[name='location']");
+                if (data.message && data.message.includes('location')) {
+                    locationInput.classList.add("input-error");
+                }
+                showModernAlert("❌ Error", data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showModernAlert("❌ Error", "An error occurred while saving.");
+        });
+    });
+});
 
                             // Close modal function
                             function closeModal() {

@@ -16,7 +16,7 @@ class PopulationImport implements ToModel, WithHeadingRow
         
         return new Population([
             'location'   => $row['location'],
-            'year'       => $this->transformDate($row['year']),
+            'year_month'       => $this->transformDate($row['year']),
             'population' => $row['population'],
         ]);
     }
