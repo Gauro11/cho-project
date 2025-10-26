@@ -159,7 +159,7 @@ Route::get('/immunization/template', [ImmunizationController::class, 'immunizati
 
 
 // Population
-Route::post('population/store', [PopulationController::class, 'store_population'])->name('population.store');
+Route::post('store/population', [PopulationController::class, 'store_population'])->name('population.store');
 Route::put('/population/update', [PopulationController::class, 'update_population'])->name('population.update');
 Route::delete('/population/delete/{id}', [PopulationController::class, 'delete_population'])->name('population.delete');
 Route::delete('/population/delete-selected', [PopulationController::class, 'deleteSelected'])
@@ -178,7 +178,7 @@ Route::get('/population/export/{type}', [DownloadController::class, 'exportPopul
 
 
 
-// Charts / TrendssS
+// Charts / Trendss
 Route::get('/fetch-trend-data/{category}', [AdminController::class, 'fetchTrendData']);
 Route::post('/population/import', [PopulationController::class, 'import'])->name('population.import');
 Route::post('/vital-statistics/import', [VitalStatisticsController::class, 'import'])->name('vital_statistics.import');
