@@ -64,7 +64,7 @@ class PopulationController extends Controller
 
 
     /**
-     * Update an existing population record
+     * Update an existing population recordDD
      */
     public function update_population(Request $request)
     {
