@@ -159,7 +159,7 @@ Route::get('/immunization/template', [ImmunizationController::class, 'immunizati
 
 
 // Population
-Route::post('store/population', [PopulationController::class, 'store_population'])->name('population.store');
+Route::post('public/store/population', [PopulationController::class, 'store_population'])->name('population.store');
 Route::put('/population/update', [PopulationController::class, 'update_population'])->name('population.update');
 Route::delete('/population/delete/{id}', [PopulationController::class, 'delete_population'])->name('population.delete');
 Route::delete('/population/delete-selected', [PopulationController::class, 'deleteSelected'])
