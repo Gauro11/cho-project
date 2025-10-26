@@ -1026,15 +1026,32 @@
                                         <option value="Tebeng">Tebeng</option>
                                     </select>
                                 </div>
+
+                               <!-- Year Picker -->
 <div class="mb-3">
-    <label for="year" class="modern-form-label form-label">📅 Month & Year</label>
-    <input type="month" class="modern-form-control form-control" id="year" name="year" required
-           value="{{ date('Y-m') }}"> <!-- Laravel blade syntax -->
+    <label for="year" class="modern-form-label form-label">📅 Year</label>
+    <select class="modern-form-control form-control" id="year" name="year" required>
+        <option value="">-- Select Year --</option>
+    </select>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const yearSelect = document.getElementById("year");
+        const currentYear = new Date().getFullYear();
+        const startYear = 2000;
+        const endYear = 2099;
 
-
-
+        for (let y = startYear; y <= endYear; y++) {
+            let option = document.createElement("option");
+            option.value = y;
+            option.textContent = y;
+            if (y === currentYear) option.selected = true; // default to current year
+            yearSelect.appendChild(option);
+        }
+         
+    });
+</script>
 
 
 
