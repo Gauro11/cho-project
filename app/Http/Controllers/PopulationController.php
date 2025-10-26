@@ -51,37 +51,72 @@ $data->save();
     
  public function store_population(Request $request)
 {
-    // Validate input
-    $request->validate([
-        'location' => 'required|string|max:255',
-        'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/',
-        'population' => 'required|integer|min:0',
-    ]);
+    // LOG EVERYTHING FIRST
+    \Log::info('=== POPULATION STORE REQUEST ===');
+    \Log::info('All Request Data:', $request->all());
+    \Log::info('Location:', [$request->location]);
+    \Log::info('Year Month:', [$request->year_month]);
+    \Log::info('Population:', [$request->population]);
+    
+    try {
+        // Validate input
+        $validated = $request->validate([
+            'location' => 'required|string|max:255',
+            'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/',
+            'population' => 'required|integer|min:0',
+        ]);
+        
+        \Log::info('Validated Data:', $validated);
 
-    // Check for duplicates: location + year_month
-    $exists = PopulationStatisticsManagement::where('location', $request->location)
-        ->where('year_month', $request->year_month)
-        ->exists();
+        // Check for duplicates
+        $exists = PopulationStatisticsManagement::where('location', $validated['location'])
+            ->where('year_month', $validated['year_month'])
+            ->exists();
 
-    if ($exists) {
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Population data for this location and month already exists!',
+            ], 409);
+        }
+
+        // Create new record
+        $population = PopulationStatisticsManagement::create([
+            'location' => $validated['location'],
+            'year_month' => $validated['year_month'],
+            'population' => (int) $validated['population'],
+        ]);
+        
+        \Log::info('Successfully created:', $population->toArray());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Population data added successfully!',
+            'data' => $population,
+        ], 201);
+        
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        \Log::error('Validation Error:', $e->errors());
         return response()->json([
             'success' => false,
-            'message' => 'Population data for this location and month already exists!',
+            'message' => 'Validation failed',
+            'errors' => $e->errors()
+        ], 422);
+        
+    } catch (\Exception $e) {
+        \Log::error('Store Population Error:', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
         ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to save population data',
+            'error' => config('app.debug') ? $e->getMessage() : 'Server error'
+        ], 500);
     }
-
-    // Create new record
-    $population = PopulationStatisticsManagement::create([
-        'location' => $request->location,
-        'year_month' => $request->year_month,
-        'population' => $request->population,
-    ]);
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Population data added successfully!',
-        'data' => $population,
-    ]);
 }
 
 
