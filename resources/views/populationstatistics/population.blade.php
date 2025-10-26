@@ -1029,29 +1029,38 @@
 
                                <!-- Year Picker -->
 <div class="mb-3">
-    <label for="year" class="modern-form-label form-label">📅 Year</label>
-    <select class="modern-form-control form-control" id="year" name="year" required>
-        <option value="">-- Select Year --</option>
+    <label for="year_month" class="modern-form-label form-label">📅 Year & Month</label>
+    <select class="modern-form-control form-control" id="year_month" name="year_month" required>
+        <option value="">-- Select Year & Month --</option>
     </select>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const yearSelect = document.getElementById("year");
+        const select = document.getElementById("year_month");
         const currentYear = new Date().getFullYear();
         const startYear = 2000;
         const endYear = 2099;
 
+        // Loop through years
         for (let y = startYear; y <= endYear; y++) {
-            let option = document.createElement("option");
-            option.value = y;
-            option.textContent = y;
-            if (y === currentYear) option.selected = true; // default to current year
-            yearSelect.appendChild(option);
+            // Loop through months
+            for (let m = 1; m <= 12; m++) {
+                const month = m.toString().padStart(2, '0'); // 01, 02, ... 12
+                const value = `${y}-${month}`; // YYYY-MM
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = value;
+                // Default to current month of current year
+                if (y === currentYear && m === new Date().getMonth() + 1) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            }
         }
-         
     });
 </script>
+
 
 
 

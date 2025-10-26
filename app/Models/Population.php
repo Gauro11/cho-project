@@ -13,7 +13,8 @@ class Population extends Model
 
     protected $fillable = [
         'location',
-        'year',
+        'year_month',
+       
         'population',
     ];
 }

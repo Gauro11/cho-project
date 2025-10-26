@@ -35,13 +35,13 @@ class PopulationController extends Controller
         try {
             $validated = $request->validate([
                 'location' => 'required|string|max:255',
-                'year' => 'required|integer|digits:4',
+                'year_month' => 'required|string|max:7', // format: YYYY-MM
                 'population' => 'required|integer|min:0',
             ]);
 
             $population = PopulationStatisticsManagement::create([
                 'location' => $validated['location'],
-                'year' => $validated['year'],
+                'year_month' => $validated['year_month'],
                 'population' => $validated['population'],
             ]);
 
@@ -70,12 +70,12 @@ class PopulationController extends Controller
             $validated = $request->validate([
                 'id' => 'required|integer|exists:population_statistics_management,id',
                 'location' => 'required|string|max:255',
-                'year' => 'required|integer|digits:4',
+                'year_month' => 'required|string|max:7',
                 'population' => 'required|integer|min:0',
             ]);
 
             $population = PopulationStatisticsManagement::findOrFail($validated['id']);
-            $population->update($request->only(['location', 'year', 'population']));
+            $population->update($request->only(['location', 'year_month', 'population']));
 
             return response()->json([
                 'success' => true,
@@ -172,7 +172,7 @@ class PopulationController extends Controller
     public function getBarangays()
     {
         try {
-            $data = PopulationStatisticsManagement::select('location', 'population', 'year')
+            $data = PopulationStatisticsManagement::select('location', 'population', 'year_month')
                 ->orderBy('location', 'asc')
                 ->get();
 
@@ -235,7 +235,7 @@ class PopulationController extends Controller
 
             // Hardcoded population (PSGC API doesn't provide)
             $population = 174302;
-            $year = 2020;
+            $year_month = '2020-01';
 
             return response()->json([
                 'success' => true,
@@ -246,7 +246,7 @@ class PopulationController extends Controller
                 'region' => $data['region']['name'] ?? null,
                 'province' => $data['province']['name'] ?? null,
                 'population' => $population,
-                'year' => $year
+                'year_month' => $year_month
             ]);
 
         } catch (\Exception $e) {

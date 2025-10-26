@@ -465,64 +465,65 @@ $barangayCoordinates = [
     <div class="row">
         <div class="col-12 col-lg-12 col-xxl-12 d-flex">
             <div class="card flex-fill" id="dataTable">
-                <table class="table table-hover my-0">
-                    <thead>
-                        <tr style="color: white;">
-                            <th style="width: 50px;">
-                                <div class="checkbox-container">
-                                    <label class="custom-checkbox">
-                                        <input type="checkbox" id="selectAll">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                            </th>
-                            <th onclick="sortTable(1, 'year')">Year <i id="icon-1" class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(2, 'string')">Barangay Name <i id="icon-2" class="fas fa-sort sort-icon"></i>
-                            </th>
-                            <th onclick="sortTable(3, 'number')">Latitude <i id="icon-3" class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(4, 'number')">Longitude <i id="icon-4" class="fas fa-sort sort-icon"></i></th>
-                            <th onclick="sortTable(5, 'number')">Population <i id="icon-5" class="fas fa-sort sort-icon"></i></th>
-                            <th class="no-print">Actions</th>
-                        </tr>
-                    </thead>
+               <table class="table table-hover my-0">
+    <thead>
+        <tr style="color: white;">
+            <th style="width: 50px;">
+                <div class="checkbox-container">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="selectAll">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </th>
+            <th onclick="sortTable(1, 'string')">Year & Month <i id="icon-1" class="fas fa-sort sort-icon"></i></th>
+            <th onclick="sortTable(2, 'string')">Barangay Name <i id="icon-2" class="fas fa-sort sort-icon"></i></th>
+            <th onclick="sortTable(3, 'number')">Latitude <i id="icon-3" class="fas fa-sort sort-icon"></i></th>
+            <th onclick="sortTable(4, 'number')">Longitude <i id="icon-4" class="fas fa-sort sort-icon"></i></th>
+            <th onclick="sortTable(5, 'number')">Population <i id="icon-5" class="fas fa-sort sort-icon"></i></th>
+            <th class="no-print">Actions</th>
+        </tr>
+    </thead>
 
-                    <tbody style="background-color: white;">
-                        @foreach($data as $row)
-                            <tr data-id="{{ $row->id }}">
-                                <td>
-                                    <div class="checkbox-container">
-                                        <label class="custom-checkbox">
-                                            <input type="checkbox" class="row-checkbox" data-id="{{ $row->id }}">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                </td>
-                                <td>{{ $row->year }}</td>
-                                <td>{{ $row->location }}</td>
+    <tbody style="background-color: white;">
+        @foreach($data as $row)
+            <tr data-id="{{ $row->id }}">
+                <td>
+                    <div class="checkbox-container">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" class="row-checkbox" data-id="{{ $row->id }}">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                </td>
+                <!-- Use year_month instead of year -->
+                <td>{{ \Carbon\Carbon::parse($row->year_month)->format('F Y') }}</td>
+                <td>{{ $row->location }}</td>
 
-                                <td>
-                                    {{ $barangayCoordinates[ucwords(strtolower($row->location))]['lat'] ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    {{ $barangayCoordinates[ucwords(strtolower($row->location))]['lng'] ?? 'N/A' }}
-                                </td>
+                <td>
+                    {{ $barangayCoordinates[ucwords(strtolower($row->location))]['lat'] ?? 'N/A' }}
+                </td>
+                <td>
+                    {{ $barangayCoordinates[ucwords(strtolower($row->location))]['lng'] ?? 'N/A' }}
+                </td>
 
-                                <td>{{ number_format($row->population) }}</td>
-                                <td class="no-print">
-                                    <button class="btn btn-warning btn-sm edit-button" data-bs-toggle="modal"
-                                        data-bs-target="#editModal" data-id="{{ $row->id }}" data-year="{{ $row->year }}"
-                                        data-population="{{ $row->population }}" data-location="{{ $row->location }}">
-                                        Edit
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm delete-button"
-                                        data-id="{{ $row->id }}">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <td>{{ number_format($row->population) }}</td>
+                <td class="no-print">
+                    <button class="btn btn-warning btn-sm edit-button" data-bs-toggle="modal"
+                        data-bs-target="#editModal" data-id="{{ $row->id }}" data-year_month="{{ $row->year_month }}"
+                        data-population="{{ $row->population }}" data-location="{{ $row->location }}">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm delete-button"
+                        data-id="{{ $row->id }}">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
 
                 @php
                     $start = max(1, $data->currentPage() - 2);
