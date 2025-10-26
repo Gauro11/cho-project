@@ -49,16 +49,16 @@ $data->save();
        
     }
     
-   public function store_population(Request $request)
+  public function store_population(Request $request)
 {
-    // ✅ Validate the request data
+    // Validate the request data
     $request->validate([
         'location' => 'required|string|max:255',
         'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/',
         'population' => 'required|integer|min:0',
     ]);
 
-    // ✅ Check for duplicate location for the same month
+    // Check for duplicate for same location + month
     $exists = PopulationStatisticsManagement::where('location', $request->location)
         ->where('year_month', $request->year_month)
         ->exists();
@@ -70,7 +70,7 @@ $data->save();
         ]);
     }
 
-    // ✅ Store the data in the database
+    // Store the data in the database
     PopulationStatisticsManagement::create([
         'location' => $request->location,
         'year_month' => $request->year_month,
@@ -82,6 +82,7 @@ $data->save();
         'message' => 'Population data added successfully!',
     ]);
 }
+
 
 
 public function show_population()
