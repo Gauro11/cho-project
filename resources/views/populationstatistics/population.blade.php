@@ -1214,7 +1214,7 @@
                             const modal = document.getElementById('customModal');
                             const cancelBtn = document.getElementById('cancelCustomModal'); // cancel button
                             const topCloseBtn = document.getElementById('closeCustomModalTop'); // X button
-                            const form = document.querySelector("form[action='{{ route('/public/population.store') }}']");
+                            const form = document.querySelector("form[action='{{ route('population.store') }}']");
 
                             // Form submit (AJAX)
                             form.addEventListener('submit', function(e) {
