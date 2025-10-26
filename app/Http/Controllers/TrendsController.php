@@ -94,13 +94,13 @@ class TrendsController extends Controller
         }
     }
 
-   private function getPopulationStatisticsData()
+  private function getPopulationStatisticsData()
 {
     $data = DB::table('population_statistics_management')
-        ->selectRaw('year_month, SUM(population) as total')
+        ->selectRaw('`year_month`, SUM(population) as total') // raw SQL with backticks
         ->whereNotNull('year_month')
-        ->groupBy('year_month')
-        ->orderBy('year_month')
+        ->groupBy('year_month') // no backticks here
+        ->orderBy('year_month') // no backticks here
         ->get();
 
     return [
@@ -108,6 +108,7 @@ class TrendsController extends Controller
         'values' => $data->pluck('total')->toArray()
     ];
 }
+
 
 
 
