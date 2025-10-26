@@ -28,7 +28,7 @@ public function index()
         if ($usertype == 'user' || $usertype == 'staff') {
             // Change this line to get all fields
             $barangays = DB::table('population_statistics_management')
-                ->orderBy('year', 'asc')
+                ->orderBy('year_month', 'asc')
                 ->get();  // ✅ Get all fields
 
             $totalPopulation = DB::table('population_statistics_management')->sum('population');
