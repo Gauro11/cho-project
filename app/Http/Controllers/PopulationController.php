@@ -28,19 +28,19 @@ class PopulationController extends Controller
     {
         // Validate input data
         $request->validate([
-            'location' => 'required|string',
-            'year' => 'required|integer|min:1900|max:2099',
-            'total_population' => 'required|integer|min:1', // Change 'population' to 'total_population'
-        ]);
-    
+    'location' => 'required|string|max:255',
+    'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/', // YYYY-MM format
+    'population' => 'required|integer|min:0',
+]);
+
         // Find the record by ID
         try {
-            $data = PopulationStatisticsManagement::find($request->id);
-    
-            $data->location = $request->location;
-            $data ->year = $request->year; // Change to match the form field
-            $data->population = $request->total_population; // Change to match the form field
-            $data->save();
+           $data = PopulationStatisticsManagement::find($request->id);
+$data->location = $request->location;
+$data->year_month = $request->year_month;
+$data->population = $request->population;
+$data->save();
+
     
             return response()->json(['success' => true, 'message' => 'Data updated successfully.']);
         } catch (\Exception $e) {
@@ -52,11 +52,12 @@ class PopulationController extends Controller
    public function store_population(Request $request)
 {
     // Validate the request data
-    $request->validate([
-        'location' => 'required|string|max:255',
-        'year' => 'required|integer|min:1900|max:2099',
-        'population' => 'required|integer|min:0',
-    ]);
+    PopulationStatisticsManagement::create([
+    'location' => $request->location,
+    'year_month' => $request->year_month,
+    'population' => $request->population,
+]);
+
 
     // Check for duplicate location
     $exists = PopulationStatisticsManagement::where('location', $request->location)->exists();
@@ -71,7 +72,7 @@ class PopulationController extends Controller
     // Store the data in the database
     PopulationStatisticsManagement::create([
         'location' => $request->location,
-        'year' => $request->year,
+       'year_month' => $request->year_month,
         'population' => $request->population,
     ]);
 
@@ -115,7 +116,7 @@ public function import(Request $request)
  public function getBarangays()
     {
         try {
-            $data = PopulationStatisticsManagement::select('location', 'population', 'year')
+            $data = PopulationStatisticsManagement::select('location', 'population', 'year_month')
                 ->orderBy('location', 'asc')
                 ->get();
 
