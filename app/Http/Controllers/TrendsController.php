@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\MorbidityMortalityManagement; 
+use Carbon\Carbon;
 
 class TrendsController extends Controller
 {
@@ -21,143 +22,138 @@ class TrendsController extends Controller
         ]);
     }
 
-   public function getTrendData(Request $request, $category)
-{
-    try {
-        // Handle Population Statistics separately
-        if ($category === 'population_statistics') {
-            return $this->getPopulationData();
+    public function getTrendData(Request $request, $category)
+    {
+        try {
+            // Handle Population Statistics separately
+            if ($category === 'population_statistics') {
+                return $this->getPopulationData();
+            }
+
+            // Handle morbidity/mortality
+            $caseName = $request->query('sub_category');
+
+            $data = DB::table('morbidity_mortality_management')
+                ->selectRaw('DATE(`date`) as date, SUM(male_count + female_count) as total')
+                ->whereRaw('LOWER(category) = ?', [strtolower($category)])
+                ->when($caseName, function ($query) use ($caseName) {
+                    return $query->where('case_name', $caseName);
+                })
+                ->whereNotNull('date')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+
+            $formattedData = $data->map(function ($item) {
+                return [
+                    'date' => $item->date, // YYYY-MM-DD
+                    'total' => (int) $item->total
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'historical' => [
+                    'labels' => $formattedData->pluck('date')->toArray(),
+                    'values' => $formattedData->pluck('total')->toArray(),
+                ],
+                'prediction' => $this->generatePrediction($formattedData->toArray())
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
         }
+    }
 
-        // Handle morbidity/mortality
-        $caseName = $request->query('sub_category');
+    public function getPopulationData()
+    {
+        try {
+            $data = $this->getPopulationStatisticsData();
 
-        $data = DB::table('morbidity_mortality_management')
-            ->selectRaw('DATE(`date`) as date, SUM(male_count + female_count) as total')
-            ->whereRaw('LOWER(category) = ?', [strtolower($category)])
-            ->when($caseName, function ($query) use ($caseName) {
-                return $query->where('case_name', $caseName);
-            })
-            ->whereNotNull('date')
-            ->groupBy('date')
-            ->orderBy('date')
+            $formattedData = [];
+            foreach ($data['labels'] as $index => $yearMonth) {
+                $formattedData[] = [
+                    'date' => $yearMonth, // keep "year_month" as date
+                    'total' => $data['values'][$index]
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'historical' => $data,
+                'prediction' => $this->generatePrediction($formattedData)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    private function getPopulationStatisticsData()
+    {
+        $data = DB::table('population_statistics_management')
+            ->selectRaw('year_month, SUM(population) as total')
+            ->whereNotNull('year_month')
+            ->groupBy('year_month')
+            ->orderBy('year_month')
             ->get();
 
-        // Format dates consistently
-        $formattedData = $data->map(function ($item) {
-            return [
-                'date' => $item->date, // YYYY-MM-DD
-                'total' => (int) $item->total
-            ];
-        });
-
-        return response()->json([
-            'success' => true,
-            'historical' => [
-                'labels' => $formattedData->pluck('date')->toArray(),
-                'values' => $formattedData->pluck('total')->toArray(),
-            ],
-            'prediction' => $this->generatePrediction($formattedData->toArray())
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ]);
+        return [
+            'labels' => $data->pluck('year_month')->toArray(),  // year_month labels
+            'values' => $data->pluck('total')->toArray()        // totals per month
+        ];
     }
-}
 
-public function getPopulationData()
-{
-    try {
-        $data = $this->getPopulationStatisticsData();
-
-        // Format for prediction
-        $formattedData = [];
-        foreach ($data['labels'] as $index => $year) {
-            $formattedData[] = [
-                'date' => $year, // keep "year" in "date" for consistency
-                'total' => $data['values'][$index]
-            ];
+    private function generatePrediction($historicalData)
+    {
+        if (count($historicalData) < 2) {
+            return null;
         }
 
-        return response()->json([
-            'success' => true,
-            'historical' => $data,
-            'prediction' => $this->generatePrediction($formattedData)
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ]);
+        $values = array_column($historicalData, 'total');
+        $n = count($values);
+
+        $x = range(1, $n);
+        $y = $values;
+
+        $meanX = array_sum($x) / $n;
+        $meanY = array_sum($y) / $n;
+
+        $num = 0;
+        $den = 0;
+        for ($i = 0; $i < $n; $i++) {
+            $num += ($x[$i] - $meanX) * ($y[$i] - $meanY);
+            $den += ($x[$i] - $meanX) ** 2;
+        }
+        $m = $den == 0 ? 0 : $num / $den; // slope
+        $b = $meanY - $m * $meanX;        // intercept
+
+        $lastDate = new \DateTime(end($historicalData)['date'] . '-01'); // parse YYYY-MM
+
+        $predictions = [];
+        $predictionLabels = [];
+
+        for ($i = 1; $i <= 2; $i++) {
+            $nextDate = clone $lastDate;
+            $nextDate->add(new \DateInterval("P{$i}M"));
+
+            $xNext = $n + $i;
+            $yNext = round($m * $xNext + $b);
+
+            $predictionLabels[] = $nextDate->format('Y-m');
+            $predictions[] = max(0, $yNext);
+        }
+
+        return [
+            'labels' => $predictionLabels,
+            'values' => $predictions,
+            'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable'),
+            'formula' => "y = " . round($m, 2) . "x + " . round($b, 2)
+        ];
     }
-}
-
-private function getPopulationStatisticsData()
-{
-    $data = DB::table('population_statistics_management')
-        ->selectRaw('year, SUM(population) as total')
-        ->whereNotNull('year')
-        ->groupBy('year')
-        ->orderBy('year')
-        ->get();
-
-    return [
-        'labels' => $data->pluck('year')->toArray(),  // years as labels
-        'values' => $data->pluck('total')->toArray()  // totals per year
-    ];
-}
-
-
-   private function generatePrediction($historicalData)
-{
-    if (count($historicalData) < 2) {
-        return null;
-    }
-
-    $values = array_column($historicalData, 'total');
-    $n = count($values);
-
-    $x = range(1, $n);
-    $y = $values;
-
-    $meanX = array_sum($x) / $n;
-    $meanY = array_sum($y) / $n;
-
-    $num = 0;
-    $den = 0;
-    for ($i = 0; $i < $n; $i++) {
-        $num += ($x[$i] - $meanX) * ($y[$i] - $meanY);
-        $den += ($x[$i] - $meanX) ** 2;
-    }
-    $m = $den == 0 ? 0 : $num / $den; // slope
-    $b = $meanY - $m * $meanX;        // intercept
-
-    $lastDate = new \DateTime(end($historicalData)['date']);
-
-    $predictions = [];
-    $predictionLabels = [];
-
-    for ($i = 1; $i <= 2; $i++) {
-        $nextDate = clone $lastDate;
-        $nextDate->add(new \DateInterval("P{$i}M"));
-
-        $xNext = $n + $i;
-        $yNext = round($m * $xNext + $b);
-
-        $predictionLabels[] = $nextDate->format('Y-m-d');
-        $predictions[] = max(0, $yNext);
-    }
-
-    return [
-        'labels' => $predictionLabels,
-        'values' => $predictions,
-        'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable'),
-        'formula' => "y = " . round($m, 2) . "x + " . round($b, 2) // 👈 return regression formula
-    ];
-}
-
-
 }
