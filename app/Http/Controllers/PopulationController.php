@@ -9,6 +9,7 @@ use App\Imports\PopulationImport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Exports\PopulationTemplateExport;
+use App\Models\Population;  // ← Changed this
 
 
 
