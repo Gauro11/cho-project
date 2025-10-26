@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+
 class PopulationStatisticsManagement extends Model
 {
     use HasFactory;
@@ -13,7 +14,7 @@ class PopulationStatisticsManagement extends Model
 
     protected $fillable = [
         'location',
-        'year_month',
+        'year',
         'population',
     ];
 }

@@ -14,6 +14,6 @@ class PopulationTemplateExport implements FromArray, WithHeadings
 
     public function headings(): array
     {
-        return ['year_month', 'location', 'population'];
+        return ['year', 'location', 'population'];
     }
 }

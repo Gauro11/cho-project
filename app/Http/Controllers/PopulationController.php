@@ -31,40 +31,38 @@ class PopulationController extends Controller
      * Store a new population record
      */
     public function store_population(Request $request)
-{
-    try {
-        $validated = $request->validate([
-            'location' => 'required|string|max:255',
-            'year_month' => 'required|string',
-            'population' => 'required|integer|min:0',
-        ]);
+    {
+        try {
+            $validated = $request->validate([
+                'location' => 'required|string|max:255',
+                'year' => 'required|integer|digits:4',
+                'population' => 'required|integer|min:0',
+            ]);
 
-        $population = PopulationStatisticsManagement::create([
-            'location' => $validated['location'],
-            'year_month' => $validated['year_month'] ?? null,
-            'population' => $validated['population'],
-        ]);
+            $population = PopulationStatisticsManagement::create([
+                'location' => $validated['location'],
+                'year' => $validated['year'],
+                'population' => $validated['population'],
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Population data added successfully!',
-            'data' => ['id' => $population->id],
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Population data added successfully!',
+                'data' => ['id' => $population->id],
+            ]);
 
-    } catch (\Exception $e) {
-        // Return actual exception for debugging
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-        ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ], 500);
+        }
     }
-}
-
 
     /**
-     * Update an existing population recordDD
+     * Update an existing population record
      */
     public function update_population(Request $request)
     {
@@ -72,12 +70,12 @@ class PopulationController extends Controller
             $validated = $request->validate([
                 'id' => 'required|integer|exists:population_statistics_management,id',
                 'location' => 'required|string|max:255',
-                'year_month' => 'required|string|regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])$/',
+                'year' => 'required|integer|digits:4',
                 'population' => 'required|integer|min:0',
             ]);
 
             $population = PopulationStatisticsManagement::findOrFail($validated['id']);
-            $population->update($request->only(['location', 'year_month', 'population']));
+            $population->update($request->only(['location', 'year', 'population']));
 
             return response()->json([
                 'success' => true,
@@ -174,7 +172,7 @@ class PopulationController extends Controller
     public function getBarangays()
     {
         try {
-            $data = PopulationStatisticsManagement::select('location', 'population', 'year_month')
+            $data = PopulationStatisticsManagement::select('location', 'population', 'year')
                 ->orderBy('location', 'asc')
                 ->get();
 

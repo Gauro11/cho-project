@@ -1027,8 +1027,8 @@
                                     </select>
                                 </div>
 <div class="mb-3">
-    <label for="year_month" class="modern-form-label form-label">📅 Month & Year</label>
-    <input type="month" class="modern-form-control form-control" id="year_month" name="year_month" required
+    <label for="year" class="modern-form-label form-label">📅 Month & Year</label>
+    <input type="month" class="modern-form-control form-control" id="year" name="year" required
            value="{{ date('Y-m') }}"> <!-- Laravel blade syntax -->
 </div>
 
