@@ -3,17 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 
 class ImmunizationManagement extends Model
 {
-    use HasFactory;
+    protected $table = 'immunization_management';
 
     protected $fillable = [
         'date',
         'vaccine_name',
+        'vaccine_type',
+        'total_shots',
         'male_vaccinated',
         'female_vaccinated',
+        'age_group',
+        'target_population',
+        'barangay',
     ];
 }

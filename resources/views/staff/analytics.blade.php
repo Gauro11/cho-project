@@ -384,7 +384,7 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
+   <script>
     // Load city-wide summary on page load
     fetch("{{ url('/dagupan-population') }}")
         .then(res => res.json())
@@ -413,7 +413,7 @@
                             <tr>
                                 <td class="fw-semibold">${row.location}</td>
                                 <td>${row.population.toLocaleString()}</td>
-                                <td>${row.year}</td>
+                                <td>${row.year_month}</td>
                             </tr>
                         `;
                     });
@@ -428,26 +428,38 @@
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Laravel Data
+        // ✅ Laravel Data
         let vitalStatisticsData = {!! json_encode($vitalStatisticsData) !!};
-        let barangays = {!! json_encode($barangays) !!};
+        let populationData = {!! json_encode($barangays) !!}; // from population_statistics_management
         let immunizationData = {!! json_encode($immunizationData) !!};
         let morbidityData = {!! json_encode($morbidityCases) !!};
         let mortalityData = {!! json_encode($mortalityCases) !!};
 
-        let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
-        let sortedPopulation = barangays.sort((a, b) => new Date(a.date) - new Date(b.date));
+        // ✅ Sort by year_month
+        let sortedPopulation = populationData.sort((a, b) => new Date(a.year_month) - new Date(b.year_month));
 
-        // Filter population data for year 2025 only
-        let population2025 = sortedPopulation.filter(item => item.year === 2025 || item.year === '2025');
-        let totalPopulation = population2025.reduce((sum, item) => sum + parseInt(item.population), 0);
+        // ✅ Detect latest year dynamically
+        let latestYear = 0;
+        if (sortedPopulation.length > 0) {
+            latestYear = new Date(sortedPopulation[sortedPopulation.length - 1].year_month).getFullYear();
+        }
 
-        // Update stat cards
+        // ✅ Filter for that year
+        let populationByYear = sortedPopulation.filter(item => {
+            let year = new Date(item.year_month).getFullYear();
+            return year === latestYear;
+        });
+
+        // ✅ Compute total population
+        let totalPopulation = populationByYear.reduce((sum, item) => sum + parseInt(item.population || 0), 0);
+
+        // ✅ Update stat card value
         document.getElementById('stat-population').textContent = totalPopulation.toLocaleString();
 
-        // Calculate total births & deaths
-        let totalBirths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_live_births), 0);
-        let totalDeaths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_deaths), 0);
+        // ✅ Calculate total births & deaths
+        let sortedVital = vitalStatisticsData.sort((a, b) => a.year - b.year);
+        let totalBirths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_live_births || 0), 0);
+        let totalDeaths = sortedVital.reduce((sum, item) => sum + parseInt(item.total_deaths || 0), 0);
         document.getElementById('stat-births').textContent = totalBirths.toLocaleString();
         document.getElementById('stat-deaths').textContent = totalDeaths.toLocaleString();
 
@@ -461,7 +473,7 @@
             return colors;
         }
 
-        // ✅ Handle too many barangays (show top 10 + Others)
+        // ✅ Handle too many barangays (top 10 + Others)
         const MAX_LABELS = 10;
         let displayData = sortedPopulation;
 
@@ -469,14 +481,14 @@
             const topItems = sortedPopulation.slice(0, MAX_LABELS - 1);
             const othersValue = sortedPopulation
                 .slice(MAX_LABELS - 1)
-                .reduce((a, b) => a + parseInt(b.population), 0);
+                .reduce((a, b) => a + parseInt(b.population || 0), 0);
             displayData = [...topItems, { location: 'Others', population: othersValue }];
         }
 
         new Chart(document.getElementById("populationChart"), {
             type: "doughnut",
             data: {
-                labels: displayData.map(item => item.location || item.year),
+                labels: displayData.map(item => item.location || item.year_month),
                 datasets: [{
                     data: displayData.map(item => item.population),
                     backgroundColor: generateColors(displayData.length)
@@ -498,7 +510,7 @@
             }
         });
 
-        // Birth / Death Chart
+        // ✅ Birth / Death Chart
         new Chart(document.getElementById("birthDeathChart"), {
             type: "line",
             data: {
@@ -532,7 +544,7 @@
             }
         });
 
-        // Immunization Chart
+        // ✅ Immunization Chart
         new Chart(document.getElementById("immunizationChart"), {
             type: "bar",
             data: {
@@ -557,7 +569,7 @@
             }
         });
 
-        // Morbidity & Mortality Charts
+        // ✅ Morbidity & Mortality Charts
         function getChronologicalTopCases(data) {
             return data.sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
         }
@@ -592,6 +604,7 @@
         createChart("mortalityCasesChart", getChronologicalTopCases(mortalityData));
     });
 </script>
+
 
     
 </body>

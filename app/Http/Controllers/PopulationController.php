@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Http;
 
 class PopulationController extends Controller
 {
+    public function getTotalPopulation()
+{
+    // Sum all population values from population_statistics_management table
+    $totalPopulation = DB::table('population_statistics_management')->sum('population');
+
+    return response()->json([
+        'success' => true,
+        'city' => 'Dagupan City',
+        'population' => $totalPopulation
+    ]);
+}
     /**
      * Show population records (paginated) for staff
      */

@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
 
 
@@ -1111,6 +1112,103 @@
         .btn-group .dropdown-menu {
             z-index: 1055 !important;
         }
+        /* Gray Dropdown Styling */
+
+/* Style for all select dropdowns */
+select.modern-form-control,
+select.form-control {
+    color: #9ca3af !important;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Style for all dropdown options */
+select.modern-form-control option,
+select.form-control option {
+    background: #2d2d3a;
+    color: #9ca3af !important;
+    padding: 10px;
+}
+
+/* Style for selected/hovered options */
+select.modern-form-control option:checked,
+select.form-control option:checked {
+    background: #3d3d4a;
+    color: #d1d5db !important;
+}
+
+select.modern-form-control option:hover,
+select.form-control option:hover {
+    background: #3d3d4a;
+    color: #d1d5db !important;
+}
+
+/* Style when dropdown is focused */
+select.modern-form-control:focus,
+select.form-control:focus {
+    color: #9ca3af !important;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+}
+
+/* Style for disabled options */
+select.modern-form-control option:disabled,
+select.form-control option:disabled {
+    color: #6b7280 !important;
+}
+
+/* Firefox specific styling for dropdowns */
+@-moz-document url-prefix() {
+    select.modern-form-control,
+    select.form-control {
+        color: #9ca3af !important;
+    }
+}
+
+/* Webkit specific styling for dropdowns */
+select.modern-form-control::-webkit-calendar-picker-indicator {
+    filter: invert(0.6);
+}
+
+/* Style for the dropdown arrow */
+select.modern-form-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+    padding-right: 2.5rem;
+}
+
+input[readonly] {
+    background-color: gray !important;
+    color: #fdf6f6 !important;
+}
+
+/* Alternative: If you want darker gray */
+/* 
+select.modern-form-control,
+select.form-control {
+    color: #6b7280 !important;
+}
+
+select.modern-form-control option,
+select.form-control option {
+    color: #6b7280 !important;
+}
+*/
+
+/* Alternative: If you want lighter gray */
+/* 
+select.modern-form-control,
+select.form-control {
+    color: #d1d5db !important;
+}
+
+select.modern-form-control option,
+select.form-control option {
+    color: #d1d5db !important;
+}
+*/
        
     </style>
 </head>
@@ -1133,6 +1231,20 @@
 
                         </div>
                     </div>
+                    <!-- ✅ ADD ERROR/SUCCESS MESSAGES HERE -->
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 15px; color: white; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);">
+        <strong>❌ Error!</strong> {{ session('error') }}
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 15px; color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
+        <strong>✅ Success!</strong> {{ session('success') }}
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 
                     <br><br>
 
@@ -1459,155 +1571,319 @@
 
                     <!-- Add New Record Modal -->
                     <div id="customModal" class="modern-modal modal">
-                        <div class="modern-modal-content modal-content">
+                        <div class="modern-modal-content modal-content" style="max-width: 1100px; width: 95%;">
                             <span class="modern-close close">&times;</span>
                             <h2>Add Immunization Record</h2>
-                            <form action="{{ route('immunization.store') }}" method="POST">
-    @csrf
-    <div class="mb-3">
-        <label for="date" class="modern-form-label form-label">📅 Date of Immunization</label>
-        <input type="date" class="modern-form-control form-control" id="date"
-               name="date" required min="">
-    </div>
+                          
 
-    <div class="mb-3">
-        <label for="vaccine_name" class="modern-form-label form-label">💊 Vaccine Name</label>
-        <input list="vaccineOptions" class="modern-form-control form-control text-uppercase"
-               id="vaccine_name" name="vaccine_name" required
-               oninput="this.value = this.value.toUpperCase()">
-        <datalist id="vaccineOptions">
-            <option value="CPAB">
-            <option value="BCG">
-            <option value="HepB within 24 hours">
-            <option value="DPT-HiB-HepB 1">
-            <option value="DPT-HiB-HepB 2)">
-            <option value="DPT-HiB-HepB 3">
-            <option value="OPV 1">
-            <option value="OPV 2">
-            <option value="OPV 3">
-            <option value="IPV 1">
-           
-        </datalist>
-    </div>
+        
+        <form action="{{ route('immunization.store') }}" method="POST">
+            @csrf
+            
+            <div class="row">
+                <!-- Date of Immunization -->
+                <div class="col-md-4 mb-3">
+                    <label for="date" class="modern-form-label form-label">📅 Date of Vaccination</label>
+                    <input type="date" class="modern-form-control form-control" id="date"
+                           name="date" required>
+                </div>
 
-    <div class="mb-3">
-        <label for="male_vaccinated" class="modern-form-label form-label">👨 Male Vaccinated</label>
-        <input type="number" class="modern-form-control form-control" id="male_vaccinated"
-               name="male_vaccinated" required min="0">
-    </div>
+               <!-- Vaccine Name -->
+<div class="col-md-4 mb-3">
+    <label for="vaccine_name" class="modern-form-label form-label">💊 Vaccine Name</label>
+    <select class="modern-form-control form-control" id="vaccine_name" name="vaccine_name" required>
+        <option value="">-- Select Vaccine --</option>
+        <option value="CPAB" data-age="At birth">Complete Protection at Birth</option>
+        <option value="BCG" data-age="At birth">Bacillus Calmette–Guérin Vaccine</option>
+        <option value="HepB within 24 hours" data-age="Within 24 hours after birth">Hepatitis B Vaccine (Birth Dose)</option>
+        <option value="DPT-HiB-HepB 1" data-age="6 weeks old">Pentavalent Vaccine – 1st dose</option>
+        <option value="DPT-HiB-HepB 2" data-age="10 weeks old">Pentavalent Vaccine – 2nd dose</option>
+        <option value="DPT-HiB-HepB 3" data-age="14 weeks old">Pentavalent Vaccine – 3rd dose</option>
+        <option value="OPV 1" data-age="6 weeks old">Oral Polio Vaccine – 1st dose</option>
+        <option value="OPV 2" data-age="10 weeks old">Oral Polio Vaccine – 2nd dose</option>
+        <option value="OPV 3" data-age="14 weeks old">Oral Polio Vaccine – 3rd dose</option>
+        <option value="IPV 1" data-age="6 weeks old">Inactivated Polio Vaccine – 1st dose</option>
+        <option value="PCV 1" data-age="6 weeks old">Pneumococcal Conjugate Vaccine – 1st dose</option>
+        <option value="PCV 2" data-age="10 weeks old">Pneumococcal Conjugate Vaccine – 2nd dose</option>
+        <option value="PCV 3" data-age="14 weeks old">Pneumococcal Conjugate Vaccine – 3rd dose</option>
+        <option value="MCV" data-age="9 months old">Measles-Containing Vaccine (MMR)</option>
+        <option value="FIC" data-age="1 year old">Fully Immunized Child</option>
+    </select>
+</div>
 
-    <div class="mb-3">
-        <label for="female_vaccinated" class="modern-form-label form-label">👩 Female Vaccinated</label>
-        <input type="number" class="modern-form-control form-control" id="female_vaccinated"
-               name="female_vaccinated" required min="0">
-    </div>
+<!-- Age Group -->
+<div class="col-md-4 mb-3">
+    <label for="age_group" class="modern-form-label form-label">👶 Age Group / Schedule</label>
+    <input type="text" class="modern-form-control form-control" id="age_group" name="age_group"
+           placeholder="Automatically filled" readonly required>
+</div>
 
-    <div class="modern-modal-footer modal-footer">
-        <button type="submit" class="modern-btn btn-primary">✅ Add Record</button>
-    </div>
-</form>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const vaccineSelect = document.getElementById("vaccine_name");
+    const ageGroupInput = document.getElementById("age_group");
 
-                        </div>
-                    </div>
+    vaccineSelect.addEventListener("change", function () {
+        const selected = vaccineSelect.options[vaccineSelect.selectedIndex];
+        const age = selected.getAttribute("data-age") || "";
+        ageGroupInput.value = age;
+    });
+});
+</script>
 
-                    <!-- Import Modal -->
-                    <div id="importModal" class="modern-modal modal">
-                        <div class="modern-modal-content modal-content">
-                            <span class="modern-close close" id="closeImportModal">&times;</span>
-                            <h2>Import Immunization Records</h2>
-                            <form action="{{ route('immunization.import') }}" method="POST"
-                                enctype="multipart/form-data" id="importForm">
-                                @csrf
-                                <div class="file-upload-area" id="fileUploadArea">
-                                    <div class="file-upload-icon">📁</div>
-                                    <div class="file-upload-text">
-                                        <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
-                                    </div>
-                                    <input type="file" name="file" id="fileInput"
-                                        class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
-                                        style="display: none;">
-                                    <button type="button" class="modern-btn btn-secondary btn-sm"
-                                        onclick="document.getElementById('fileInput').click()">
-                                        📂 Choose File
-                                    </button>
-                                     <a href="{{ route('immunization.template') }}" class="modern-btn btn-primary">
-                                   ⬇️ Download Template
-                                     </a>
-                                </div>
 
-                                <div class="file-info" id="fileInfo">
-                                    <strong>Selected File:</strong>
-                                    <div id="fileName"></div>
-                                    <div id="fileSize"></div>
-                                </div>
+                <!-- Vaccine Type -->
+                <div class="col-md-4 mb-3">
+                    <label for="vaccine_type" class="modern-form-label form-label">🏥 Vaccine Type</label>
+                    <select name="vaccine_type" id="vaccine_type" class="modern-form-control form-control" required>
+                        <option value="">-- Select Vaccine Type --</option>
+                        <option value="BCG">BCG</option>
+                        <option value="Hepatitis B">Hepatitis B</option>
+                        <option value="DPT">DPT</option>
+                        <option value="OPV">OPV</option>
+                        <option value="IPV">IPV</option>
+                        <option value="MMR">MMR</option>
+                        <option value="Measles">Measles</option>
+                        <option value="Rubella">Rubella</option>
+                        <option value="Influenza">Influenza</option>
+                        <option value="Pneumococcal">Pneumococcal</option>
+                        <option value="Rotavirus">Rotavirus</option>
+                        <option value="Varicella">Varicella</option>
+                        <option value="HPV">HPV</option>
+                        <option value="COVID-19">COVID-19</option>
+                        <option value="Td">Td</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
 
-                                <div class="mb-3">
-                                    <small class="text-muted">
-                                        <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
-                                        <strong>Required columns:</strong> Date, Vaccine Name, Male Vaccinated, Female
-                                        Vaccinated
-                                    </small>
-                                </div>
+            <div class="row">
+                <!-- Total Shots -->
+                <div class="col-md-4 mb-3">
+                    <label for="total_shots" class="modern-form-label form-label">💉 Total Shots</label>
+                    <input type="number" class="modern-form-control form-control" id="total_shots"
+                           name="total_shots" required min="0" placeholder="Total doses available">
+                </div>
 
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌
-                                        Cancel</button>
-                                    <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤
-                                        Upload File</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <!-- Male Vaccinated -->
+                <div class="col-md-4 mb-3">
+                    <label for="male_vaccinated" class="modern-form-label form-label">👨 Male Recipients</label>
+                    <input type="number" class="modern-form-control form-control" id="male_vaccinated"
+                           name="male_vaccinated" required min="0">
+                </div>
 
-                    <!-- Modern Edit Modal -->
-                    <div id="editModal" class="modern-modal modal" style="display: none;">
-                        <div class="modern-modal-content modal-content">
-                            <span class="modern-close close">&times;</span>
-                            <h2>✏️ Edit Immunization Data</h2>
-                            <form id="updateForm" action="{{ route('immunization.update') }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" id="edit_id" name="id">
+                <!-- Female Vaccinated -->
+                <div class="col-md-4 mb-3">
+                    <label for="female_vaccinated" class="modern-form-label form-label">👩 Female Recipients</label>
+                    <input type="number" class="modern-form-control form-control" id="female_vaccinated"
+                           name="female_vaccinated" required min="0">
+                </div>
+            </div>
 
-                                <div class="mb-3">
-                                    <label for="edit_vaccine" class="modern-form-label form-label">💊 Vaccine
-                                        Name</label>
-                                    <input type="text" class="modern-form-control form-control" id="edit_vaccine"
-                                        name="vaccine_name" required>
-                                </div>
+            <div class="row">
+               
 
-                                <div class="mb-3">
-                                    <label for="edit_date" class="modern-form-label form-label">📅 Date</label>
-                                    <input type="date" class="modern-form-control form-control" id="edit_date"
-                                        name="date" required>
-                                </div>
+                <!-- Barangay -->
+                <div class="col-md-4 mb-3">
+                    <label for="barangay" class="modern-form-label form-label">📍 Barangay</label>
+                  <select class="modern-form-control form-control" id="barangay" name="barangay" 
+                                        required>
+                                        <option value="" disabled selected>Select Barangay</option>
+                                        <option value="Bacayao Norte">Bacayao Norte</option>
+                                        <option value="Bacayao Sur">Bacayao Sur</option>
+                                        <option value="Barangay I (T. Bugallon)">Barangay I (T. Bugallon)</option>
+                                        <option value="Barangay II (Nueva)">Barangay II (Nueva)</option>
+                                        <option value="Barangay IV (Zamora)">Barangay IV (Zamora)</option>
+                                        <option value="Bolosan">Bolosan</option>
+                                        <option value="Bonuan Binloc">Bonuan Binloc</option>
+                                        <option value="Bonuan Boquig">Bonuan Boquig</option>
+                                        <option value="Bonuan Gueset">Bonuan Gueset</option>
+                                        <option value="Calmay">Calmay</option>
+                                        <option value="Carael">Carael</option>
+                                        <option value="Caranglaan">Caranglaan</option>
+                                        <option value="Herrero">Herrero</option>
+                                        <option value="Lasip Chico">Lasip Chico</option>
+                                        <option value="Lasip Grande">Lasip Grande</option>
+                                        <option value="Lomboy">Lomboy</option>
+                                        <option value="Lucao">Lucao</option>
+                                        <option value="Malued">Malued</option>
+                                        <option value="Mamalingling">Mamalingling</option>
+                                        <option value="Mangin">Mangin</option>
+                                        <option value="Mayombo">Mayombo</option>
+                                        <option value="Pantal">Pantal</option>
+                                        <option value="Poblacion Oeste">Poblacion Oeste</option>
+                                        <option value="Pogo Chico">Pogo Chico</option>
+                                        <option value="Pogo Grande">Pogo Grande</option>
+                                        <option value="Pugaro Suit">Pugaro Suit</option>
+                                        <option value="Salapingao">Salapingao</option>
+                                        <option value="Salisay">Salisay</option>
+                                        <option value="Tambac">Tambac</option>
+                                        <option value="Tapuac">Tapuac</option>
+                                        <option value="Tebeng">Tebeng</option>
+                                    </select>
+                </div>
 
-                                <div class="mb-3">
-    <label for="edit_male" class="modern-form-label form-label">👨 Male Vaccinated</label>
-    <div class="input-group">
-        <input type="number" class="modern-form-control form-control" id="edit_male"
-               name="male_vaccinated" required>
-        <button type="button" class="modern-btn btn-success" id="addMaleBtn">➕</button>
+                <!-- Target Population -->
+                <div class="col-md-4 mb-3">
+                    <label for="target_population" class="modern-form-label form-label">🎯 Target Population</label>
+                    <input type="text" class="modern-form-control form-control" id="target_population"
+                           name="target_population" placeholder="">
+                </div>
+            </div>
+
+            <div class="modern-modal-footer modal-footer">
+                <button type="button" class="modern-btn btn-secondary" onclick="closeAddModal()">❌ Cancel</button>
+                <button type="submit" class="modern-btn btn-primary">✅ Add Record</button>
+            </div>
+        </form>
     </div>
 </div>
 
-<div class="mb-3">
-    <label for="edit_female" class="modern-form-label form-label">👩 Female Vaccinated</label>
-    <div class="input-group">
-        <input type="number" class="modern-form-control form-control" id="edit_female"
-               name="female_vaccinated" required>
-        <button type="button" class="modern-btn btn-success" id="addFemaleBtn">➕</button>
+<!-- EDIT MODAL - Wider Rectangular Layout (SEPARATE FROM ADD) -->
+<div id="editModal" class="modern-modal modal" style="display: none;">
+    <div class="modern-modal-content modal-content" style="max-width: 1100px; width: 95%;">
+        <span class="modern-close close" onclick="closeEditModal()">&times;</span>
+        <h2>✏️ Edit Immunization Data</h2>
+        
+        <form id="updateForm" action="{{ route('immunization.update') }}" method="POST">
+            @csrf
+            @method('PUT')
+            <input type="hidden" id="edit_id" name="id">
+
+            <div class="row">
+                <!-- Date -->
+                <div class="col-md-4 mb-3">
+                    <label for="edit_date" class="modern-form-label form-label">📅 Date of Vaccination</label>
+                    <input type="date" class="modern-form-control form-control" id="edit_date"
+                        name="date" required>
+                </div>
+
+                <!-- Vaccine Name -->
+                <div class="col-md-4 mb-3">
+                    <label for="edit_vaccine" class="modern-form-label form-label">💊 Vaccine Name</label>
+                    <input type="text" class="modern-form-control form-control text-uppercase" id="edit_vaccine"
+                        name="vaccine_name" required>
+                </div>
+
+                <!-- Vaccine Type -->
+                <div class="col-md-4 mb-3">
+                    <label for="edit_vaccine_type" class="modern-form-label form-label">🏥 Vaccine Type</label>
+                    <select name="vaccine_type" id="edit_vaccine_type" class="modern-form-control form-control" required>
+                        <option value="">-- Select Vaccine Type --</option>
+                        <option value="BCG">BCG</option>
+                        <option value="Hepatitis B">Hepatitis B</option>
+                        <option value="DPT">DPT</option>
+                        <option value="OPV">OPV</option>
+                        <option value="IPV">IPV</option>
+                        <option value="MMR">MMR</option>
+                        <option value="Measles">Measles</option>
+                        <option value="Rubella">Rubella</option>
+                        <option value="Influenza">Influenza</option>
+                        <option value="Pneumococcal">Pneumococcal</option>
+                        <option value="Rotavirus">Rotavirus</option>
+                        <option value="Varicella">Varicella</option>
+                        <option value="HPV">HPV</option>
+                        <option value="COVID-19">COVID-19</option>
+                        <option value="Td">Td</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Total Shots -->
+                <div class="col-md-4 mb-3">
+                    <label for="edit_total_shots" class="modern-form-label form-label">💉 Total Shots</label>
+                    <input type="number" class="modern-form-control form-control" id="edit_total_shots"
+                           name="total_shots" required min="0">
+                </div>
+
+                <!-- Male Vaccinated -->
+                <div class="col-md-4 mb-3">
+                    <label for="edit_male" class="modern-form-label form-label">👨 Male Recipients</label>
+                    <div class="input-group">
+                        <input type="number" class="modern-form-control form-control" id="edit_male"
+                               name="male_vaccinated" required min="0">
+                        <button type="button" class="modern-btn btn-success" id="addMaleBtn">➕</button>
+                    </div>
+                </div>
+
+                <!-- Female Vaccinated -->
+                <div class="col-md-4 mb-3">
+                    <label for="edit_female" class="modern-form-label form-label">👩 Female Recipients</label>
+                    <div class="input-group">
+                        <input type="number" class="modern-form-control form-control" id="edit_female"
+                               name="female_vaccinated" required min="0">
+                        <button type="button" class="modern-btn btn-success" id="addFemaleBtn">➕</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Age Group -->
+                
+
+                <!-- Barangay -->
+                <div class="col-md-4 mb-3">
+                    <label for="edit_barangay" class="modern-form-label form-label">📍 Barangay</label>
+                    <select class="modern-form-control form-control" id="edit_barangay" name="barangay" 
+                                        required>
+                                        <option value="" disabled selected>Select Barangay</option>
+                                        <option value="Bacayao Norte">Bacayao Norte</option>
+                                        <option value="Bacayao Sur">Bacayao Sur</option>
+                                        <option value="Barangay I (T. Bugallon)">Barangay I (T. Bugallon)</option>
+                                        <option value="Barangay II (Nueva)">Barangay II (Nueva)</option>
+                                        <option value="Barangay IV (Zamora)">Barangay IV (Zamora)</option>
+                                        <option value="Bolosan">Bolosan</option>
+                                        <option value="Bonuan Binloc">Bonuan Binloc</option>
+                                        <option value="Bonuan Boquig">Bonuan Boquig</option>
+                                        <option value="Bonuan Gueset">Bonuan Gueset</option>
+                                        <option value="Calmay">Calmay</option>
+                                        <option value="Carael">Carael</option>
+                                        <option value="Caranglaan">Caranglaan</option>
+                                        <option value="Herrero">Herrero</option>
+                                        <option value="Lasip Chico">Lasip Chico</option>
+                                        <option value="Lasip Grande">Lasip Grande</option>
+                                        <option value="Lomboy">Lomboy</option>
+                                        <option value="Lucao">Lucao</option>
+                                        <option value="Malued">Malued</option>
+                                        <option value="Mamalingling">Mamalingling</option>
+                                        <option value="Mangin">Mangin</option>
+                                        <option value="Mayombo">Mayombo</option>
+                                        <option value="Pantal">Pantal</option>
+                                        <option value="Poblacion Oeste">Poblacion Oeste</option>
+                                        <option value="Pogo Chico">Pogo Chico</option>
+                                        <option value="Pogo Grande">Pogo Grande</option>
+                                        <option value="Pugaro Suit">Pugaro Suit</option>
+                                        <option value="Salapingao">Salapingao</option>
+                                        <option value="Salisay">Salisay</option>
+                                        <option value="Tambac">Tambac</option>
+                                        <option value="Tapuac">Tapuac</option>
+                                        <option value="Tebeng">Tebeng</option>
+                                    </select>
+                </div>
+
+                <!-- Target Population -->
+                <div class="col-md-4 mb-3">
+                    <label for="edit_target_population" class="modern-form-label form-label">🎯 Target Population</label>
+                    <input type="text" class="modern-form-control form-control" id="edit_target_population"
+                           name="target_population">
+                </div>
+            </div>
+
+            <div class="modern-modal-footer modal-footer">
+                <button type="button" class="modern-btn btn-secondary" onclick="closeEditModal()">❌ Cancel</button>
+                <button type="submit" class="modern-btn btn-primary">💾 Update</button>
+            </div>
+        </form>
     </div>
 </div>
-                            
+<script>
+
+</script>
 
 
-                                <div class="modern-modal-footer modal-footer">
-                                    <button type="button" id="cancelEditModal" class="modern-btn btn-secondary">❌
-                                        Cancel</button>
-                                    <button type="submit" class="modern-btn btn-primary">💾 Update</button>
-                                </div>
-                            </form>
+
                         </div>
                     </div>
 

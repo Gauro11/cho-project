@@ -5,19 +5,24 @@ namespace App\Imports;
 use App\Models\ImmunizationManagement;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 class ImmunizationImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
         return new ImmunizationManagement([
-            'date' => $this->normalizeDate($row['date'] ?? null),
-            'vaccine_name' => strtoupper(trim($row['vaccine_name'] ?? '')),
-            'male_vaccinated' => (int) filter_var($row['male_vaccinated'] ?? 0, FILTER_SANITIZE_NUMBER_INT),
-            'female_vaccinated' => (int) filter_var($row['female_vaccinated'] ?? 0, FILTER_SANITIZE_NUMBER_INT),
+            'date' => $row['date'] ?? now(),
+            'vaccine_name' => $row['vaccine_name'] ?? '',
+            'vaccine_type' => $row['vaccine_type'] ?? '',
+            'total_shots' => $row['total_shots'] ?? 0,
+            'male_vaccinated' => $row['male_vaccinated'] ?? 0,
+            'female_vaccinated' => $row['female_vaccinated'] ?? 0,
+            'age_group' => $row['age_group'] ?? '',
+            'target_population' => $row['target_population'] ?? null,
+            'barangay' => $row['barangay'] ?? '',
         ]);
     }
+
 
     private function normalizeDate($value): ?string
     {

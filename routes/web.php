@@ -141,7 +141,7 @@ Route::delete('/morbidity/delete-all', [MorbidityMortalityController::class, 'de
 Route::post('store/vitalStatiscs', [VitalStatisticsController::class, 'store_vitalstatiscs'])->name('vital_statistics.store');
 Route::put('/vital-statistics/update', [VitalStatisticsController::class, 'update_vitalstatiscs'])->name('vital_statistics.update');
 Route::delete('/vitalstatistics/delete/{id}', [VitalStatisticsController::class, 'delete_vitalstatistics'])->name('vital_statistics.delete');
-Route::delete('/vital-statistics/delete-selected', [VitalStatisticsController::class, 'deleteSelected'])
+Route::post('/vital-statistics/delete-selected', [VitalStatisticsController::class, 'deleteSelected'])
     ->name('vital.deleteSelected');
 
 Route::get('/vitalstatistic/template', [VitalStatisticsController::class, 'vitalstatisticTemplate'])->name('vitalstatistic.template');
@@ -185,6 +185,7 @@ Route::post('/vital-statistics/import', [VitalStatisticsController::class, 'impo
 Route::post('/mortality/import', [MorbidityMortalityController::class, 'import'])->name('mortality.import');
 Route::post('/morbidity/import', [MorbidityMortalityController::class, 'imports'])->name('morbidity.import');
 
+Route::get('/dagupan-population', [PopulationController::class, 'getTotalPopulation']);
 
 
 
