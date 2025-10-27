@@ -478,8 +478,8 @@ $barangayCoordinates = [
             </th>
             <th onclick="sortTable(1, 'string')">Year & Month <i id="icon-1" class="fas fa-sort sort-icon"></i></th>
             <th onclick="sortTable(2, 'string')">Barangay Name <i id="icon-2" class="fas fa-sort sort-icon"></i></th>
-            <th onclick="sortTable(3, 'number')">Latitude <i id="icon-3" class="fas fa-sort sort-icon"></i></th>
-            <th onclick="sortTable(4, 'number')">Longitude <i id="icon-4" class="fas fa-sort sort-icon"></i></th>
+            {{-- <th onclick="sortTable(3, 'number')">Latitude <i id="icon-3" class="fas fa-sort sort-icon"></i></th>
+            <th onclick="sortTable(4, 'number')">Longitude <i id="icon-4" class="fas fa-sort sort-icon"></i></th> --}}
             <th onclick="sortTable(5, 'number')">Population <i id="icon-5" class="fas fa-sort sort-icon"></i></th>
             <th class="no-print">Actions</th>
         </tr>
@@ -500,12 +500,12 @@ $barangayCoordinates = [
                 <td>{{ \Carbon\Carbon::parse($row->year_month)->format('F Y') }}</td>
                 <td>{{ $row->location }}</td>
 
-                <td>
+                {{-- <td>
                     {{ $barangayCoordinates[ucwords(strtolower($row->location))]['lat'] ?? 'N/A' }}
                 </td>
                 <td>
                     {{ $barangayCoordinates[ucwords(strtolower($row->location))]['lng'] ?? 'N/A' }}
-                </td>
+                </td> --}}
 
                 <td>{{ number_format($row->population) }}</td>
                 <td class="no-print">
