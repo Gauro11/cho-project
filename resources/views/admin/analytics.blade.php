@@ -599,7 +599,7 @@
                 }
             });
         }
-
+//////
         createChart("morbidityCasesChart", getChronologicalTopCases(morbidityData));
         createChart("mortalityCasesChart", getChronologicalTopCases(mortalityData));
     });
