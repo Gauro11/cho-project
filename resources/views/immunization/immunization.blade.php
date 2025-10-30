@@ -1881,7 +1881,59 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 
 </script>
+<!-- Import Modal -->
+<div id="importModal" class="modern-modal modal" style="display: none;">
+    <div class="modern-modal-content modal-content" style="max-width: 600px;">
+        <span class="modern-close close" id="closeImportModal">&times;</span>
+        <h2>📥 Import Immunization Records</h2>
+        
+        <form action="{{ route('immunization.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
+            @csrf
+            
+            <div class="file-upload-area" id="fileUploadArea">
+                <div class="file-upload-icon">📁</div>
+                <div class="file-upload-text">
+                    <strong>Click to select file</strong> or drag and drop your Excel/CSV file here
+                </div>
+                <input type="file" name="file" id="fileInput"
+                    class="modern-form-control form-control" accept=".xlsx,.xls,.csv" required
+                    style="display: none;">
 
+                <!-- Buttons Row -->
+                <div class="d-flex gap-2 mt-2 justify-content-center">
+                    <!-- Choose file button -->
+                    <button type="button" class="modern-btn btn-secondary btn-sm"
+                        onclick="document.getElementById('fileInput').click()">
+                        📂 Choose File
+                    </button>
+
+                    <!-- Download Template Button -->
+                    <a href="{{ route('immunization.template') }}" class="modern-btn btn-primary btn-sm">
+                        ⬇️ Download Template
+                    </a>
+                </div>
+            </div>
+
+            <div class="file-info" id="fileInfo">
+                <strong>Selected File:</strong>
+                <div id="fileName"></div>
+                <div id="fileSize"></div>
+            </div>
+
+            <div class="mb-3">
+                <small class="text-muted">
+                    <strong>Supported formats:</strong> Excel (.xlsx, .xls) and CSV (.csv)<br>
+                    <strong>Required columns:</strong> Date, Vaccine Name, Vaccine Type, Total Shots, Male Vaccinated, Female Vaccinated, Age Group, Barangay, Target Population
+                </small>
+            </div>
+
+            <div class="modern-modal-footer modal-footer">
+                <button type="button" class="modern-btn btn-secondary" id="cancelImportModal">❌ Cancel</button>
+                <button type="submit" class="modern-btn btn-success" id="uploadBtn" disabled>📤 Upload File</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 
                         </div>

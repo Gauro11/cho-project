@@ -1,45 +1,83 @@
 <?php
+
 namespace App\Imports;
 
-use App\Models\Population;
+use App\Models\PopulationStatisticsManagement; // ✅ Correct model
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\SkipsErrors;
 use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
-class PopulationImport implements ToModel, WithHeadingRow
+class PopulationImport implements ToModel, WithHeadingRow, SkipsEmptyRows, SkipsOnError
 {
+    use SkipsErrors;
+
     public function model(array $row)
     {
-         // Remove extra spaces from keys
-        $row = array_map('trim', $row);
-        
-        return new Population([
+        // Clean up the row data
+        $row = array_map(function($value) {
+            return is_string($value) ? trim($value) : $value;
+        }, $row);
+
+        // Log for debugging
+        Log::info('Importing row:', $row);
+
+        // Skip if required fields are empty
+        if (empty($row['location']) || empty($row['year_month']) || empty($row['population'])) {
+            Log::warning('Skipping row due to missing data:', $row);
+            return null;
+        }
+
+        return new PopulationStatisticsManagement([
             'location'   => $row['location'],
-            'year_month'       => $this->transformDate($row['year']),
-            'population' => $row['population'],
+            'year_month' => $this->transformDate($row['year_month']),
+            'population' => (int)$row['population'],
         ]);
     }
 
-   private function transformDate($value)
-{
-    try {
-        // Case 1: Already just a year (e.g. 2025)
-        if (is_numeric($value) && strlen((string) $value) === 4) {
-            return (int) $value;
+    private function transformDate($value)
+    {
+        if (empty($value)) {
+            return null;
         }
 
-        // Case 2: Excel serial date (e.g. 45963)
-        if (is_numeric($value)) {
-            return Carbon::instance(ExcelDate::excelToDateTimeObject($value))->year;
-        }
+        try {
+            // Case 1: Already in "YYYY-MM" format
+            if (is_string($value) && preg_match('/^\d{4}-\d{2}$/', $value)) {
+                Log::info("Date already in correct format: $value");
+                return $value;
+            }
 
-        // Case 3: String date (e.g. "2025-09-28")
-        return Carbon::parse($value)->year;
-    } catch (\Exception $e) {
-        return null; // if invalid
+            // Case 2: Just year "2025" -> convert to "2025-01"
+            if (is_numeric($value) && strlen((string)$value) === 4) {
+                $result = $value . '-01';
+                Log::info("Converted year $value to $result");
+                return $result;
+            }
+
+            // Case 3: Excel serial date
+            if (is_numeric($value) && $value > 1000) {
+                $date = Carbon::instance(ExcelDate::excelToDateTimeObject($value));
+                $result = $date->format('Y-m');
+                Log::info("Converted Excel date $value to $result");
+                return $result;
+            }
+
+            // Case 4: String date like "2025-09-28" or "January 2025"
+            $date = Carbon::parse($value);
+            $result = $date->format('Y-m');
+            Log::info("Parsed date $value to $result");
+            return $result;
+
+        } catch (\Exception $e) {
+            Log::error('Date transformation error: ' . $e->getMessage() . ' for value: ' . $value);
+            return null;
+        }
     }
 }
 
 
-}

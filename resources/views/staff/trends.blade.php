@@ -690,34 +690,18 @@ function filterDataBySpecificDate(data) {
     console.log("Available Labels:", data.historical.labels);
 
     data.historical.labels.forEach((label, index) => {
-        const date = parseDate(label);
-        
-        if (date) {
-            const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            let isInRange = true;
-
-            if (startDate) {
-                const normalizedStartDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-                if (normalizedDate < normalizedStartDate) {
-                    isInRange = false;
-                }
-            }
-
-            if (endDate && isInRange) {
-                const normalizedEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-                if (normalizedDate > normalizedEndDate) {
-                    isInRange = false;
-                }
-            }
-
-            if (isInRange) {
-                filteredLabels.push(label);
-                filteredValues.push(data.historical.values[index]);
-                console.log("✅ Date in range:", label);
-            }
-        }
-    });
-
+        function parseDate(dateString) {
+    if (!dateString) return null;
+    
+    // Handle year-only format (YYYY)
+    if (/^\d{4}$/.test(dateString)) {
+        return new Date(parseInt(dateString), 0, 1); // January 1st of that year
+    }
+    
+    let date;
+    
+    // ... rest of your existing parseDate logic
+}
     console.log("Filtered Results:", filteredLabels.length, "matches found");
 
     // Generate prediction based on filtered data
@@ -919,16 +903,24 @@ function generatePrediction(labels, values) {
 
     // Update chart with filtered data
     function updateChart(data) {
-        const formatDate = (dateString) => {
-            if (!dateString) return 'Unknown';
-            let date;
-            if (dateString.includes('-')) date = new Date(dateString);
-            else if (dateString.includes('/')) date = new Date(dateString);
-            else if (typeof dateString === 'number') date = new Date(dateString * 1000);
-            else date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-        };
+       const formatDate = (dateString) => {
+    if (!dateString) return 'Unknown';
+    
+    // Check if it's just a year (4 digits)
+    if (/^\d{4}$/.test(dateString)) {
+        return dateString; // Return year as-is
+    }
+    
+    // Handle other date formats
+    let date;
+    if (dateString.includes('-')) date = new Date(dateString);
+    else if (dateString.includes('/')) date = new Date(dateString);
+    else if (typeof dateString === 'number') date = new Date(dateString * 1000);
+    else date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) return dateString;
+    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+};
 
         const formattedHistoricalLabels = data.historical.labels.map(formatDate);
         

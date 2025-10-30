@@ -212,19 +212,33 @@ class PopulationController extends Controller
      * Import population data from Excel/CSV
      */
     public function import(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv',
-        ]);
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+    ]);
 
-        try {
-            Excel::import(new PopulationImport, $request->file('file'));
-            return back()->with('success', 'Population data imported successfully!');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Import failed: '.$e->getMessage()]);
+    try {
+        Excel::import(new PopulationImport, $request->file('file'));
+        
+        return back()->with('success', 'Population data imported successfully!');
+        
+    } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        $failures = $e->failures();
+        $errorMessages = [];
+        
+        foreach ($failures as $failure) {
+            $errorMessages[] = "Row {$failure->row()}: " . implode(', ', $failure->errors());
         }
+        
+        Log::error('Import validation errors:', $errorMessages);
+        return back()->withErrors(['error' => 'Import failed: ' . implode(' | ', $errorMessages)]);
+        
+    } catch (\Exception $e) {
+        Log::error('Import error: ' . $e->getMessage());
+        Log::error('Stack trace: ' . $e->getTraceAsString());
+        return back()->withErrors(['error' => 'Import failed: ' . $e->getMessage()]);
     }
-
+}
     /**
      * Get Dagupan city population from PSGC API
      */

@@ -97,14 +97,14 @@ class TrendsController extends Controller
   private function getPopulationStatisticsData()
 {
     $data = DB::table('population_statistics_management')
-        ->selectRaw('`year_month`, SUM(population) as total') // raw SQL with backticks
+        ->selectRaw('YEAR(`year_month`) as year, SUM(population) as total')
         ->whereNotNull('year_month')
-        ->groupBy('year_month') // no backticks here
-        ->orderBy('year_month') // no backticks here
+        ->groupBy('year')
+        ->orderBy('year')
         ->get();
 
     return [
-        'labels' => $data->pluck('year_month')->toArray(),
+        'labels' => $data->pluck('year')->toArray(),
         'values' => $data->pluck('total')->toArray()
     ];
 }
@@ -112,32 +112,52 @@ class TrendsController extends Controller
 
 
 
-    private function generatePrediction($historicalData)
-    {
-        if (count($historicalData) < 2) {
-            return null;
+   private function generatePrediction($historicalData)
+{
+    if (count($historicalData) < 2) {
+        return null;
+    }
+
+    $values = array_column($historicalData, 'total');
+    $n = count($values);
+
+    $x = range(1, $n);
+    $y = $values;
+
+    $meanX = array_sum($x) / $n;
+    $meanY = array_sum($y) / $n;
+
+    $num = 0;
+    $den = 0;
+    for ($i = 0; $i < $n; $i++) {
+        $num += ($x[$i] - $meanX) * ($y[$i] - $meanY);
+        $den += ($x[$i] - $meanX) ** 2;
+    }
+    $m = $den == 0 ? 0 : $num / $den; // slope
+    $b = $meanY - $m * $meanX;        // intercept
+
+    // Check if date is year format (YYYY) or year-month (YYYY-MM)
+    $lastDateStr = end($historicalData)['date'];
+    
+    // If it's just a year (4 digits)
+    if (preg_match('/^\d{4}$/', $lastDateStr)) {
+        $lastYear = (int)$lastDateStr;
+        
+        $predictions = [];
+        $predictionLabels = [];
+
+        for ($i = 1; $i <= 2; $i++) {
+            $nextYear = $lastYear + $i;
+            $xNext = $n + $i;
+            $yNext = round($m * $xNext + $b);
+
+            $predictionLabels[] = (string)$nextYear;
+            $predictions[] = max(0, $yNext);
         }
-
-        $values = array_column($historicalData, 'total');
-        $n = count($values);
-
-        $x = range(1, $n);
-        $y = $values;
-
-        $meanX = array_sum($x) / $n;
-        $meanY = array_sum($y) / $n;
-
-        $num = 0;
-        $den = 0;
-        for ($i = 0; $i < $n; $i++) {
-            $num += ($x[$i] - $meanX) * ($y[$i] - $meanY);
-            $den += ($x[$i] - $meanX) ** 2;
-        }
-        $m = $den == 0 ? 0 : $num / $den; // slope
-        $b = $meanY - $m * $meanX;        // intercept
-
-        $lastDate = new \DateTime(end($historicalData)['date'] . '-01'); // parse YYYY-MM
-
+    } else {
+        // Original month-based logic
+        $lastDate = new \DateTime($lastDateStr . '-01');
+        
         $predictions = [];
         $predictionLabels = [];
 
@@ -151,12 +171,13 @@ class TrendsController extends Controller
             $predictionLabels[] = $nextDate->format('Y-m');
             $predictions[] = max(0, $yNext);
         }
-
-        return [
-            'labels' => $predictionLabels,
-            'values' => $predictions,
-            'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable'),
-            'formula' => "y = " . round($m, 2) . "x + " . round($b, 2)
-        ];
     }
+
+    return [
+        'labels' => $predictionLabels,
+        'values' => $predictions,
+        'trend' => $m > 0 ? 'increasing' : ($m < 0 ? 'decreasing' : 'stable'),
+        'formula' => "y = " . round($m, 2) . "x + " . round($b, 2)
+    ];
+}
 }
