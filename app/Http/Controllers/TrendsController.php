@@ -123,10 +123,19 @@ private function getPopulationStatisticsData()
     ksort($grouped);
 
     // Build labels and data format for charts
-    return [
-        'labels' => array_keys($grouped),
-        'data'   => array_values($grouped)
-    ];
+   return response()->json([
+    "success" => true,
+    "historical" => [
+        "labels" => $labels,      // <-- MUST EXIST
+        "values" => $values       // <-- MUST EXIST
+    ],
+    "prediction" => [
+        "labels" => $predictionLabels ?? [],
+        "values" => $predictionValues ?? [],
+        "formula" => $formula ?? null
+    ]
+]);
+
 }
 
 
