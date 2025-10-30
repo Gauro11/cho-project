@@ -107,7 +107,6 @@ private function getPopulationStatisticsData()
     foreach ($rawData as $row) {
         $yearMonth = $row->year_month;
 
-        // Extract first 4 digits as year
         if (preg_match('/^(\d{4})/', $yearMonth, $matches)) {
             $year = $matches[1];
 
@@ -119,23 +118,16 @@ private function getPopulationStatisticsData()
         }
     }
 
-    // Sort by year
     ksort($grouped);
 
-    // Build labels and data format for charts
-   return response()->json([
-    "success" => true,
-    "historical" => [
-        "labels" => $labels,      // <-- MUST EXIST
-        "values" => $values       // <-- MUST EXIST
-    ],
-    "prediction" => [
-        "labels" => $predictionLabels ?? [],
-        "values" => $predictionValues ?? [],
-        "formula" => $formula ?? null
-    ]
-]);
+    // ✅ Build labels and values
+    $labels = array_keys($grouped);
+    $values = array_values($grouped);
 
+    return [
+        'labels' => $labels,
+        'values' => $values,
+    ];
 }
 
 
