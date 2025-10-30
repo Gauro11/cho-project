@@ -94,20 +94,39 @@ class TrendsController extends Controller
         }
     }
 
- private function getPopulationStatisticsData()
+private function getPopulationStatisticsData()
 {
     $data = DB::table('population_statistics_management')
-        ->selectRaw('YEAR(`year_month`) as year, SUM(population) as total')
+        ->selectRaw('SUBSTRING(year_month, 1, 4) as year, SUM(population) as total')
         ->whereNotNull('year_month')
-        ->groupBy('year')
-        ->orderBy('year')
+        ->where('year_month', '!=', '')
+        ->groupBy(DB::raw('SUBSTRING(year_month, 1, 4)'))
+        ->orderBy(DB::raw('SUBSTRING(year_month, 1, 4)'))
         ->get();
 
+    // Ensure years are strings and filter out any invalid data
+    $labels = $data->pluck('year')
+        ->filter(function($year) {
+            return $year && preg_match('/^\d{4}$/', $year);
+        })
+        ->map(function($year) {
+            return (string)$year;
+        })
+        ->values()
+        ->toArray();
+
+    $values = $data->pluck('total')->toArray();
+
+    // Log for debugging
+    \Log::info('Population Statistics Data:', [
+        'labels' => $labels,
+        'values' => $values,
+        'raw_data' => $data->toArray()
+    ]);
+
     return [
-        'labels' => $data->pluck('year')->map(function($year) {
-            return (string)$year; // Convert to string for consistency
-        })->toArray(),
-        'values' => $data->pluck('total')->toArray()
+        'labels' => $labels,
+        'values' => $values
     ];
 }
 
