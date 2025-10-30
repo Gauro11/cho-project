@@ -671,28 +671,36 @@ document.addEventListener("DOMContentLoaded", function() {
     yearPicker.addEventListener("change", applyDateFilter);
 
     // Function to apply date filtering
-    function applyDateFilter() {
-        if (!originalData) return;
-
-        const filterType = dateFilterType.value;
-        let filteredData = {...originalData};
-
-        if (filterType === 'specific' && (startDatePicker.value || endDatePicker.value)) {
-            filteredData = filterDataBySpecificDate(originalData);
-        } else if (filterType === 'monthly' && monthPicker.value) {
-            const selectedMonth = monthPicker.value;
-            filteredData = filterDataByMonth(originalData, selectedMonth);
-        } else if (filterType === 'quarterly' && quarterPicker.value && quarterYearPicker.value) {
-            const selectedQuarter = quarterPicker.value;
-            const selectedYear = quarterYearPicker.value;
-            filteredData = filterDataByQuarter(originalData, selectedQuarter, selectedYear);
-        } else if (filterType === 'yearly' && yearPicker.value) {
-            const selectedYear = yearPicker.value;
-            filteredData = filterDataByYear(originalData, selectedYear);
+   function applyDateFilter() {
+    // ✅ If category is population statistics → no filtering
+    if (categorySelect.value === "population_statistics") {
+        if (originalData) {
+            updateChart(originalData);
         }
-
-        updateChart(filteredData);
+        return;
     }
+
+    if (!originalData) return;
+
+    const filterType = dateFilterType.value;
+    let filteredData = {...originalData};
+
+    if (filterType === 'specific' && (startDatePicker.value || endDatePicker.value)) {
+        filteredData = filterDataBySpecificDate(originalData);
+    } else if (filterType === 'monthly' && monthPicker.value) {
+        const selectedMonth = monthPicker.value;
+        filteredData = filterDataByMonth(originalData, selectedMonth);
+    } else if (filterType === 'quarterly' && quarterPicker.value && quarterYearPicker.value) {
+        const selectedQuarter = quarterPicker.value;
+        const selectedYear = quarterYearPicker.value;
+        filteredData = filterDataByQuarter(originalData, selectedQuarter, selectedYear);
+    } else if (filterType === 'yearly' && yearPicker.value) {
+        const selectedYear = yearPicker.value;
+        filteredData = filterDataByYear(originalData, selectedYear);
+    }
+
+    updateChart(filteredData);
+}
 
     
    // Replace the filterDataBySpecificDate function with this updated version:
