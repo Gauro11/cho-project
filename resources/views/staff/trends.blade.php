@@ -391,12 +391,15 @@
                                             <option selected>Select Category</option>
                                             <option value="morbidity">Morbidity</option>
                                             <option value="mortality">Mortality</option>
+                                             <select id="subCategorySelect" class="form-select" style="display: none;">
+                                            <option value="">Select Case</option>
+                                        </select>
                                             <option value="population_statistics">Population Statistics</option>
                                         </select>
                                         
-                                        <select id="subCategorySelect" class="form-select" style="display: none;">
+                                        {{-- <select id="subCategorySelect" class="form-select" style="display: none;">
                                             <option value="">Select Case</option>
-                                        </select>
+                                        </select> --}}
                                     </div>
                                     
                                     <!-- Second Row: Date Filters -->
