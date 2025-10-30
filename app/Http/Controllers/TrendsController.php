@@ -115,25 +115,20 @@ private function getPopulationStatisticsData()
                 $grouped[$year] = 0;
             }
 
-            $grouped[$year] += (int) $row->population;
+            $grouped[$year] += (int)$row->population;
         }
     }
 
-    // Convert to array format for charts: [{year: 2024, total: 1000}, ...]
-    $final = [];
+    // Sort by year
+    ksort($grouped);
 
-    foreach ($grouped as $year => $total) {
-        $final[] = [
-            'year' => $year,
-            'total' => $total
-        ];
-    }
-
-    // Sort ascending by year
-    usort($final, fn($a, $b) => $a['year'] <=> $b['year']);
-
-    return $final;
+    // Build labels and data format for charts
+    return [
+        'labels' => array_keys($grouped),
+        'data'   => array_values($grouped)
+    ];
 }
+
 
 
 
