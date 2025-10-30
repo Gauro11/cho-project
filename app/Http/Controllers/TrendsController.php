@@ -136,26 +136,6 @@ private function getPopulationStatisticsData()
 }
 
 
-    // Sort by year
-    ksort($grouped);
-
-    $labels = array_keys($grouped);
-    $values = array_values($grouped);
-
-    // Log for debugging
-    \Log::info('Population Statistics Data:', [
-        'labels' => $labels,
-        'values' => $values,
-        'sample_year_month' => $rawData->pluck('year_month')->take(5)->toArray()
-    ]);
-
-    return [
-        'labels' => $labels,
-        'values' => $values
-    ];
-}
-
-
 
 
    private function generatePrediction($historicalData)
