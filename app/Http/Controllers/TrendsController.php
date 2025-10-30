@@ -96,32 +96,43 @@ class TrendsController extends Controller
 
 private function getPopulationStatisticsData()
 {
-    $data = DB::table('population_statistics_management')
-        ->selectRaw('SUBSTRING(year_month, 1, 4) as year, SUM(population) as total')
+    // First, get all data
+    $rawData = DB::table('population_statistics_management')
+        ->select('year_month', 'population')
         ->whereNotNull('year_month')
         ->where('year_month', '!=', '')
-        ->groupBy(DB::raw('SUBSTRING(year_month, 1, 4)'))
-        ->orderBy(DB::raw('SUBSTRING(year_month, 1, 4)'))
         ->get();
 
-    // Ensure years are strings and filter out any invalid data
-    $labels = $data->pluck('year')
-        ->filter(function($year) {
-            return $year && preg_match('/^\d{4}$/', $year);
-        })
-        ->map(function($year) {
-            return (string)$year;
-        })
-        ->values()
-        ->toArray();
+    // Group by year in PHP (more flexible)
+    $grouped = [];
+    
+    foreach ($rawData as $row) {
+        // Extract year from year_month (handles "2024-01", "2024", etc.)
+        $yearMonth = $row->year_month;
+        
+        // Extract first 4 digits as year
+        if (preg_match('/^(\d{4})/', $yearMonth, $matches)) {
+            $year = $matches[1];
+            
+            if (!isset($grouped[$year])) {
+                $grouped[$year] = 0;
+            }
+            
+            $grouped[$year] += (int)$row->population;
+        }
+    }
 
-    $values = $data->pluck('total')->toArray();
+    // Sort by year
+    ksort($grouped);
+
+    $labels = array_keys($grouped);
+    $values = array_values($grouped);
 
     // Log for debugging
     \Log::info('Population Statistics Data:', [
         'labels' => $labels,
         'values' => $values,
-        'raw_data' => $data->toArray()
+        'sample_year_month' => $rawData->pluck('year_month')->take(5)->toArray()
     ]);
 
     return [
