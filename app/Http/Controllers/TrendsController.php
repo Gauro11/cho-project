@@ -96,31 +96,45 @@ class TrendsController extends Controller
 
 private function getPopulationStatisticsData()
 {
-    // First, get all data
     $rawData = DB::table('population_statistics_management')
         ->select('year_month', 'population')
         ->whereNotNull('year_month')
         ->where('year_month', '!=', '')
         ->get();
 
-    // Group by year in PHP (more flexible)
     $grouped = [];
-    
+
     foreach ($rawData as $row) {
-        // Extract year from year_month (handles "2024-01", "2024", etc.)
         $yearMonth = $row->year_month;
-        
+
         // Extract first 4 digits as year
         if (preg_match('/^(\d{4})/', $yearMonth, $matches)) {
             $year = $matches[1];
-            
+
             if (!isset($grouped[$year])) {
                 $grouped[$year] = 0;
             }
-            
-            $grouped[$year] += (int)$row->population;
+
+            $grouped[$year] += (int) $row->population;
         }
     }
+
+    // Convert to array format for charts: [{year: 2024, total: 1000}, ...]
+    $final = [];
+
+    foreach ($grouped as $year => $total) {
+        $final[] = [
+            'year' => $year,
+            'total' => $total
+        ];
+    }
+
+    // Sort ascending by year
+    usort($final, fn($a, $b) => $a['year'] <=> $b['year']);
+
+    return $final;
+}
+
 
     // Sort by year
     ksort($grouped);
