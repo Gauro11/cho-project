@@ -391,15 +391,13 @@
                                             <option selected>Select Category</option>
                                             <option value="morbidity">Morbidity</option>
                                             <option value="mortality">Mortality</option>
-                                             <select id="subCategorySelect" class="form-select" style="display: none;">
-                                            <option value="">Select Case</option>
-                                        </select>
+                                            
                                             <option value="population_statistics">Population Statistics</option>
                                         </select>
                                         
-                                        {{-- <select id="subCategorySelect" class="form-select" style="display: none;">
+                                        <select id="subCategorySelect" class="form-select" style="display: none;">
                                             <option value="">Select Case</option>
-                                        </select> --}}
+                                        </select>
                                     </div>
                                     
                                     <!-- Second Row: Date Filters -->
@@ -514,6 +512,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let chart;
     let originalData = null; // Store the original data for filtering
+
+    document.getElementById('categorySelect').addEventListener('change', function () {
+    const selected = this.value;
+
+    const subCategory = document.getElementById('subCategorySelect');
+    const dateFilters = document.querySelector('.date-filter-row');
+
+    if (selected === 'population_statistics') {
+        // Hide both sub-category and date filter panel
+        subCategory.style.display = 'none';
+        dateFilters.style.display = 'none';
+    } else {
+        // Show them for morbidity/mortality
+        subCategory.style.display = 'block';
+        dateFilters.style.display = 'flex';
+    }
+});
 
     // Initialize the chart
    function initChart() {
