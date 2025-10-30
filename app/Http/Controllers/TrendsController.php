@@ -94,7 +94,7 @@ class TrendsController extends Controller
         }
     }
 
-  private function getPopulationStatisticsData()
+ private function getPopulationStatisticsData()
 {
     $data = DB::table('population_statistics_management')
         ->selectRaw('YEAR(`year_month`) as year, SUM(population) as total')
@@ -104,7 +104,9 @@ class TrendsController extends Controller
         ->get();
 
     return [
-        'labels' => $data->pluck('year')->toArray(),
+        'labels' => $data->pluck('year')->map(function($year) {
+            return (string)$year; // Convert to string for consistency
+        })->toArray(),
         'values' => $data->pluck('total')->toArray()
     ];
 }

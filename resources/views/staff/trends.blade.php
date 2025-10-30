@@ -513,82 +513,88 @@ document.addEventListener("DOMContentLoaded", function() {
     let originalData = null; // Store the original data for filtering
 
     // Initialize the chart
-    function initChart() {
-        if (chart) {
-            chart.destroy();
-        }
+   function initChart() {
+    if (chart) {
+        chart.destroy();
+    }
 
-        chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                        label: 'Historical Data',
-                        data: [],
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                        color: 'white',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Prediction',
-                        data: [],
-                        borderColor: '#ff6384',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
-                        fill: false,
-                        tension: 0.4
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                    label: 'Historical Data',
+                    data: [],
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    color: 'white',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Prediction',
+                    data: [],
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#333' },
+                    title: { display: true, text: 'Population', color: '#333' }
+                },
+                x: {
+                    ticks: { color: '#333' },
+                    title: { 
+                        display: true, 
+                        text: 'Year', // Changed from 'Time Period'
+                        color: '#333' 
                     }
-                ]
+                }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: '#333' },
-                        title: { display: true, text: 'Count', color: '#333' }
-                    },
-                    x: {
-                        ticks: { color: '#333' },
-                        title: { display: true, text: 'Time Period', color: '#333' }
+            plugins: {
+                legend: {
+                    labels: { color: '#333', font: { size: 14, weight: 'bold' } }
+                },
+                annotation: {
+                    annotations: {
+                        line1: {
+                            type: 'line',
+                            yMin: 0,
+                            yMax: 0,
+                            borderColor: 'rgb(255, 99, 132)',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            label: { content: 'Prediction Start', enabled: true, position: 'right', color: '#333' }
+                        }
                     }
                 },
-                plugins: {
-                    legend: {
-                        labels: { color: '#333', font: { size: 14, weight: 'bold' } }
-                    },
-                    annotation: {
-                        annotations: {
-                            line1: {
-                                type: 'line',
-                                yMin: 0,
-                                yMax: 0,
-                                borderColor: 'rgb(255, 99, 132)',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: { content: 'Prediction Start', enabled: true, position: 'right', color: '#333' }
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y.toLocaleString(); // Format numbers with commas
                             }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) label += ': ';
-                                if (context.parsed.y !== null) label += context.parsed.y;
-                                return label;
-                            }
+                            return label;
                         }
                     }
                 }
             }
-        });
-    }
+        }
+    });
+}
 
     // Populate year dropdowns
     function populateYearDropdowns() {
@@ -840,95 +846,139 @@ function generatePrediction(labels, values) {
     }
 
     // Filter data by year
-    function filterDataByYear(data, selectedYear) {
-        const filteredLabels = [];
-        const filteredValues = [];
+   // Filter data by year
+function filterDataByYear(data, selectedYear) {
+    const filteredLabels = [];
+    const filteredValues = [];
 
-        data.historical.labels.forEach((label, index) => {
+    data.historical.labels.forEach((label, index) => {
+        // Handle both year-only (YYYY) and date formats
+        if (/^\d{4}$/.test(label)) {
+            // Year-only format
+            if (label == selectedYear) {
+                filteredLabels.push(label);
+                filteredValues.push(data.historical.values[index]);
+            }
+        } else {
+            // Date format
             const date = parseDate(label);
             if (date && date.getFullYear() == selectedYear) {
                 filteredLabels.push(label);
                 filteredValues.push(data.historical.values[index]);
             }
-        });
+        }
+    });
 
-        return {
-            ...data,
-            historical: {
-                labels: filteredLabels,
-                values: filteredValues
-            },
-            prediction: null
-        };
-    }
+    return {
+        ...data,
+        historical: {
+            labels: filteredLabels,
+            values: filteredValues
+        },
+        prediction: null
+    };
+}
 
     // Parse date from various formats
-    function parseDate(dateString) {
-        if (!dateString) return null;
-        
-        let date;
-        
-        // Handle different date formats
-        if (typeof dateString === 'string') {
-            // Format: YYYY-MM-DD
-            if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                date = new Date(dateString);
-            }
-            // Format: MM/DD/YYYY
-            else if (dateString.includes('/')) {
-                const parts = dateString.split('/');
-                if (parts.length === 3) {
-                    // Try MM/DD/YYYY first
-                    date = new Date(parts[2], parts[0] - 1, parts[1]);
-                    // If invalid, try DD/MM/YYYY
-                    if (isNaN(date.getTime())) {
-                        date = new Date(parts[2], parts[1] - 1, parts[0]);
-                    }
+   // Parse date from various formats
+function parseDate(dateString) {
+    if (!dateString) return null;
+    
+    // Handle year-only format (YYYY) - for population statistics
+    if (/^\d{4}$/.test(dateString)) {
+        const year = parseInt(dateString);
+        return new Date(year, 0, 1); // January 1st of that year
+    }
+    
+    let date;
+    
+    // Handle different date formats
+    if (typeof dateString === 'string') {
+        // Format: YYYY-MM-DD
+        if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            date = new Date(dateString);
+        }
+        // Format: YYYY-MM (year-month)
+        else if (dateString.match(/^\d{4}-\d{2}$/)) {
+            const [year, month] = dateString.split('-');
+            date = new Date(parseInt(year), parseInt(month) - 1, 1);
+        }
+        // Format: MM/DD/YYYY
+        else if (dateString.includes('/')) {
+            const parts = dateString.split('/');
+            if (parts.length === 3) {
+                date = new Date(parts[2], parts[0] - 1, parts[1]);
+                if (isNaN(date.getTime())) {
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
                 }
             }
-            // Format: DD-MM-YYYY or similar
-            else if (dateString.includes('-') && dateString.length > 8) {
-                const parts = dateString.split('-');
-                if (parts.length === 3) {
-                    // If first part is 4 digits, assume YYYY-MM-DD
-                    if (parts[0].length === 4) {
-                        date = new Date(parts[0], parts[1] - 1, parts[2]);
-                    } else {
-                        // Otherwise assume DD-MM-YYYY
-                        date = new Date(parts[2], parts[1] - 1, parts[0]);
-                    }
+        }
+        // Format: DD-MM-YYYY or similar
+        else if (dateString.includes('-') && dateString.length > 8) {
+            const parts = dateString.split('-');
+            if (parts.length === 3) {
+                if (parts[0].length === 4) {
+                    date = new Date(parts[0], parts[1] - 1, parts[2]);
+                } else {
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
                 }
             }
-            // Format: ISO string or other standard formats
-            else {
-                date = new Date(dateString);
-            }
         }
-        // Handle timestamp (number)
-        else if (typeof dateString === 'number') {
-            // If it's a timestamp (seconds), convert to milliseconds
-            date = dateString > 10000000000 ? new Date(dateString) : new Date(dateString * 1000);
-        }
-        // Fallback
+        // Format: ISO string or other standard formats
         else {
             date = new Date(dateString);
         }
-        
-        return isNaN(date.getTime()) ? null : date;
     }
+    // Handle timestamp (number)
+    else if (typeof dateString === 'number') {
+        date = dateString > 10000000000 ? new Date(dateString) : new Date(dateString * 1000);
+    }
+    // Fallback
+    else {
+        date = new Date(dateString);
+    }
+    
+    return isNaN(date.getTime()) ? null : date;
+}
 
     // Update chart with filtered data
     function updateChart(data) {
-        const formatDate = (dateString) => {
-            if (!dateString) return 'Unknown';
-            let date;
-            if (dateString.includes('-')) date = new Date(dateString);
-            else if (dateString.includes('/')) date = new Date(dateString);
-            else if (typeof dateString === 'number') date = new Date(dateString * 1000);
-            else date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-        };
+       const formatDate = (dateString) => {
+    if (!dateString) return 'Unknown';
+    
+    // Check if it's just a year (4 digits)
+    if (/^\d{4}$/.test(dateString)) {
+        return dateString; // Return year as-is
+    }
+    
+    // Handle other date formats
+    let date;
+    if (dateString.includes('-')) {
+        const parts = dateString.split('-');
+        if (parts.length === 2) {
+            // YYYY-MM format
+            date = new Date(parts[0], parts[1] - 1, 1);
+        } else {
+            // YYYY-MM-DD format
+            date = new Date(dateString);
+        }
+    } else if (dateString.includes('/')) {
+        date = new Date(dateString);
+    } else if (typeof dateString === 'number') {
+        date = new Date(dateString * 1000);
+    } else {
+        date = new Date(dateString);
+    }
+    
+    if (isNaN(date.getTime())) return dateString;
+    
+    // For year-only data, just return the year
+    if (/^\d{4}$/.test(dateString)) {
+        return dateString;
+    }
+    
+    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+};
 
         const formattedHistoricalLabels = data.historical.labels.map(formatDate);
         
